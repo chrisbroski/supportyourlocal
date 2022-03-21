@@ -1,5 +1,3 @@
-/*jshint esversion: 6 */
-
 // Custom libs
 const main = require('../inc/main.js');
 const resourceData = require('../inc/resource-data.js');

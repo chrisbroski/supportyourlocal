@@ -1,5 +1,3 @@
-/*jshint esversion: 8 */
-
 const fs = require("fs");
 const util = require('util');
 const crypto = require("crypto");

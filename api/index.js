@@ -1,8 +1,6 @@
-/*jshint esversion: 8 */
-
-// Standard lib
+// Standard libs
 const http = require('http');
-const https = require('https');
+// const https = require('https');
 const fs = require("fs");
 const qs = require('querystring');
 const util = require('util');
@@ -46,7 +44,7 @@ const LOGIN_FAIL_RESET_DURATION = 600000;
 // Global state
 var data;
 var failedLogins = {};
-var log;
+// var log;
 var sessionTimeout = 31622400;
 
 function hashPassword(password, salt) {
@@ -168,7 +166,7 @@ function login(req, rsp, body) {
 }
 
 function authenticate(req, rsp) {
-    var cookies, userid, querystring;
+    var cookies, userid;
     var path = getPath(req.url);
 
     if (path.pathname === `${API_DIR}/login`) {
@@ -276,7 +274,7 @@ function updateUser(id, rsp, formData, moderator) {
     return;
 }
 
-function resetPassword(rsp, path, body) {
+/*function resetPassword(rsp, path, body) {
     var formData = Object.assign({"userid": path.id}, body);
     if (isInvalid('resetPassword', rsp, formData, data.user[path.id])) {
         return;
@@ -294,7 +292,7 @@ function isFileForm(req) {
         return true;
     }
     return false;
-}
+}*/
 
 function removeQs(fullUrl) {
     if (!fullUrl) {
@@ -362,7 +360,7 @@ function invalidCreateUser(registrant, data) {
     return msg;
 }
 
-function invalidEmail(body, data) {
+/*function invalidEmail(body, data) {
     var msg = [];
 
     if (!body.email) {
@@ -384,7 +382,7 @@ function invalidPassword(registrant, data) {
     }
 
     return msg;
-}
+}*/
 
 function invalidUpdateUser(registrant, data) {
     var msg = [];
@@ -585,7 +583,8 @@ function rspPost(req, rsp, body) {
 function rspPut(req, rsp, body) {
     var path = getPath(req.url);
     var moderator = isMod(req);
-    var querystring = url.parse(req.url, true).query;
+    var userid;
+    // var querystring = url.parse(req.url, true).query;
 
     if (path.pathname === `${API_DIR}/home`) {
         return home.update(req, rsp, body, data, resourceData.save);
@@ -695,7 +694,7 @@ function rspDelete(req, rsp) {
 function rspGet(req, rsp) {
     var path = getPath(req.url);
     var authUserData;
-    var querystring = url.parse(req.url, true).query;
+    // var querystring = url.parse(req.url, true).query;
     var cookies;
 
     if (path.pathname === `${API_DIR}/favicon.ico`) {
@@ -804,7 +803,8 @@ function rspGet(req, rsp) {
         }
 
         rsp.writeHead(200, {'Content-Type': 'text/html'});
-        rsp.end(main.renderPage(req, TEMPLATE.forgotPassword, views.forgotPassword(querystring), data));
+        rsp.end("temp");
+        // rsp.end(main.renderPage(req, TEMPLATE.forgotPassword, forgotPassword(querystring), data));
         return;
     } else if (path.pathname === `${API_DIR}/auth`) {
         cookies = main.parseCookie(req.headers.cookie);

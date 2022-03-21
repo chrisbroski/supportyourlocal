@@ -1,5 +1,3 @@
-/*jshint esversion: 8 */
-
 // Custom libs
 const main = require('../inc/main.js');
 

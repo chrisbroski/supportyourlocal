@@ -1,4 +1,3 @@
-/* jshint esversion: 6 */
 /* jshint unused: false */
 var aero = new Aerophane();
 

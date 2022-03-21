@@ -1,7 +1,5 @@
-/*jshint esversion: 6 */
-
 const main = require('../../inc/main.js');
-var url = require('url');
+// var url = require('url');
 
 const resourceName = 'venue';
 const template = {};
@@ -40,11 +38,11 @@ function list(db) {
 
 function singleData(db, id) {
     return Object.assign({"resourceName": resourceName}, db[resourceName][id]);
-};
+}
 
-function listData(db, req) {
+function listData(db) {
     return main.objToArray(db[resourceName]).sort(main.sortByName);
-};
+}
 
 // Form validation
 function isUpdateInvalid(rsp, formData) {

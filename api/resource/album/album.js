@@ -1,5 +1,3 @@
-/*jshint esversion: 8 */
-
 const main = require('../../inc/main.js');
 const resourceName = 'album';
 const template = {};

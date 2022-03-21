@@ -1,5 +1,3 @@
-/*jshint esversion: 8 */
-
 const fs = require("fs");
 const util = require('util');
 const crypto = require("crypto");
@@ -96,7 +94,7 @@ resourceData.addUser = function (formData) {
     return [id, salt];
 };
 
-resourceData.updateUser = function (id, formData, moderator) {
+resourceData.updateUser = function (id, formData) {
     data.user[id].email = formData.email;
     data.user[id].role = formData.role;
     data.user[id].location = formData.location;
@@ -156,7 +154,7 @@ resourceData.resetPassword = function (id) {
 resourceData.load = async function (saveLag) {
     var dataPath = `${__dirname}/../../data/data.json`;
     var exampleDataPath = `${__dirname}/../../data/example.data.json`;
-    var strData = await readFile(dataPath, 'utf8').catch(function (e) {
+    var strData = await readFile(dataPath, 'utf8').catch(function () {
         console.log("No data.json found. Creating from example.data.json");
     });
     if (!strData) {
