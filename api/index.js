@@ -559,7 +559,7 @@ function rspPost(req, rsp, body) {
     }
 
     if (path.path === `/api/venue`) {
-        return venue.create(rsp, body, data, resourceData.save);
+        return venue.create(req, rsp, body, data, resourceData.save);
     }
 
     if (path.path === `/api/song`) {
