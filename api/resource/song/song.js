@@ -1,4 +1,4 @@
-/*jshint esversion: 6 */
+/*jshint esversion: 8 */
 
 const main = require('../../inc/main.js');
 
@@ -29,7 +29,7 @@ function singleData(db, id) {
     return Object.assign({"resourceName": resourceName}, db[resourceName][id]);
 }
 
-function listData(db, req) {
+function listData(db) {
     return main.objToArray(db[resourceName]).sort(main.sortByDateDesc);
 }
 

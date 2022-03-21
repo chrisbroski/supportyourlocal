@@ -12,7 +12,7 @@
 {{#loggedIn}}
 <section>
 <h2>Create New {{resourceName}}</h2>
-<form method="POST" action="/api/{{resourceName}}/">
+<form method="POST" action="{{API_DIR}}/{{resourceName}}/">
 
 <p><label>Name</label>*<br>
     <input type="text" name="name" autofocus="autofocus" required="required">
@@ -54,7 +54,7 @@
 
 <section>
 {{#song}}
-<h4><a href="/api/{{resourceName}}/{{id}}">{{name}}</a></h4>
+<h4><a href="{{API_DIR}}/{{resourceName}}/{{id}}">{{name}}</a></h4>
 {{/song}}
 </section>
 

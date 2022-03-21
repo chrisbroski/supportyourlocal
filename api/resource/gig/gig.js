@@ -1,10 +1,10 @@
-/*jshint esversion: 6 */
+/*jshint esversion: 8 */
 
 const main = require('../../inc/main.js');
 var url = require('url');
 
 const resourceName = 'gig';
-const template = {}
+const template = {};
 
 function updateResource(id, formData, db, save) {
     db[resourceName][id].title = formData.title;
@@ -133,7 +133,7 @@ this.create = function (req, rsp, formData, db, save) {
     rsp.end(main.renderPage(req, null, returnData, db));
 };
 
-this.update = function (req, rsp, id, formData, db) {
+this.update = function (req, rsp, id, formData, db, save) {
     if (!db[resourceName][id]) {
         return main.notFound(rsp, req.url, 'PUT', req, db);
     }

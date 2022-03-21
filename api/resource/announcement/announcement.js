@@ -1,4 +1,4 @@
-/*jshint esversion: 6 */
+/*jshint esversion: 8 */
 
 const main = require('../../inc/main.js');
 var url = require('url');
@@ -26,7 +26,6 @@ function songList(db, id) {
 }
 
 function single(db, id) {
-    var embedSong = {};
     var resourceData = Object.assign({
         "id": id,
         "resourceName": resourceName,

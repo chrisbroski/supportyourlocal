@@ -1,4 +1,5 @@
-/*jshint esversion: 6 */
+/* jshint esversion: 6 */
+/* jshint unused: false */
 var aero = new Aerophane();
 
 // aero.createMenu(document.querySelector("#select-admin"));

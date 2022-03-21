@@ -1,8 +1,7 @@
-/*jshint esversion: 6 */
+/*jshint esversion: 8 */
 
 // Custom libs
 const main = require('../inc/main.js');
-const resourceData = require('../inc/resource-data.js');
 
 const resourceName = 'home';
 const template = {};
@@ -10,7 +9,7 @@ const template = {};
 function isUpdateInvalid(body) {
     console.log('isUpdateInvalid');
     var msg = [];
-    return false;
+    // return false;
     if (!body.name) {
         msg.push('Band name is required.');
     }
@@ -28,7 +27,7 @@ function updateResource(body, db, save) {
     db[resourceName].color1 = body.color1;
     db[resourceName].color2 = body.color2;
     db[resourceName].bio = body.bio;
-    db[resourceName]["contact"] = body["contact"];
+    db[resourceName].contact = body.contact;
 
     if (!db[resourceName].social) {
         db[resourceName].social = {};
@@ -108,7 +107,7 @@ ${socials.join("\n")}
     rsp.end(`${header}
 ${nav}
 `);
-}
+};
 
 this.getCss = function (req, rsp, data, isCss) {
     rsp.setHeader('Cache-Control', 'max-age=0,no-cache,no-store,post-check=0,pre-check=0');
@@ -118,7 +117,7 @@ this.getCss = function (req, rsp, data, isCss) {
         return;
     }
     return main.returnJson(rsp, data[resourceName]);
-}
+};
 
 this.get = function (req, rsp, db) {
     rsp.setHeader('Cache-Control', 'max-age=0,no-cache,no-store,post-check=0,pre-check=0');

@@ -1,4 +1,4 @@
-/*jshint esversion: 6 */
+/*jshint esversion: 8 */
 
 const main = require('../../inc/main.js');
 const resourceName = 'album';
@@ -14,7 +14,7 @@ function single(db, id) {
     return resourceData;
 }
 
-function list(db, isMod) {
+function list(db) {
     var resourceData = main.objToArray(db[resourceName]).sort(main.sortByName);
 
     return {
@@ -28,7 +28,7 @@ function singleData(db, id) {
     return Object.assign({"resourceName": resourceName}, db[resourceName][id]);
 }
 
-function listData(db, req) {
+function listData(db) {
     return main.objToArray(db[resourceName]).sort(main.sortByName);
 }
 

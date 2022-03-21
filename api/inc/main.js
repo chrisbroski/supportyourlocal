@@ -126,7 +126,7 @@ this.extractSpotifyTrackId = extractSpotifyTrackId;
 function createResource(formData, db, save, resourceName, updateResource) {
     var id = makeId();
     db[resourceName][id] = {};
-    updateResource(id, formData, db, save)
+    updateResource(id, formData, db, save);
     return id;
 }
 this.createResource = createResource;
@@ -208,7 +208,7 @@ function getUserIdByEmail(email, users) {
 }
 this.getUserIdByEmail = getUserIdByEmail;
 
-function renderPage(req, pageTemplate, d, db) {
+function renderPage(req, pageTemplate, d, db, API_DIR) {
     var userData = getAuthUserData(req, db.user);
     var loggedIn = true;
     pageTemplate = pageTemplate || TEMPLATE.generic;
@@ -236,9 +236,10 @@ function renderPage(req, pageTemplate, d, db) {
         "isMod": (userData.userType === "administrator"),
         "userid": userData.userid,
         "homeName": db.home.name,
-        "resourceNameCap": toTitleCase(d.resourceName)
+        "resourceNameCap": toTitleCase(d.resourceName),
+        "API_DIR": API_DIR
     }, d));
-};
+}
 this.renderPage = renderPage;
 
 this.returnJson = function (rsp, jsonData, created) {
