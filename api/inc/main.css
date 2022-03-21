@@ -5,6 +5,10 @@ html {padding: 0; font-family: droid sans, sans-serif; }
 body {margin: 0; padding-left: 240px; padding-bottom: 200px; }
 a {color: rgb(var(--color1))}
 a:visited {rgba(var(--color1), 0.9); }
+pre {
+    max-width: 580px;
+    white-space: pre-wrap;
+}
 body > header {
     padding: 12px;
     position: fixed;

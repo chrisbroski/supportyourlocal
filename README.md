@@ -62,10 +62,6 @@ Initial setup (create user and password with a token, direct to band data)
 
 Choose fonts
 
-Add the subdirectory environment variable back.
-
 Image upload and selection
-
-Test non-logged in view of API
 
 Albums (Need for B&B to adopt framework)
