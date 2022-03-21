@@ -555,7 +555,7 @@ function rspPost(req, rsp, body) {
     }
 
     if (path.path === `/api/gig`) {
-        return gig.create(rsp, body, data, resourceData.save);
+        return gig.create(req, rsp, body, data, resourceData.save);
     }
 
     if (path.path === `/api/venue`) {
