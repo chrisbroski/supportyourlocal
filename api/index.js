@@ -32,6 +32,11 @@ var PORT = 29170;
 if (process.env.PORT) {
     PORT = process.env.PORT;
 }
+var API_DIR = "/api";
+if (process.env.API_DIR) {
+    API_DIR = process.env.API_DIR;
+}
+
 const MAP_KEY = process.env.MAP_KEY;
 const ASSET = {};
 const TEMPLATE = {};
@@ -166,7 +171,7 @@ function authenticate(req, rsp) {
     var cookies, userid, querystring;
     var path = getPath(req.url);
 
-    if (path.pathname === `/api/login`) {
+    if (path.pathname === `${API_DIR}/login`) {
         return true;
     }
 
@@ -230,7 +235,7 @@ function createUser(req, rsp, formData) {
         }
 
         var userid = resourceData.addUser(formData[0]);
-        rsp.writeHead(201, {'Content-Type': 'text/plain', "Location": `/api/user/${userid[0]}`});
+        rsp.writeHead(201, {'Content-Type': 'text/plain', "Location": `${API_DIR}/user/${userid[0]}`});
         rsp.end(`User ${userid[0]} created.`);
         return;
     } else {
@@ -433,18 +438,18 @@ function rspPost(req, rsp, body) {
     var userid, token;
     var returnUrl;
 
-    if (path.pathname === `/api/login`) {
+    if (path.pathname === `${API_DIR}/login`) {
         return login(req, rsp, body);
         // redirect to index, or possibly where they were trying to go
     }
 
-    if (path.pathname === `/api/password`) {
+    if (path.pathname === `${API_DIR}/password`) {
         var authData = main.getAuthUserData(req, data.user);
         updatePassword(authData.userid, req, rsp, body);
         return;
     }
 
-    if (path.pathname === `/api/reset-password`) {
+    if (path.pathname === `${API_DIR}/reset-password`) {
         userid = body.userid;
         if (!userid) {
             rsp.writeHead(400, {'Content-Type': 'text/plain'});
@@ -484,7 +489,7 @@ function rspPost(req, rsp, body) {
         return;
     }
 
-    if (path.pathname === `/api/set-password`) {
+    if (path.pathname === `${API_DIR}/set-password`) {
         if (!body.email) {
             rsp.writeHead(400, {'Content-Type': 'text/plain'});
             rsp.end(`Email is required.`);
@@ -501,7 +506,7 @@ function rspPost(req, rsp, body) {
                 rsp.writeHead(404, {'Content-Type': 'text/plain'});
                 rsp.end(`User ${body.email} not found.`);
             } else {
-                rsp.writeHead(303, {"Location": `https://${req.headers.host}/api/password/?msg=Email%20${body.email}%20not%20found.`});
+                rsp.writeHead(303, {"Location": `https://${req.headers.host}${API_DIR}/password/?msg=Email%20${body.email}%20not%20found.`});
                 rsp.end();
             }
             return;
@@ -512,7 +517,7 @@ function rspPost(req, rsp, body) {
                 rsp.end(`Password for ${body.email} has already been set.`);
             } else {
                 rsp.writeHead(303, {
-                    "Location": `https://${req.headers.host}/api/password/?msg=Password for ${body.email} has already been set.`
+                    "Location": `https://${req.headers.host}${API_DIR}/password/?msg=Password for ${body.email} has already been set.`
                 });
                 rsp.end();
             }
@@ -521,7 +526,7 @@ function rspPost(req, rsp, body) {
         return updatePassword(userid, req, rsp, body);
     }
 
-    if (path.pathname === `/api/forgot-password`) {
+    if (path.pathname === `${API_DIR}/forgot-password`) {
         if (!body.email) {
             rsp.writeHead(400, {'Content-Type': 'text/plain'});
             rsp.end('Email is required.');
@@ -554,23 +559,23 @@ function rspPost(req, rsp, body) {
         return;
     }
 
-    if (path.path === `/api/gig`) {
+    if (path.path === `${API_DIR}/gig`) {
         return gig.create(req, rsp, body, data, resourceData.save);
     }
 
-    if (path.path === `/api/venue`) {
+    if (path.path === `${API_DIR}/venue`) {
         return venue.create(req, rsp, body, data, resourceData.save);
     }
 
-    if (path.path === `/api/song`) {
+    if (path.path === `${API_DIR}/song`) {
         return song.create(req, rsp, body, data, resourceData.save);
     }
 
-    if (path.path === `/api/announcement`) {
+    if (path.path === `${API_DIR}/announcement`) {
         return announcement.create(req, rsp, body, data, resourceData.save);
     }
 
-    if (path.path === `/api/user`) {
+    if (path.path === `${API_DIR}/user`) {
         return createUser(req, rsp, body, data, resourceData.save);
     }
 
@@ -582,36 +587,36 @@ function rspPut(req, rsp, body) {
     var moderator = isMod(req);
     var querystring = url.parse(req.url, true).query;
 
-    if (path.pathname === `/api/home`) {
+    if (path.pathname === `${API_DIR}/home`) {
         return home.update(req, rsp, body, data, resourceData.save);
     }
-    if (path.path === `/api/user`) {
+    if (path.path === `${API_DIR}/user`) {
         if (path.id) {
             updateUser(path.id, rsp, body, moderator);
         }
         return;
     }
-    if (path.path === `/api/gig`) {
+    if (path.path === `${API_DIR}/gig`) {
         return gig.update(req, rsp, path.id, body, data, resourceData.save);
     }
-    if (path.path === `/api/venue`) {
+    if (path.path === `${API_DIR}/venue`) {
         return venue.update(req, rsp, path.id, body, data, resourceData.save);
     }
-    if (path.path === `/api/song`) {
+    if (path.path === `${API_DIR}/song`) {
         return song.update(req, rsp, path.id, body, data, resourceData.save);
     }
-    if (path.path === `/api/announcement`) {
+    if (path.path === `${API_DIR}/announcement`) {
         return announcement.update(req, rsp, path.id, body, data, resourceData.save);
     }
 
-    if (path.path === `/api/password`) {
+    if (path.path === `${API_DIR}/password`) {
         if (path.id) {
             // do validation checks
             return updatePassword(path.id, req, rsp, body);
         }
         return;
     }
-    if (path.path === `/api/password`) {
+    if (path.path === `${API_DIR}/password`) {
         userid = main.getUserIdByEmail(body.email, data.user);
         if (userid) {
             resourceData.setPassword(userid, body);
@@ -640,7 +645,7 @@ function rspDelete(req, rsp) {
     //     return;
     // }
 
-    if (path.path === `/api/user`) {
+    if (path.path === `${API_DIR}/user`) {
         if (!data.user[path.id]) {
             rsp.writeHead(404, {'Content-Type': 'text/plain'});
             rsp.end(`Invalid User DELETE URL: ${req.url}`);
@@ -653,23 +658,23 @@ function rspDelete(req, rsp) {
         return;
     }
 
-    if (path.path === `/api/venue`) {
+    if (path.path === `${API_DIR}/venue`) {
         return venue.remove(req, rsp, path.id, data, resourceData.save);
     }
 
-    if (path.path === `/api/song`) {
+    if (path.path === `${API_DIR}/song`) {
         return song.remove(req, rsp, path.id, data, resourceData.save);
     }
 
-    if (path.path === `/api/announcement`) {
+    if (path.path === `${API_DIR}/announcement`) {
         return announcement.remove(req, rsp, path.id, data, resourceData.save);
     }
 
-    if (path.path === `/api/gig`) {
+    if (path.path === `${API_DIR}/gig`) {
         return gig.remove(req, rsp, path.id, data, resourceData.save);
     }
 
-    if (path.path === `/api/password`) {
+    if (path.path === `${API_DIR}/password`) {
         if (!isMod(req)) {
             rsp.writeHead(403, {'Content-Type': 'text/plain'});
             rsp.end('Only moderators can reset passwords.');
@@ -678,7 +683,7 @@ function rspDelete(req, rsp) {
 
         token = resourceData.resetPassword(path.id);
 
-        returnUrl = `https://${req.headers.host}/api/password/${path.id}?token=${token}`;
+        returnUrl = `https://${req.headers.host}${API_DIR}/password/${path.id}?token=${token}`;
         // sendResetEmail(returnUrl, rsp, data.user[path.id].email, 'reset-password');
         rsp.writeHead(200, {'Content-Type': 'text/plain'}).end(`Complete reset at: ${returnUrl}`);
         return;
@@ -693,34 +698,34 @@ function rspGet(req, rsp) {
     var querystring = url.parse(req.url, true).query;
     var cookies;
 
-    if (path.pathname === `/api/favicon.ico`) {
+    if (path.pathname === `${API_DIR}/favicon.ico`) {
         rsp.setHeader('Cache-Control', 'max-age=31536000,public');
         rsp.writeHead(200, {'Content-Type': 'image/png'});
         rsp.end(ASSET.favicon);
         return;
-    } else if (path.pathname === `/api/main.css`) {
+    } else if (path.pathname === `${API_DIR}/main.css`) {
         rsp.setHeader('Cache-Control', 'max-age=31536000,public');
         rsp.writeHead(200, {'Content-Type': 'text/css'});
         rsp.end(ASSET.mainCss);
         return;
-    } else if (path.pathname === `/api/custom.css`) {
+    } else if (path.pathname === `${API_DIR}/custom.css`) {
         return home.getCss(req, rsp, data, true);
-    } else if (path.pathname === `/api/header.pht`) {
+    } else if (path.pathname === `${API_DIR}/header.pht`) {
         return home.getHeader(req, rsp, data);
     } else if (path.pathname === `/ajax-tool`) {
         rsp.setHeader('Cache-Control', 'max-age=31536000,public');
         rsp.writeHead(200, {'Content-Type': 'text/html'});
         rsp.end(ASSET.ajaxTool);
         return;
-    } else if (path.pathname === `/api/login`) {
+    } else if (path.pathname === `${API_DIR}/login`) {
         rsp.writeHead(200, {'Content-Type': 'text/html'});
         rsp.end(main.renderPage(req, TEMPLATE.login, {}, data));
         return;
-    } else if (path.pathname === `/api/`) {
+    } else if (path.pathname === `${API_DIR}/`) {
         return homePage(req, rsp);
-    } else if (path.pathname === `/api/home` || path.pathname === `/api/home/`) {
+    } else if (path.pathname === `${API_DIR}/home` || path.pathname === `${API_DIR}/home/`) {
         return home.get(req, rsp, data);
-    } else if (path.pathname === `/api/logout`) {
+    } else if (path.pathname === `${API_DIR}/logout`) {
         cookies = main.parseCookie(req.headers.cookie);
         // updateSessionToken(cookies.session, cookies.user, rsp, true);
         // rsp.writeHead(403, {'WWW-Authenticate': 'Basic', 'Content-Type': 'text/plain'});
@@ -731,7 +736,7 @@ function rspGet(req, rsp) {
         rsp.writeHead(200, {'Content-Type': 'text/plain'});
         rsp.end('Logged out');
         return;
-    } else if (path.path === `/api/data`) {
+    } else if (path.path === `${API_DIR}/data`) {
         rsp.setHeader('Cache-Control', 'max-age=0,no-cache,no-store,post-check=0,pre-check=0');
         rsp.writeHead(200, {'Content-Type': 'application/json'});
         if (path.id) {
@@ -745,20 +750,20 @@ function rspGet(req, rsp) {
             rsp.end(JSON.stringify(data));
         }
         return;
-    } else if (path.path === `/api/gig`) {
+    } else if (path.path === `${API_DIR}/gig`) {
         // rsp.setHeader('Cache-Control', 'max-age=0,no-cache,no-store,post-check=0,pre-check=0');
         return gig.get(req, rsp, path.id, data, MAP_KEY);
-    } else if (path.path === `/api/venue`) {
+    } else if (path.path === `${API_DIR}/venue`) {
         return venue.get(req, rsp, path.id, data);
-    } else if (path.path === `/api/song`) {
+    } else if (path.path === `${API_DIR}/song`) {
         return song.get(req, rsp, path.id, data);
-    } else if (path.path === `/api/announcement`) {
+    } else if (path.path === `${API_DIR}/announcement`) {
         return announcement.get(req, rsp, path.id, data);
-    } else if (path.path === `/api/user`) {
+    } else if (path.path === `${API_DIR}/user`) {
         return user.get(req, rsp, path.id, data);
-    } else if (path.pathname === `/api/delete`) {
+    } else if (path.pathname === `${API_DIR}/delete`) {
         return getDelete(req, rsp, data);
-    } else if (path.pathname === `/api/password`) {
+    } else if (path.pathname === `${API_DIR}/password`) {
         // console.log("/password");
         if (!authenticate(req, rsp)) {
             return;
@@ -791,7 +796,7 @@ function rspGet(req, rsp) {
         // ), data);
         rsp.end(main.renderPage(req, TEMPLATE.password, main.getAuthUserData(req, data.user), data));
         return;
-    } else if (path.pathname === `/api/forgot-password`) {
+    } else if (path.pathname === `${API_DIR}/forgot-password`) {
         if (authenticate(req, rsp, true)) {
             rsp.writeHead(400, {'Content-Type': 'text/plain'});
             rsp.end(`You are already logged in.`);
@@ -801,7 +806,7 @@ function rspGet(req, rsp) {
         rsp.writeHead(200, {'Content-Type': 'text/html'});
         rsp.end(main.renderPage(req, TEMPLATE.forgotPassword, views.forgotPassword(querystring), data));
         return;
-    } else if (path.pathname === `/api/auth`) {
+    } else if (path.pathname === `${API_DIR}/auth`) {
         cookies = main.parseCookie(req.headers.cookie);
         if (cookies.user) {
             authUserData = data.user[cookies.user];
@@ -949,7 +954,7 @@ async function loadData() {
 
 function startHTTP() {
     http.createServer(collectReqBody).listen(PORT, function () {
-        console.log(`Server started on :${PORT}/api`);
+        console.log(`Server started on :${PORT}${API_DIR}`);
     });
 }
 
