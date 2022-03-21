@@ -168,3 +168,9 @@ function moreButton(link, text) {
     more.textContent = text;
     return more;
 }
+
+function setTitle() {
+    getJsonData("/api/home/", function (info) {
+        document.title = `${document.title} - ${info.name}`;
+    });
+}
