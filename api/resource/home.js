@@ -4,10 +4,9 @@ const main = require('../inc/main.js');
 const resourceName = 'home';
 const template = {};
 
-function isUpdateInvalid(body) {
-    console.log('isUpdateInvalid');
+function isUpdateInvalid(rsp, body) {
     var msg = [];
-    // return false;
+
     if (!body.name) {
         msg.push('Band name is required.');
     }
@@ -17,7 +16,8 @@ function isUpdateInvalid(body) {
     if (!body.color2) {
         msg.push('Secondary color is required.');
     }
-    return msg;
+    // return msg;
+    return main.invalidMsg(rsp, msg);
 }
 
 function updateResource(body, db, save) {
@@ -39,14 +39,14 @@ function updateResource(body, db, save) {
     save();
 }
 
-this.update = function (req, rsp, formData, db, save) {
+this.update = function (req, rsp, formData, db, save, API_DIR) {
     if (isUpdateInvalid(rsp, formData)) {
         return;
     }
 
     updateResource(formData, db, save);
 
-    var returnData = main.responseData("", resourceName, db, "Updated");
+    var returnData = main.responseData("", resourceName, db, "Updated", API_DIR);
 
     if (req.headers.accept === 'application/json') {
         return main.returnJson(rsp, returnData);
@@ -54,7 +54,7 @@ this.update = function (req, rsp, formData, db, save) {
 
     returnData.back = req.headers.referer;
     rsp.writeHead(200, {'Content-Type': 'text/html'});
-    rsp.end(main.renderPage(req, null, returnData, db));
+    rsp.end(main.renderPage(req, null, returnData, db, API_DIR));
 };
 
 function getCustomCSS(home) {
@@ -117,13 +117,13 @@ this.getCss = function (req, rsp, data, isCss) {
     return main.returnJson(rsp, data[resourceName]);
 };
 
-this.get = function (req, rsp, db) {
+this.get = function (req, rsp, db, API_DIR) {
     rsp.setHeader('Cache-Control', 'max-age=0,no-cache,no-store,post-check=0,pre-check=0');
     if (req.headers.accept === 'application/json') {
         return main.returnJson(rsp, db.home);
     }
     rsp.writeHead(200, {'Content-Type': 'text/html'});
-    rsp.end(main.renderPage(req, template.site, db.home, db));
+    rsp.end(main.renderPage(req, template.site, db.home, db, API_DIR));
 };
 
 async function loadData() {

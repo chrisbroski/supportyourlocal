@@ -69,7 +69,7 @@ pre {padding: 4px; background: #ddd; }
 {{#isMod}}
 <section>
 <h2>Create User</h2>
-<form method="POST" action="/api/user/" enctype="application/x-www-form-urlencoded">
+<form method="POST" action="{{API_DIR}}/user/" enctype="application/x-www-form-urlencoded">
 <p><label>Honorific</label><br>
     <input type="text" name="prefix" autofocus="autofocus">
 <p><label>*First Name</label><br>
@@ -115,7 +115,7 @@ pre {padding: 4px; background: #ddd; }
 
 {{#users}}
 <section>
-<h2><a href="/api/user/{{id}}">{{prefix}} {{firstName}} {{surname}}</a></h2>
+<h2><a href="{{API_DIR}}/user/{{id}}">{{prefix}} {{firstName}} {{surname}}</a></h2>
 {{#titleHeader}}
 <h3>{{title}}{{comma}}{{company}}
 </h3>

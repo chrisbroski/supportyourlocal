@@ -129,16 +129,16 @@ function createResource(formData, db, save, resourceName, updateResource) {
 }
 this.createResource = createResource;
 
-function responseData(id, resourceName, db, action, msg) {
+function responseData(id, resourceName, db, action, API_DIR, msg) {
     var responseJson = {
         "id": id,
         "data": db[resourceName][id],
-        "link": `/api/${resourceName}/${id}`,
+        "link": `${API_DIR}/${resourceName}/${id}`,
         "title": `${action} ${toTitleCase(resourceName)}`
     };
 
     if (action === "Deleted") {
-        responseJson.link = `/api/${resourceName}/`;
+        responseJson.link = `${API_DIR}/${resourceName}/`;
     }
 
     if (msg && msg.length > 0) {
@@ -220,11 +220,13 @@ function renderPage(req, pageTemplate, d, db, API_DIR) {
         "auth": userData,
         "site": db.site,
         "server": req.headers.host,
-        "loggedIn": loggedIn
+        "loggedIn": loggedIn,
+        "API_DIR": API_DIR
     });
 
     var head = mustache.render(TEMPLATE.head, {
-        "cssVersion": "12"
+        "cssVersion": "12",
+        "API_DIR": API_DIR
     });
 
     return mustache.render(pageTemplate, Object.assign({

@@ -329,7 +329,7 @@ function getPath(pathname) {
 
 function homePage(req, rsp) {
     rsp.writeHead(200, {'Content-Type': 'text/html'});
-    rsp.end(main.renderPage(req, TEMPLATE.home, data.home, data));
+    rsp.end(main.renderPage(req, TEMPLATE.home, data.home, data, API_DIR));
     return;
 }
 
@@ -428,7 +428,7 @@ function getDelete(req, rsp) {
         "back": req.headers.referer
     };
     rsp.writeHead(200, {'Content-Type': 'text/html'});
-    rsp.end(main.renderPage(req, TEMPLATE.delete, deleteData, data));
+    rsp.end(main.renderPage(req, TEMPLATE.delete, deleteData, data, API_DIR));
 }
 
 function rspPost(req, rsp, body) {
@@ -558,19 +558,19 @@ function rspPost(req, rsp, body) {
     }
 
     if (path.path === `${API_DIR}/gig`) {
-        return gig.create(req, rsp, body, data, resourceData.save);
+        return gig.create(req, rsp, body, data, resourceData.save, API_DIR);
     }
 
     if (path.path === `${API_DIR}/venue`) {
-        return venue.create(req, rsp, body, data, resourceData.save);
+        return venue.create(req, rsp, body, data, resourceData.save, API_DIR);
     }
 
     if (path.path === `${API_DIR}/song`) {
-        return song.create(req, rsp, body, data, resourceData.save);
+        return song.create(req, rsp, body, data, resourceData.save, API_DIR);
     }
 
     if (path.path === `${API_DIR}/announcement`) {
-        return announcement.create(req, rsp, body, data, resourceData.save);
+        return announcement.create(req, rsp, body, data, resourceData.save, API_DIR);
     }
 
     if (path.path === `${API_DIR}/user`) {
@@ -587,7 +587,7 @@ function rspPut(req, rsp, body) {
     // var querystring = url.parse(req.url, true).query;
 
     if (path.pathname === `${API_DIR}/home`) {
-        return home.update(req, rsp, body, data, resourceData.save);
+        return home.update(req, rsp, body, data, resourceData.save, API_DIR);
     }
     if (path.path === `${API_DIR}/user`) {
         if (path.id) {
@@ -596,16 +596,16 @@ function rspPut(req, rsp, body) {
         return;
     }
     if (path.path === `${API_DIR}/gig`) {
-        return gig.update(req, rsp, path.id, body, data, resourceData.save);
+        return gig.update(req, rsp, path.id, body, data, resourceData.save, API_DIR);
     }
     if (path.path === `${API_DIR}/venue`) {
-        return venue.update(req, rsp, path.id, body, data, resourceData.save);
+        return venue.update(req, rsp, path.id, body, data, resourceData.save, API_DIR);
     }
     if (path.path === `${API_DIR}/song`) {
-        return song.update(req, rsp, path.id, body, data, resourceData.save);
+        return song.update(req, rsp, path.id, body, data, resourceData.save, API_DIR);
     }
     if (path.path === `${API_DIR}/announcement`) {
-        return announcement.update(req, rsp, path.id, body, data, resourceData.save);
+        return announcement.update(req, rsp, path.id, body, data, resourceData.save, API_DIR);
     }
 
     if (path.path === `${API_DIR}/password`) {
@@ -658,19 +658,19 @@ function rspDelete(req, rsp) {
     }
 
     if (path.path === `${API_DIR}/venue`) {
-        return venue.remove(req, rsp, path.id, data, resourceData.save);
+        return venue.remove(req, rsp, path.id, data, resourceData.save, API_DIR);
     }
 
     if (path.path === `${API_DIR}/song`) {
-        return song.remove(req, rsp, path.id, data, resourceData.save);
+        return song.remove(req, rsp, path.id, data, resourceData.save, API_DIR);
     }
 
     if (path.path === `${API_DIR}/announcement`) {
-        return announcement.remove(req, rsp, path.id, data, resourceData.save);
+        return announcement.remove(req, rsp, path.id, data, resourceData.save, API_DIR);
     }
 
     if (path.path === `${API_DIR}/gig`) {
-        return gig.remove(req, rsp, path.id, data, resourceData.save);
+        return gig.remove(req, rsp, path.id, data, resourceData.save, API_DIR);
     }
 
     if (path.path === `${API_DIR}/password`) {
@@ -716,14 +716,21 @@ function rspGet(req, rsp) {
         rsp.writeHead(200, {'Content-Type': 'text/html'});
         rsp.end(ASSET.ajaxTool);
         return;
+    } else if (path.pathname === `${API_DIR}/tests`) {
+        // rsp.setHeader('Cache-Control', 'max-age=31536000,public');
+        rsp.writeHead(200, {'Content-Type': 'text/html'});
+        // rsp.end(ASSET.ajaxTool);
+        rsp.end(main.renderPage(req, TEMPLATE.tests, {}, data, API_DIR));
+        return;
+    //TEMPLATE.tests
     } else if (path.pathname === `${API_DIR}/login`) {
         rsp.writeHead(200, {'Content-Type': 'text/html'});
-        rsp.end(main.renderPage(req, TEMPLATE.login, {}, data));
+        rsp.end(main.renderPage(req, TEMPLATE.login, {}, data, API_DIR));
         return;
     } else if (path.pathname === `${API_DIR}/`) {
         return homePage(req, rsp);
     } else if (path.pathname === `${API_DIR}/home` || path.pathname === `${API_DIR}/home/`) {
-        return home.get(req, rsp, data);
+        return home.get(req, rsp, data, API_DIR);
     } else if (path.pathname === `${API_DIR}/logout`) {
         cookies = main.parseCookie(req.headers.cookie);
         // updateSessionToken(cookies.session, cookies.user, rsp, true);
@@ -751,17 +758,17 @@ function rspGet(req, rsp) {
         return;
     } else if (path.path === `${API_DIR}/gig`) {
         // rsp.setHeader('Cache-Control', 'max-age=0,no-cache,no-store,post-check=0,pre-check=0');
-        return gig.get(req, rsp, path.id, data, MAP_KEY);
+        return gig.get(req, rsp, path.id, data, API_DIR, MAP_KEY);
     } else if (path.path === `${API_DIR}/venue`) {
-        return venue.get(req, rsp, path.id, data);
+        return venue.get(req, rsp, path.id, data, API_DIR);
     } else if (path.path === `${API_DIR}/song`) {
-        return song.get(req, rsp, path.id, data);
+        return song.get(req, rsp, path.id, data, API_DIR);
     } else if (path.path === `${API_DIR}/announcement`) {
-        return announcement.get(req, rsp, path.id, data);
+        return announcement.get(req, rsp, path.id, data, API_DIR);
     } else if (path.path === `${API_DIR}/user`) {
-        return user.get(req, rsp, path.id, data);
+        return user.get(req, rsp, path.id, data, API_DIR);
     } else if (path.pathname === `${API_DIR}/delete`) {
-        return getDelete(req, rsp, data);
+        return getDelete(req, rsp, data, API_DIR);
     } else if (path.pathname === `${API_DIR}/password`) {
         // console.log("/password");
         if (!authenticate(req, rsp)) {
@@ -793,7 +800,7 @@ function rspGet(req, rsp) {
         rsp.writeHead(200, {'Content-Type': 'text/html'});
         // rsp.end(main.renderPage(req, TEMPLATE.password, main.getAuthUserData(req, data.user), querystring
         // ), data);
-        rsp.end(main.renderPage(req, TEMPLATE.password, main.getAuthUserData(req, data.user), data));
+        rsp.end(main.renderPage(req, TEMPLATE.password, main.getAuthUserData(req, data.user), data, API_DIR));
         return;
     } else if (path.pathname === `${API_DIR}/forgot-password`) {
         if (authenticate(req, rsp, true)) {
@@ -944,6 +951,7 @@ async function loadData() {
     ASSET.ajaxTool = await readFile(`${__dirname}/ajax-tool.html`, 'utf8');
 
     TEMPLATE.home = await readFile(`${__dirname}/index.html.mustache`, 'utf8');
+    TEMPLATE.tests = await readFile(`${__dirname}/tests.html.mustache`, 'utf8');
     TEMPLATE.delete = await readFile(`${__dirname}/inc/delete.html.mustache`, 'utf8');
     TEMPLATE.login = await readFile(`${__dirname}/resource/auth/login.html.mustache`, 'utf8');
     TEMPLATE.user = await readFile(`${__dirname}/resource/user/user.html.mustache`, 'utf8');

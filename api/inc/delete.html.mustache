@@ -12,7 +12,7 @@
 <section>
     <p>Are you sure you want to delete {{resourceName}} id <var>{{id}}</var>?
     <p>It will be destroyed permanently.
-    <p><form method="POST" action="/api/{{resourceName}}/{{id}}">
+    <p><form method="POST" action="{{API_DIR}}/{{resourceName}}/{{id}}">
     <input type="hidden" name="method" value="DELETE">
     <p><button>Yes, Delete {{resourceName}}</button>
     <p><a href="{{back}}" class="button">No, Cancel</a>

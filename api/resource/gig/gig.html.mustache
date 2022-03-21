@@ -11,7 +11,7 @@
 
 {{#loggedIn}}
 <section>
-<form method="POST" action="/api/{{resourceName}}/{{id}}">
+<form method="POST" action="{{API_DIR}}/{{resourceName}}/{{id}}">
 <input type="hidden" name="method" value="PUT">
 
 <p><label>Date</label>*<br>
@@ -41,7 +41,7 @@
 </section>
 
 <section>
-<p><a class="button" href="/api/delete?resource={{resourceName}}&id={{id}}">Delete {{resourceName}}</a></p>
+<p><a class="button" href="{{API_DIR}}/delete?resource={{resourceName}}&id={{id}}">Delete {{resourceName}}</a></p>
 </section>
 {{/loggedIn}}
 
@@ -51,7 +51,7 @@
 <h3>{{date}}</h3>
 <p>{{startTime}}
 <p>{{durationH}} hours, {{durationM}} minutes
-<p><a href="/api/venue/{{venue}}">{{venueName}}</a>
+<p><a href="{{API_DIR}}/venue/{{venue}}">{{venueName}}</a>
 <pre>{{desc}}</pre>
 </section>
 {{/loggedIn}}

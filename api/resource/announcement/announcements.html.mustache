@@ -12,7 +12,7 @@
 {{#loggedIn}}
 <section>
 <h2>Create New {{resourceName}}</h2>
-<form method="POST" action="/api/{{resourceName}}/">
+<form method="POST" action="{{API_DIR}}/{{resourceName}}/">
 
 <p><label>Date</label>*<br>
     <input type="date" name="date" value="{{today}}" autofocus="autofocus" required="required">
@@ -38,7 +38,7 @@
 
 <section>
 {{#announcement}}
-<h4><a href="/api/{{resourceName}}/{{id}}">{{formattedDate}}{{#pinned}}*{{/pinned}}
+<h4><a href="{{API_DIR}}/{{resourceName}}/{{id}}">{{formattedDate}}{{#pinned}}*{{/pinned}}
     {{shortCopy}}</a>
 </h4>
 {{/announcement}}

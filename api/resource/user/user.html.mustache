@@ -11,7 +11,7 @@
 
 <section>
 {{#canedit}}
-<form method="POST" action="/api/user/{{id}}" enctype="application/x-www-form-urlencoded">
+<form method="POST" action="{{API_DIR}}/user/{{id}}" enctype="application/x-www-form-urlencoded">
 <input type="hidden" name="method" value="PUT">
 
 <p><label>Honorific</label><br>
@@ -71,13 +71,13 @@
 <section>
 <h3>Reset Password</h3>
 {{#token}}
-<p>Reset Link: <a href="/api/password/{{id}}?token={{token}}">/api/password/{{id}}?token={{token}}</a>
-<form method="POST" action="/api/resend-reg/{{id}}">
+<p>Reset Link: <a href="{{API_DIR}}/password/{{id}}?token={{token}}">{{API_DIR}}/password/{{id}}?token={{token}}</a>
+<form method="POST" action="{{API_DIR}}/resend-reg/{{id}}">
 <p><button>Resend Register Email</button>
 </form>
 {{/token}}
 {{^token}}
-<form method="POST" action="/api/password/{{id}}">
+<form method="POST" action="{{API_DIR}}/password/{{id}}">
 <input type="hidden" name="method" value="DELETE">
 <p><button>Reset Password</button></p>
 </form>
@@ -94,7 +94,7 @@
 </section>
 
 <section>
-<form method="POST" action="/api/chatenable/{{id}}">
+<form method="POST" action="{{API_DIR}}/chatenable/{{id}}">
 <p><label><input type="checkbox" name="disableChat" value="1"{{{chatDisabledCheck}}}> Chat Disabled</label>
 <p><button>Update Chat Ability</button></p>
 </form>
@@ -103,7 +103,7 @@
 
 <section>
 <h3>Delete Account</h3>
-<form method="POST" action="/api/user/{{id}}">
+<form method="POST" action="{{API_DIR}}/user/{{id}}">
 <input type="hidden" name="method" value="DELETE">
 <button>Delete Account</button>
 </form>

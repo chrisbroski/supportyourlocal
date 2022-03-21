@@ -11,7 +11,7 @@
 
 {{#loggedIn}}
 <section>
-<form method="POST" action="/api/{{resourceName}}/{{id}}">
+<form method="POST" action="{{API_DIR}}/{{resourceName}}/{{id}}">
 <input type="hidden" name="method" value="PUT">
 <p><label>Title</label><br>
     <input type="text" name="title" value="{{title}}" autofocus="autofocus">
@@ -46,14 +46,14 @@
 <h3>{{date}}</h3>
 <p>{{startTime}}
 <p>{{durationH}} hours, {{durationM}} minutes
-<p><a href="/api/venue/{{venue}}">{{venueName}}</a>
+<p><a href="{{API_DIR}}/venue/{{venue}}">{{venueName}}</a>
 <pre>{{desc}}</pre>
 </section>
 {{/loggedIn}}
 
 {{#isMod}}
 <section>
-<p><form method="POST" action="/api/{{resourceName}}/{{id}}">
+<p><form method="POST" action="{{API_DIR}}/{{resourceName}}/{{id}}">
 <input type="hidden" name="method" value="DELETE">
 <button>Delete {{resourceName}}</button>
 </form>

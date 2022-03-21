@@ -55,13 +55,13 @@ function isUpdateInvalid(rsp, formData) {
     return main.invalidMsg(rsp, msg);
 }
 
-this.create = function (req, rsp, formData, db, save) {
+this.create = function (req, rsp, formData, db, save, API_DIR) {
     if (isUpdateInvalid(rsp, formData)) {
         return;
     }
 
     var id = main.createResource(formData, db, save, resourceName, updateResource);
-    var returnData = main.responseData(id, resourceName, db, "Created");
+    var returnData = main.responseData(id, resourceName, db, "Created", API_DIR);
 
     if (req.headers.accept === 'application/json') {
         rsp.setHeader("Location", returnData.link);
@@ -70,10 +70,10 @@ this.create = function (req, rsp, formData, db, save) {
 
     returnData.back = req.headers.referer;
     rsp.writeHead(200, {'Content-Type': 'text/html'});
-    rsp.end(main.renderPage(req, null, returnData, db));
+    rsp.end(main.renderPage(req, null, returnData, db, API_DIR));
 };
 
-this.update = function (req, rsp, id, formData, db, save) {
+this.update = function (req, rsp, id, formData, db, save, API_DIR) {
     if (!db[resourceName][id]) {
         return main.notFound(rsp, req.url, 'PUT', req, db);
     }
@@ -82,12 +82,7 @@ this.update = function (req, rsp, id, formData, db, save) {
     }
 
     updateResource(id, formData, db, save);
-    var returnData = {
-        "id": id,
-        "data": db[resourceName][id],
-        "link": `/api/${resourceName}/${id}`,
-        "title": `Update ${resourceName}`
-    };
+    var returnData = main.responseData(id, resourceName, db, "Updated", API_DIR);
 
     if (req.headers.accept === 'application/json') {
         rsp.setHeader("Location", returnData.link);
@@ -96,10 +91,10 @@ this.update = function (req, rsp, id, formData, db, save) {
 
     returnData.back = req.headers.referer;
     rsp.writeHead(200, {'Content-Type': 'text/html'});
-    rsp.end(main.renderPage(req, null, returnData, db));
+    rsp.end(main.renderPage(req, null, returnData, db, API_DIR));
 };
 
-this.remove = function (req, rsp, id, db, save) {
+this.remove = function (req, rsp, id, db, save, API_DIR) {
     var name;
     if (!db[resourceName][id]) {
         return main.notFound(rsp, req.url, 'DELETE', req, db);
@@ -109,22 +104,17 @@ this.remove = function (req, rsp, id, db, save) {
     delete db[resourceName][id];
     save();
 
-    var returnData = {
-        "id": id,
-        "link": `/api/${resourceName}/`,
-        "title": `Delete ${resourceName}`,
-        "msg": [`${resourceName} '${name}' deleted.`]
-    };
+    var returnData = main.responseData(id, resourceName, db, "Deleted", API_DIR, [`${resourceName} '${name}' deleted.`]);
 
     if (req.headers.accept === 'application/json') {
         return main.returnJson(rsp, returnData);
     }
 
     rsp.writeHead(200, {'Content-Type': 'text/html'});
-    rsp.end(main.renderPage(req, null, returnData, db));
+    rsp.end(main.renderPage(req, null, returnData, db, API_DIR));
 };
 
-this.get = function (req, rsp, id, db) {
+this.get = function (req, rsp, id, db, API_DIR) {
     rsp.setHeader('Cache-Control', 'max-age=0,no-cache,no-store,post-check=0,pre-check=0');
     if (id) {
         if (!db[resourceName][id]) {
@@ -134,13 +124,13 @@ this.get = function (req, rsp, id, db) {
             return main.returnJson(rsp, singleData(db, id));
         }
         rsp.writeHead(200, {'Content-Type': 'text/html'});
-        rsp.end(main.renderPage(req, template.single, single(db, id), db));
+        rsp.end(main.renderPage(req, template.single, single(db, id), db, API_DIR));
     } else {
         if (req.headers.accept === 'application/json') {
             return main.returnJson(rsp, listData(db, req));
         }
         rsp.writeHead(200, {'Content-Type': 'text/html'});
-        rsp.end(main.renderPage(req, template.list, list(db), db));
+        rsp.end(main.renderPage(req, template.list, list(db), db, API_DIR));
     }
 };
 

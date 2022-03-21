@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<title>Band - {{homeName}}</title>
+{{{head}}}
+
+<body id="site-page">
+{{{header}}}
+
+<article>
+<h1>{{name}}</h1>
+
+<section>
+<h2>Results</h2>
+</section>
+</article>
+
+<script>
+function getJsonData(url, verb, bodyData) {
+    var xhr = new XMLHttpRequest();
+    xhr.open(verb, url, false);
+    xhr.setRequestHeader("Accept", "application/json");
+    xhr.send(bodyData);
+    return xhr;
+}
+
+function testSongs() {
+    var xhr = getJsonData("/api/song/", "POST", "name=Test+Name+6789");
+    console.log(xhr.status);
+    // console.log(xhr.responseData);
+}
+testSongs();
+</script>
