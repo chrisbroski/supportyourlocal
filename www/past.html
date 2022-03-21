@@ -29,13 +29,6 @@
             <img src="/photos/shows.jpg">
         </div>
     </section>
-
-    <!-- <section>
-        <div>
-            <h3>March 26<sup>th</sup>, 2022 - The Proving Grounds (Milford)</h3>
-            <p>Saturday, 6 - 8 PM</p><p>Milford, MI</p>
-        </div>
-    </section> -->
 </article>
 </main>
 
@@ -61,18 +54,15 @@ function showGigs(gigData) {
                 shows.appendChild(section);
             }
             section = document.createElement("section");
+            h2 = document.createElement("h2");
             if (!year) {
+                year = date.getFullYear();
                 if (date.getFullYear() !== thisYear) {
-                    year = date.getFullYear();
-                    h2 = document.createElement("h2");
                     h2.textContent = year;
                     section.appendChild(h2);
-                } else {
-                    year = date.getFullYear();
                 }
             } else {
                 year = date.getFullYear();
-                h2 = document.createElement("h2");
                 h2.textContent = year;
                 section.appendChild(h2);
             }
@@ -91,14 +81,10 @@ function showGigs(gigData) {
         p = document.createElement("span");
         p.textContent = " " + daysOfTheWeek[date.getDay()] + ", " + gigTimes(gig.date, gig.startTime, gig.durationH, gig.durationM) + " ";
 
-        if (gig.venueData.map) {
-            mapLink = document.createElement("a");
-            mapLink.href = gig.venueData.map;
-            mapLink.textContent = `${gig.venueData.city}, ${gig.venueData.state}`;
-            p.appendChild(mapLink);
-        } else {
-            p.appendChild(document.createTextNode(`${gig.venueData.city}, ${gig.venueData.state}`));
-        }
+        mapLink = document.createElement("a");
+        mapLink.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(gig.venueData.name)}%2C+${encodeURIComponent(gig.venueData.city)}+${encodeURIComponent(gig.venueData.state)}}`;
+        mapLink.textContent = `${gig.venueData.city}, ${gig.venueData.state}`;
+        p.appendChild(mapLink);
         h3.appendChild(p);
         section.appendChild(h3);
     });
@@ -106,15 +92,5 @@ function showGigs(gigData) {
     shows.appendChild(section);
 }
 
-function getGigs() {
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", "/api/gig/?range=past");
-    xhr.setRequestHeader("Accept", "application/json");
-    xhr.addEventListener("load", function () {
-        showGigs(JSON.parse(this.responseText));
-    });
-    xhr.send();
-}
-
-getGigs();
+getJsonData("/api/gig/?range=past", showGigs);
 </script>

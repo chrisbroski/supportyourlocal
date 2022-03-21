@@ -1,3 +1,4 @@
+/*jshint esversion: 6 */
 var aero = new Aerophane();
 
 // aero.createMenu(document.querySelector("#select-admin"));
@@ -122,20 +123,48 @@ function gigMapDiv(gig) {
     var iframe = document.createElement("iframe");
 
     iframe.loading = "lazy";
-    iframe.src = `https://www.google.com/maps/embed/v1/place?q=${encodeURIComponent(gig.venueData.name)},${encodeURIComponent(gig.venueData.city)}+${encodeURIComponent(gig.venueData.state)}&key=${gig.venueData.MAP_KEY}`;
+    iframe.src = `https://www.google.com/maps/embed/v1/place?q=${encodeURIComponent(gig.venueData.name)}%2C+${encodeURIComponent(gig.venueData.city)}+${encodeURIComponent(gig.venueData.state)}&key=${gig.venueData.MAP_KEY}`;
     div.appendChild(iframe);
     return div;
 }
 
 function extractSpotifyTrackId(shareLink) {
+    var reQs, val;
     if (!shareLink) {
         return "";
     }
-    var reQs, val;
     reQs = new RegExp("[.*]spotify.com/track/([^?#]*)", "i");
     val = reQs.exec(shareLink);
     if (val) {
         return val[1];
     }
-    return "";
+    return shareLink;
+}
+
+function getJsonData(url, callback) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", url);
+    xhr.setRequestHeader("Accept", "application/json");
+    xhr.addEventListener("load", function () {
+        var jsonData = JSON.parse(this.responseText);
+        callback(jsonData);
+    });
+    xhr.send();
+}
+
+function embedSpotifyPlayer(id, type) {
+    var iframe = document.createElement("iframe");
+    iframe.className = "spotify-player-sm";
+    iframe.allow = "autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture";
+    iframe.src = `https://open.spotify.com/embed/${type}/${id}`;
+    return iframe;
+}
+
+function moreButton(link, text) {
+    var more;
+    more = document.createElement("a");
+    more.className = "more";
+    more.href = link;
+    more.textContent = text;
+    return more;
 }

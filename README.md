@@ -66,6 +66,6 @@ Add the subdirectory environment variable back.
 
 Image upload and selection
 
-Test non-logged in view
+Test non-logged in view of API
 
 Albums (Need for B&B to adopt framework)

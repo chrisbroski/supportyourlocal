@@ -50,26 +50,11 @@ function showGigs(gigData) {
         var section = document.createElement("section");
         section.className = "col2";
 
-        // if (idx % 2 === 0) {
-            section.appendChild(gigInfoDiv(gig));
-            section.appendChild(gigMapDiv(gig));
-        // } else {
-        //     section.appendChild(gigMapDiv(gig));
-        //     section.appendChild(gigInfoDiv(gig));
-        // }
-
+        section.appendChild(gigInfoDiv(gig));
+        section.appendChild(gigMapDiv(gig));
         shows.appendChild(section);
     });
 }
 
-function getGigs() {
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", "/api/gig/?range=upcoming");
-    xhr.setRequestHeader("Accept", "application/json");
-    xhr.addEventListener("load", function () {
-        showGigs(JSON.parse(this.responseText));
-    });
-    xhr.send();
-}
-getGigs();
+getJsonData("/api/gig/?range=upcoming", showGigs);
 </script>

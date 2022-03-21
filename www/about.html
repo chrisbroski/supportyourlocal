@@ -37,8 +37,6 @@ function showAbout(aboutData) {
 
     var div = document.createElement("div");
     var p = document.createElement("p");
-    // var h2 = document.createElement("h2");
-    // var fragment = document.createElement("div");
 
     if (aboutData.contact) {
         div.innerHTML = converter.makeHtml(aboutData.contact);
@@ -46,25 +44,11 @@ function showAbout(aboutData) {
     }
 
     if (aboutData.bio) {
-        // h2.textContent = "Bio";
         bio = document.createElement("section");
-        // bio.appendChild(h2);
-        // fragment.innerHTML = converter.makeHtml(aboutData.bio);
-        // console.log(fragment);
-        // bio.appendChild(fragment);
         bio.innerHTML = converter.makeHtml(aboutData.bio);
         page.appendChild(bio);
     }
 }
 
-function getAbout() {
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", "/api/home");
-    xhr.setRequestHeader("Accept", "application/json");
-    xhr.addEventListener("load", function () {
-        showAbout(JSON.parse(this.responseText));
-    });
-    xhr.send();
-}
-getAbout();
+getJsonData("/api/home", showAbout);
 </script>

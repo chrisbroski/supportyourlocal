@@ -12,7 +12,7 @@
 
 </style>
 
-<title>Songs - Kandy Fredrick</title>
+<title>Music - Kandy Fredrick</title>
 
 <body>
 
@@ -98,15 +98,5 @@ function showGigs(gigData) {
     shows.appendChild(section);
 }
 
-function getGigs() {
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", "/api/gig/?range=past");
-    xhr.setRequestHeader("Accept", "application/json");
-    xhr.addEventListener("load", function () {
-        showGigs(JSON.parse(this.responseText));
-    });
-    xhr.send();
-}
-
-// getGigs();
+getJsonData("/api/gig/?range=past", showGigs);
 </script>

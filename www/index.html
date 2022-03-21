@@ -24,14 +24,6 @@
 <script>
 var converter = new showdown.Converter();
 
-function embedSpotifyPlayer(id, type) {
-    var iframe = document.createElement("iframe");
-    iframe.className = "spotify-player-sm";
-    iframe.allow = "autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture";
-    iframe.src = `https://open.spotify.com/embed/${type}/${id}`;
-    return iframe;
-}
-
 function showAnnouncements(announcementData) {
     var marquee = document.querySelector("main#home article:first-child");
 
@@ -53,9 +45,8 @@ function showAnnouncements(announcementData) {
 function showBandInfo(info) {
     var article;
     var section;
-    var more;
     var h1;
-    // var div;
+
     document.title = info.name;
     h1 = document.createElement("h1");
     h1.textContent = info.name;
@@ -66,18 +57,12 @@ function showBandInfo(info) {
         article.id = "about";
         section = document.createElement("section");
         section.innerHTML = converter.makeHtml(info.bio);
-        more = document.createElement("a");
-        more.className = "more";
-        more.href = "/about";
-        more.textContent = "More…";
+
         h1 = document.createElement("h1");
         h1.textContent = "About";
         section.insertBefore(h1, section.firstChild);
-        // div = document.createElement("div");
-        // div.className = "fade-out";
-        // section.appendChild(div);
         article.appendChild(section);
-        article.appendChild(more);
+        article.appendChild(moreButton("/about", "More…"));
         document.querySelector("main").appendChild(article);
     }
 }
@@ -85,7 +70,6 @@ function showBandInfo(info) {
 function showShows(info) {
     var article;
     var section;
-    var more;
     var h1;
     var infoDiv;
 
@@ -100,19 +84,13 @@ function showShows(info) {
         infoDiv = gigInfoDiv(info.gigs[0])
 
         if (info.gigs.length > 1) {
-            more = document.createElement("a");
-            more.className = "more";
-            more.href = "/shows";
-            more.textContent = "More Shows";
-            infoDiv.appendChild(more);
+            infoDiv.appendChild(moreButton("/shows", "More Shows"));
         }
 
         section.appendChild(infoDiv);
         section.appendChild(gigMapDiv(info.gigs[0]));
         article.appendChild(section);
 
-        // section.insertBefore(h1, section.firstChild);
-        // article.appendChild(more);
         document.querySelector("main").appendChild(article);
     }
 }
@@ -120,7 +98,6 @@ function showShows(info) {
 function showMusic(info) {
     var article;
     var section;
-    var more;
     var h1;
     var infoDiv;
     var p;
@@ -148,20 +125,13 @@ function showMusic(info) {
         infoDiv.appendChild(p);
 
         if (info[0].audio.spotify) {
-            console.log('spotify found');
-        }
-        if (info[0].audio.spotify) {
             p = document.createElement("p");
             p.appendChild(embedSpotifyPlayer(extractSpotifyTrackId(info[0].audio.spotify), "track"));
             infoDiv.appendChild(p);
         }
 
         if (info.length > 1) {
-            more = document.createElement("a");
-            more.className = "more";
-            more.href = "/song";
-            more.textContent = "More Songs";
-            infoDiv.appendChild(more);
+            infoDiv.appendChild(moreButton("/song", "More Music"));
         }
 
         section.appendChild(infoDiv);
@@ -178,49 +148,8 @@ function showMusic(info) {
     }
 }
 
-function getAnnouncements() {
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", "/api/announcement/?pinned=Y");
-    xhr.setRequestHeader("Accept", "application/json");
-    xhr.addEventListener("load", function () {
-        showAnnouncements(JSON.parse(this.responseText));
-    });
-    xhr.send();
-}
-
-function getHomeInfo() {
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", "/api/home/");
-    xhr.setRequestHeader("Accept", "application/json");
-    xhr.addEventListener("load", function () {
-        showBandInfo(JSON.parse(this.responseText));
-    });
-    xhr.send();
-}
-
-function getNextShow() {
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", "/api/gig/?range=upcoming");
-    xhr.setRequestHeader("Accept", "application/json");
-    xhr.addEventListener("load", function () {
-        showShows(JSON.parse(this.responseText));
-    });
-    xhr.send();
-}
-
-function getLatestMusic() {
-    var xhr = new XMLHttpRequest();
-    // I'll need to check albums too. In the future....
-    xhr.open("GET", "/api/song/");
-    xhr.setRequestHeader("Accept", "application/json");
-    xhr.addEventListener("load", function () {
-        showMusic(JSON.parse(this.responseText));
-    });
-    xhr.send();
-}
-
-getHomeInfo();
-getAnnouncements();
-getNextShow();
-getLatestMusic();
+getJsonData("/api/home/", showBandInfo);
+getJsonData("/api/announcement/?pinned=Y", showAnnouncements);
+getJsonData("/api/gig/?range=upcoming", showShows);
+getJsonData("/api/song/", showMusic);
 </script>
