@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="format-detection" content="telephone=no">
+<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bowlby+One+SC&display=swap" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="/inc/main.css">
+<style>
+
+</style>
+
+<title>About - </title>
+
+<body>
+
+<!--#include file="/api/header.pht" -->
+
+<main id="about">
+<article>
+    <section>
+        <h1>About</h1>
+    </section>
+</article>
+</main>
+
+<script type="text/javascript" src="/inc/Aerophane.js"></script>
+<script type="text/javascript" src="/inc/main.js"></script>
+<script type="text/javascript" src="/inc/showdown.min.js"></script>
+<script>
+function showAbout(aboutData) {
+    var contact = document.querySelector("main#about article > section:first-child");
+    var converter = new showdown.Converter({"noHeaderId": true});
+    var page = document.querySelector("main#about article");
+
+    var div = document.createElement("div");
+    var p = document.createElement("p");
+    // var h2 = document.createElement("h2");
+    // var fragment = document.createElement("div");
+
+    if (aboutData.contact) {
+        div.innerHTML = converter.makeHtml(aboutData.contact);
+        contact.appendChild(div);
+    }
+
+    if (aboutData.bio) {
+        // h2.textContent = "Bio";
+        bio = document.createElement("section");
+        // bio.appendChild(h2);
+        // fragment.innerHTML = converter.makeHtml(aboutData.bio);
+        // console.log(fragment);
+        // bio.appendChild(fragment);
+        bio.innerHTML = converter.makeHtml(aboutData.bio);
+        page.appendChild(bio);
+    }
+}
+
+function getAbout() {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "/api/home");
+    xhr.setRequestHeader("Accept", "application/json");
+    xhr.addEventListener("load", function () {
+        showAbout(JSON.parse(this.responseText));
+    });
+    xhr.send();
+}
+getAbout();
+</script>

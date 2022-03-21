@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<title>{{resourceName}}s - {{homeName}}</title>
+{{{head}}}
+
+<body>
+{{{header}}}
+
+<article>
+<h1>{{resourceName}}s</h1>
+
+{{#loggedIn}}
+<section>
+<h2>Create New {{resourceName}}</h2>
+<form method="POST" action="/api/{{resourceName}}/">
+<p><label>Title</label><br>
+    <input type="text" name="title" value="" autofocus="autofocus">
+
+<p><label>Date</label>*<br>
+    <input type="date" name="date" value="{{today}}">
+
+<p><label>Start</label>*<br>
+    <input type="time" name="startTime" value="20:00">
+
+<p><label>Duration</label>*<br>
+    <input type="number" name="durationH" min="0" max="24" step="1" value="1"> hours
+    <input type="number" name="durationM" min="0" max="60" step="1" value="0"> minutes
+
+<p><label>Venue</label>*<br>
+    <select name="venue">
+        <option value="">Choose Venue</option>
+        {{#venues}}
+        <option value="{{id}}"{{{selected}}}>{{name}}</option>
+        {{/venues}}
+    </select>
+
+<p><label>Description<br><textarea name="desc">{{desc}}</textarea></p>
+
+<p><button>Create {{resourceName}}</button> <button type="reset">Clear Form</button>
+</form>
+</section>
+{{/loggedIn}}
+
+<section>
+
+{{#album}}
+<h4><a href="/api/{{resourceName}}/{{id}}">{{name}}</a></h4>
+{{/album}}
+
+</section>
+
+</article>

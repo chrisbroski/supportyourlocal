@@ -1,0 +1,14 @@
+{
+    "home": {
+        "name": "Band Name",
+        "color1": "#000000",
+        "color2": "#000000"
+    },
+    "gig": {},
+    "venue": {},
+    "song": {},
+    "album": {},
+    "news": {},
+    "user": {},
+    "announcement": {}
+}

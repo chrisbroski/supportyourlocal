@@ -1,0 +1,452 @@
+@import url("/api/custom.css");
+
+:root {
+    --header-font: 'Bowlby One SC';
+}
+
+@font-face {
+    font-family: "Material Icons";
+    font-style: normal;
+    font-weight: 400;
+    src: url("MaterialIcons-Regular.woff");
+}
+
+.material-icons {
+    font-family: "Material Icons";
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    display: inline-block;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
+    /* Support for all WebKit browsers. */
+    -webkit-font-smoothing: antialiased;
+    /* Support for Safari and Chrome. */
+    text-rendering: optimizeLegibility;
+    /* Support for Firefox. */
+    -moz-osx-font-smoothing: grayscale;
+    /* Support for IE. */
+    font-feature-settings: 'liga';
+}
+
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+html {
+    font-family: sans-serif;
+    letter-spacing: 0.02em;
+}
+
+body {
+    margin: 0; padding-top: 56px;
+    background: black url(/photos/ab676186000010160f19b83bd0f1ef92ace25e4e.jpeg) no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: top center;
+
+    -webkit-touch-callout: none;
+    -webkit-text-size-adjust: none;
+    -webkit-user-select: none;
+}
+body.stop-scrolling {
+    height: 100%;
+    overflow: hidden;
+}
+
+h1 {margin: 0.5em 0; font-size: 48px; }
+h2 {margin: 0.5em 0; font-size: 36px; }
+h3 {margin: 0.5em 0; font-size: 24px; }
+h4 {margin: 0.5em 0; font-size: 18px; font-weight: bold; color: rgb(var(--color2)); }
+h5 {margin: 0.5em 0; font-size: 17px; font-weight: bold; }
+h6 {margin: 0.5em 0; font-size: 12px; font-weight: bold; }
+
+h1, h2, h3 {font-family: var(--header-font); font-weight: normal; color: rgb(var(--color2)); }
+
+pre {
+    margin: 12px 16px; padding: 8px;
+    overflow: auto;
+    background: #eee;
+}
+
+button, input[type="button"], input[type="submit"], input[type="reset"] {
+    text-transform: uppercase;
+    padding: 12px;
+    background: #fff;
+    border: 0 none;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    font-size: 16px;
+    font-weight: bold;
+    -webkit-appearance: none;
+    -webkit-border-radius: 0;
+}
+
+button:focus, input:focus {outline: 0 none; }
+
+article {
+    overflow: visible;
+}
+
+p {
+    margin: 12px 0;
+    line-height: 1.4em;
+    font-size: 17px;
+    max-width: 580px;
+}
+
+li {margin-bottom: 0.3em; line-height: 1.4em; font-size: 16px; }
+
+body > header {
+    position: fixed;
+    overflow: auto;
+    left: 0; top: 0; right: 0;
+    background: #f8f8f8;
+    height: 56px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, .4);
+    color: #333;
+    white-space: nowrap;
+    z-index: 1;
+}
+body > header h1 {
+    margin: 0; padding: 0 0 0 16px;
+    line-height: 56px;
+    white-space: nowrap;
+    font-size: 24px;
+}
+body > header button {
+    padding: 12px;
+    width: 56px; height: 56px;
+    float: right;
+    background: transparent;
+    border: 0 none;
+    color: #333;
+    box-shadow: 0 0 0 transparent;
+}
+body > header button:first-child {
+    float: left;
+}
+
+body > nav#main {
+    padding-top: 24px;
+    position: fixed;
+    top: 0; bottom: 0; left: 0;
+    overflow: auto;
+    width: 0;
+    background: #fff;
+    transition: width 0.2s;
+    white-space: nowrap;
+    z-index: 2;
+    box-shadow: 4px 0 8px rgba(0, 0, 0, 0.4);
+}
+
+body > nav#main h2 {
+    margin: 0; padding: 0 16px;
+    vertical-align: bottom;
+    line-height: 56px;
+    font-size: 18px;
+    font-weight: normal;
+    white-space: nowrap;
+}
+body > nav#main p {
+    margin: 0;
+    font-size: 24px;
+}
+body > nav#main p span.material-icons {
+    font-size: 36px;
+    line-height: 24px;
+    vertical-align: -25%;
+}
+body > nav#main p a {
+    padding: 16px;
+    display: block;
+    text-decoration: none;
+    color: #333;
+    line-height: 48px;
+}
+body > nav#main #social {
+    white-space: normal;
+    padding: 16px;
+}
+body > nav#main #social a {
+    display: inline-block;
+    padding: 0;
+}
+body > nav#main #social a img {
+    width: 48px; height: 48px;
+}
+
+.error {
+    color: red;
+}
+
+#matte {
+    position: fixed;
+    top: 0; right: 0; bottom: 0; left: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    z-index: 1;
+}
+
+svg.spinner {
+    animation: spin 1.4s linear infinite;
+}
+
+svg.spinner circle {
+    stroke: var(--color1);
+    stroke-width: 6;
+    stroke-dasharray: 187;
+    stroke-dashoffset: 0;
+    transform-origin: center;
+    animation: spin-size 1.4s ease-in-out infinite;
+}
+
+@keyframes spin {
+    0% {transform: rotate(0deg); }
+    100% {transform: rotate(270deg); }
+}
+
+@keyframes spin-size {
+    0% {stroke-dashoffset: 187; }
+    50% {
+        stroke-dashoffset: 46.75;
+        transform:rotate(135deg);
+    }
+    100% {
+        stroke-dashoffset: 187;
+        transform:rotate(450deg);
+    }
+}
+
+article > section {
+    padding: 12px 24px 24px;
+    overflow: auto;
+}
+article > section > *:first-child {
+    margin-top: 0;
+}
+
+iframe {
+    width: 100%;
+    height: 300px;
+    border: 1px solid #888;
+}
+
+iframe.spotify-player-sm {
+    border-radius:12px;
+    height: 80px;
+}
+main#home article:first-child h1 {
+    display: none;
+}
+main#home article:first-child div {
+    margin-top: 64px;
+}
+
+a {
+    color: rgb(var(--color2));
+}
+
+/* Main application header */
+body > header {
+    background: rgb(var(--color1));
+    color: #fff;
+}
+body > header button {
+    color: #fff;
+}
+
+/* Main nav */
+body > nav#main h2 {
+    color: rgb(var(--color1));
+}
+body > nav#main {
+    background: rgb(var(--color1));
+    color: #fff;
+}
+body > nav#main p a {
+    color: #fff;
+}
+
+#home > article > div, #about > article > section:first-child > div {
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 8px 18px;
+    max-width: 540px;
+    overflow: auto;
+    color: #fff;
+}
+#home > article > div {margin: 12px; }
+#home > article div p iframe {
+    width: 100%;
+    max-width: 300px;
+}
+
+article > section h4 span {
+    font-weight: normal;
+    color: #fff;
+    font-size: 17px;
+}
+
+main > article {
+    overflow: auto;
+    position: relative;
+}
+main > article:last-child section:last-child, main#home article:last-child {
+    padding-bottom: 200px;
+}
+
+main > article a.more {
+    margin-top: 2em;
+    padding: 12px;
+    font-size: 20px;
+    display: inline-block;
+    background-color: rgb(var(--color1));
+    color: #fff;
+    text-decoration: none;
+    text-transform: uppercase;
+    line-height: 20px;
+}
+main > article > a.more {
+    margin-left: 24px;
+    margin-bottom: 2em;
+}
+
+section > img, #about section img {
+    margin: 0 0.4em;
+    max-width: 100%;
+}
+article#about section {
+    max-height: 580px;
+    overflow: hidden;
+}
+
+/* alternating section colors */
+article > section:nth-child(odd), main#home > article:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.95);
+    background-image: none;
+    color: rgb(var(--color1));
+}
+article > section:nth-child(odd) button, main#home > article:nth-child(even) button {
+    background-color: rgb(var(--color1));
+    color: #fff;
+}
+article > section:nth-child(even) a.more, main#home > article:nth-child(odd) a.more {
+    background-color: #fff;
+    color: rgb(var(--color1));
+}
+
+article > section:nth-child(even), main#home > article:nth-child(odd) {
+    background-color: rgba(var(--color1), 0.92);
+    background-image: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35));
+    background-size: cover;
+    color: #fff;
+    overflow: auto;
+    position: relative;
+}
+article > section:nth-child(odd) h4 span, main#home > article:nth-child(even) h4 span {
+    color: black;
+}
+
+main#home > article > section {
+    background-color: transparent;
+    color: inherit;
+}
+
+main#home > article:first-child, main#about > article > section:first-child {
+    background-color: transparent;
+    background-image: none;
+}
+
+section.col2 > div img {
+    width: 100%;
+    float: none;
+}
+
+/* large-screen version */
+@media (min-width: 800px) {
+    body {
+        padding-left: 240px;
+        padding-top: 0;
+    }
+    body > header {
+        padding-left: 16px;
+        left: 240px;
+        height: 0;
+    }
+    body > header button:first-child {
+        display: none;
+    }
+    body > nav#main {
+        width: 240px;
+    }
+    #matte {
+        z-index: 1;
+    }
+    body main#home article:first-child h1 {
+        display: block;
+    }
+
+    h2 {font-size: 48px; }
+
+    main > article > section.col2 {
+        padding: 50px 0;
+    }
+    section.col2 h1, section.col2 h2, section.col2 h3 {
+        clear: both;
+    }
+    section.col2 > div {
+        padding: 0 50px;
+        float: left;
+        width: 49%;
+    }
+    section.col2 > div + div {
+        padding-left: 0;
+        float: right;
+        clear: right;
+        width: 49%;
+    }
+    section.col2:nth-child(even) > div {
+        padding-left: 0;
+        float: right;
+    }
+    section.col2:nth-child(even) > div + div {
+        padding-left: 50px;
+        float: left;
+        clear: left;
+    }
+
+    section.col2 > h1, section.col2 > h3, section.col2 > h3, section.col2 > h4, section.col2 > p {
+        margin: 0 0 40px 0;
+        padding: 0 50px;
+    }
+
+    main article h1 {
+        margin: 0 0 60px 0;
+        padding-bottom: 60px;
+        color: rgb(var(--color2));
+        font-size: 96px;
+        line-height: 1;
+    }
+    main article section h1 {padding-bottom: 0; }
+    article > section, main#home > article:first-child {
+        padding: 50px;
+    }
+
+    section > img, #about section img {
+        margin-left: 1em;
+        margin-bottom: 0.4em;
+        max-width: 50%;
+        float: right;
+    }
+
+    main > article > a.more {
+        margin-left: 50px;
+    }
+    article#about {
+        padding-bottom: 40px;
+    }
+}

@@ -1,0 +1,20 @@
+<header>
+    <h2><a href="/api/">Home</a></h2>
+    <p>
+        <a href="/api/home">Band</a>
+        <a href="/api/gig/">Gigs</a>
+        <a href="/api/venue/">Venues</a>
+        <a href="/api/song/">Songs</a>
+        <a href="/api/album/">Albums</a>
+        <a href="/api/announcement/">Anouncements</a>
+    </p>
+    <p>
+    {{#loggedIn}}
+        <a href="/api/password">Change Password</a>
+        <a href="/api/logout">Logout</a>
+    {{/loggedIn}}
+    {{^loggedIn}}
+        <a href="/api/login">Log In</a>
+    {{/loggedIn}}
+    </p>
+</header>

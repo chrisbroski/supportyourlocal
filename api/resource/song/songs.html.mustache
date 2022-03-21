@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<title>{{resourceNameCap}}s - {{homeName}}</title>
+{{{head}}}
+
+<body>
+{{{header}}}
+
+<article>
+<h1>{{resourceName}}s</h1>
+
+{{#loggedIn}}
+<section>
+<h2>Create New {{resourceName}}</h2>
+<form method="POST" action="/api/{{resourceName}}/">
+
+<p><label>Name</label>*<br>
+    <input type="text" name="name" autofocus="autofocus" required="required">
+
+<p><label>Release Date</label><br>
+    <input type="date" name="date" value="{{today}}">
+
+<p><label>Front Cover</label><br>
+    <input type="text" name="cover-front">
+
+<p><label>Back Cover</label><br>
+    <input type="text" name="cover-back">
+
+<p><label>Description<br><textarea name="desc"></textarea></p>
+
+<h3>Audio</h3>
+
+<p><label>Spotify</label><br>
+    <input type="text" name="spotify">
+
+<p><label>Apple Music</label><br>
+    <input type="text" name="apple">
+
+<p><label>Amazon Music</label><br>
+    <input type="text" name="amazon">
+
+<p><label>YouTube</label><br>
+    <input type="text" name="youtube">
+
+<p><label>CD Baby</label><br>
+    <input type="text" name="cdbaby">
+
+<p><label>Lyrics<br><textarea name="lyrics"></textarea></p>
+
+<p><button>Create {{resourceName}}</button>
+</form>
+</section>
+{{/loggedIn}}
+
+<section>
+{{#song}}
+<h4><a href="/api/{{resourceName}}/{{id}}">{{name}}</a></h4>
+{{/song}}
+</section>
+
+</article>

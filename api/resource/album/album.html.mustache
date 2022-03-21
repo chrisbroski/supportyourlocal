@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<title>{{resourceNameCap}} - {{homeName}}</title>
+{{{head}}}
+
+<body>
+{{{header}}}
+
+<article>
+<h1>{{resourceName}} {{title}}</h1>
+
+{{#loggedIn}}
+<section>
+<form method="POST" action="/api/{{resourceName}}/{{id}}">
+<input type="hidden" name="method" value="PUT">
+<p><label>Title</label><br>
+    <input type="text" name="title" value="{{title}}" autofocus="autofocus">
+
+<p><label>Date</label>*<br>
+    <input type="date" name="date" value="{{date}}" required="required">
+
+<p><label>Start</label>*<br>
+    <input type="time" name="startTime" value="{{startTime}}" required="required">
+
+<p><label>Duration</label>*<br>
+    <input type="number" name="durationH" min="0" max="24" step="1" value="{{durationH}}"> hours
+    <input type="number" name="durationM" min="0" max="60" step="1" value="{{durationM}}"> minutes
+
+<p><label>Venue</label>*<br>
+    <select name="venue" required="required">
+    {{#venues}}
+        <option value="{{id}}"{{{selected}}}>{{name}}</option>
+    {{/venues}}
+    </select>
+
+<p><label>Description<br><textarea name="desc">{{desc}}</textarea></p>
+
+<p><button>Update {{resourceName}}</button>
+</form>
+</section>
+{{/loggedIn}}
+
+{{^loggedIn}}
+<section>
+<h3>{{title}}</h3>
+<h3>{{date}}</h3>
+<p>{{startTime}}
+<p>{{durationH}} hours, {{durationM}} minutes
+<p><a href="/api/venue/{{venue}}">{{venueName}}</a>
+<pre>{{desc}}</pre>
+</section>
+{{/loggedIn}}
+
+{{#isMod}}
+<section>
+<p><form method="POST" action="/api/{{resourceName}}/{{id}}">
+<input type="hidden" name="method" value="DELETE">
+<button>Delete {{resourceName}}</button>
+</form>
+</section>
+{{/isMod}}
+</article>

@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<title>{{pageName}} - {{resourceNameCap}} - {{homeName}}</title>
+{{{head}}}
+
+<body>
+{{{header}}}
+
+<article>
+<h1>{{resourceName}}s</h1>
+
+{{^loggedIn}}
+<section>
+<h3>{{date}}</h3>
+<pre>{{copy}}</pre>
+<p>Pinned: {{pinned}}
+</section>
+{{/loggedIn}}
+
+{{#loggedIn}}
+<section>
+<form method="POST" action="/api/{{resourceName}}/{{id}}">
+<input type="hidden" name="method" value="PUT">
+
+<p><label>Date</label>*<br>
+    <input type="date" name="date" value="{{date}}" autofocus="autofocus" required="required">
+
+<p><label>Announcement</label>*<br><textarea name="copy">{{copy}}</textarea></p>
+<p>The announcement content must be plain text, but may also use <a href="https://www.markdownguide.org/" target="_blank">markdown syntax</a>.</p>
+
+<p><label>Include Song</label><br>
+    <select name="song">
+        <option value="">Select Optional Song</option>
+    {{#songs}}
+        <option value="{{id}}"{{{selected}}}>{{name}}</option>
+    {{/songs}}
+    </select>
+
+<p><label><input type="checkbox" name="pinned" value="Y"{{{pinnedChecked}}}> Pin to Home Page</label>
+
+<p><button>Update {{resourceName}}</button>
+</form>
+</section>
+
+<section>
+<p><a class="button" href="/api/delete?resource={{resourceName}}&id={{id}}">Delete {{resourceName}}</a></p>
+</section>
+{{/loggedIn}}
+</article>

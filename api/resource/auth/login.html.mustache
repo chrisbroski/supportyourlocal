@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<title>Log In : {{eventName}}</title>
+{{{head}}}
+
+<body id="user-page">
+{{{header}}}
+
+<article>
+<h1>Log In</h1>
+
+<section>
+<form method="POST" action="/api/login">
+<p><label>Email</label><br>
+    <input type="email" name="email" type="email" id="email">
+<p><label>Password</label><br>
+    <input type="password" id="password" name="password">
+<p><button>Log In</button>
+</form>
+</section>
+
+</article>

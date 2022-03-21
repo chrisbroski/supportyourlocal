@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<title>{{pageName}} - {{resourceNameCap}} - {{homeName}}</title>
+{{{head}}}
+
+<body>
+{{{header}}}
+
+<article>
+<h1>{{resourceName}}</h1>
+
+{{^loggedIn}}
+<section>
+<h3>{{name}}</h3>
+<p>Released on {{date}}</p>
+<p><img src="{{cover-front}}"></p>
+<p><img src="{{cover-back}}"></p>
+<pre>{{desc}}</pre>
+<p><a href="{{audio.spotify}}">{{audio.spotify}}</a></p>
+<p><a href="{{audio.apple}}">{{audio.apple}}</a></p>
+<p><a href="{{audio.amazon}}">{{audio.amazon}}</a></p>
+<p><a href="{{audio.youtube}}">{{audio.youtube}}</a></p>
+<p><a href="{{audio.cdbaby}}">{{audio.cdbaby}}</a></p>
+</section>
+{{/loggedIn}}
+
+{{#loggedIn}}
+<section>
+<form method="POST" action="/api/{{resourceName}}/{{id}}">
+<input type="hidden" name="method" value="PUT">
+
+<p><label>Name</label>*<br>
+    <input type="text" name="name" value="{{name}}" autofocus="autofocus" required="required">
+<p><label>Release Date</label><br>
+    <input type="date" name="date" value="{{date}}">
+<p><label>Front Cover</label><br>
+    <input type="text" name="cover-front" value="{{cover-front}}">
+<p><label>Back Cover</label><br>
+    <input type="text" name="cover-back" value="{{cover-back}}">
+<p><label>Description<br><textarea name="desc">{{desc}}</textarea></p>
+
+<h3>Audio</h3>
+
+<p><label>Spotify</label><br>
+    <input type="text" name="spotify" value="{{audio.spotify}}">
+<p><label>Apple Music</label><br>
+    <input type="text" name="apple" value="{{audio.apple}}">
+<p><label>Amazon Music</label><br>
+    <input type="text" name="amazon" value="{{audio.amazon}}">
+<p><label>YouTube</label><br>
+    <input type="text" name="youtube" value="{{audio.youtube}}">
+<p><label>CD Baby</label><br>
+    <input type="text" name="cdbaby" value="{{audio.cdbaby}}">
+
+<p><label>Lyrics<br><textarea name="lyrics">{{lyrics}}</textarea></p>
+
+<p><button>Update {{resourceName}}</button>
+</form>
+</section>
+
+<section>
+<p><a class="button" href="/api/delete?resource={{resourceName}}&id={{id}}">Delete {{resourceName}}</a></p>
+</section>
+{{/loggedIn}}
+</article>

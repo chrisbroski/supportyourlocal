@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<title>{{resourceNameCap}}s - {{homeName}}</title>
+{{{head}}}
+
+<body>
+{{{header}}}
+
+<article>
+<h1>{{resourceName}}s</h1>
+
+{{#loggedIn}}
+<section>
+<h2>Create New {{resourceName}}</h2>
+<form method="POST" action="/api/{{resourceName}}/">
+<p><label>Name</label>*<br>
+    <input type="text" name="name" value="" autofocus="autofocus" required="required">
+
+<p><label>Venue Link</label><br>
+    <input type="text" name="link" value="">
+
+<p><label>Address 1</label><br>
+    <input type="text" name="add1" value="">
+
+<p><label>Address 2</label><br>
+    <input type="text" name="add2" value="">
+
+<p><label>City</label>*<br>
+    <input type="text" name="city" value="" required="required">
+
+<p><label>State</label>*<br>
+    <input type="text" name="state" value="" required="required">
+
+<p><label>ZIP</label><br>
+    <input type="text" name="zip" value="">
+
+<p><label>Country</label><br>
+    <input type="text" name="country" value="US">
+
+<p><label>Phone</label><br>
+    <input type="text" name="phone" value="">
+
+<p><label>Description<br><textarea name="desc"></textarea></p>
+
+<p><button>Create {{resourceName}}</button>
+</form>
+</section>
+{{/loggedIn}}
+
+<section>
+{{#venue}}
+<h4><a href="/api/{{resourceName}}/{{id}}">{{name}}</a></h4>
+{{/venue}}
+</section>
+
+</article>

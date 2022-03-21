@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<title>{{prefix}} {{firstName}} {{surname}} : {{eventName}}</title>
+{{{head}}}
+
+<body id="user-page">
+{{{header}}}
+
+<article>
+<h1>{{prefix}} {{firstName}} {{surname}}</h1>
+
+<section>
+{{#canedit}}
+<form method="POST" action="/api/user/{{id}}" enctype="application/x-www-form-urlencoded">
+<input type="hidden" name="method" value="PUT">
+
+<p><label>Honorific</label><br>
+    <input type="text" name="prefix" value="{{prefix}}" autofocus="autofocus">
+<p><label>First Name</label><br>
+    <input type="text" name="firstName" value="{{firstName}}">
+<p><label>Last Name</label><br>
+    <input type="text" name="surname" value="{{surname}}">
+<p><label>Email</label><br>
+    <input type="text" name="email" value="{{email}}">
+<p><label>Company</label><br>
+    <input type="text" name="company" value="{{company}}">
+<p><label>Title</label><br>
+    <input type="text" name="title" value="{{title}}">
+<p><label>User Type</label><br>
+    <select name="userType">
+        <option value="attendee">Attendee</option>
+        {{#isMod}}
+        <option value="producer"{{#userTypeSelect.producer}} selected{{/userTypeSelect.producer}}>Producer</option>
+        {{/isMod}}
+        {{#admin}}
+        <option value="administrator"{{#userTypeSelect.administrator}} selected{{/userTypeSelect.administrator}}>Administrator</option>
+        {{/admin}}
+    </select>
+
+{{#admin}}
+<p><label><input type="checkbox" value="1"{{{speakerChecked}}} name="speaker"> Speaker</label>
+<label><input type="checkbox" value="1"{{{modChecked}}} name="moderator"> Moderator</label>
+<label><input type="checkbox" value="1"{{{vendorChecked}}} name="vendor"> Vendor</label>
+<label><input type="checkbox" value="1"{{{sponsorChecked}}} name="sponsor"> Sponsor</label>
+</p>
+
+<p><label>Sponsor Level</label><br>
+    <select name="sponsorLevel">
+        <option value="">None</option>
+        <option value="bronze"{{#sponsorLevelSelect.bronze}} selected{{/sponsorLevelSelect.bronze}}>Bronze</option>
+        <option value="silver"{{#sponsorLevelSelect.silver}} selected{{/sponsorLevelSelect.silver}}>Silver</option>
+        <option value="gold"{{#sponsorLevelSelect.gold}} selected{{/sponsorLevelSelect.gold}}>Gold</option>
+        <option value="platinum"{{#sponsorLevelSelect.gold}} selected{{/sponsorLevelSelect.gold}}>Platinum</option>
+    </select>
+</p>
+{{/admin}}
+
+<p><label>Image URL</label><br>
+    <input type="text" name="imageUrl" value="{{imageUrl}}">
+
+<p><label>Data</label><br>
+    <input type="text" name="data" value="{{data}}">
+
+<p><label>Bio<br><textarea name="bio">{{bio}}</textarea></p>
+
+<p><button>Update User Data</button>
+</form>
+</section>
+
+{{#isMod}}
+<section>
+<h3>Reset Password</h3>
+{{#token}}
+<p>Reset Link: <a href="/api/password/{{id}}?token={{token}}">/api/password/{{id}}?token={{token}}</a>
+<form method="POST" action="/api/resend-reg/{{id}}">
+<p><button>Resend Register Email</button>
+</form>
+{{/token}}
+{{^token}}
+<form method="POST" action="/api/password/{{id}}">
+<input type="hidden" name="method" value="DELETE">
+<p><button>Reset Password</button></p>
+</form>
+{{/token}}
+</section>
+
+<section>
+<h2>Schedule</h2>
+<ol>
+{{#schedule}}
+<li>{{title}}</li>
+{{/schedule}}
+</ol>
+</section>
+
+<section>
+<form method="POST" action="/api/chatenable/{{id}}">
+<p><label><input type="checkbox" name="disableChat" value="1"{{{chatDisabledCheck}}}> Chat Disabled</label>
+<p><button>Update Chat Ability</button></p>
+</form>
+</section>
+{{/isMod}}
+
+<section>
+<h3>Delete Account</h3>
+<form method="POST" action="/api/user/{{id}}">
+<input type="hidden" name="method" value="DELETE">
+<button>Delete Account</button>
+</form>
+
+{{/canedit}}
+{{^canedit}}
+<p>{{{bioFormatted}}}
+{{/canedit}}
+</section>
+
+</article>

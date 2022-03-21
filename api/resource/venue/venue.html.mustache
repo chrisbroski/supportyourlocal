@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<title>{{pageName}} - {{resourceNameCap}} - {{homeName}}</title>
+{{{head}}}
+
+<body>
+{{{header}}}
+
+<article>
+<h1>{{resourceName}}</h1>
+
+{{^loggedIn}}
+<section>
+<h3>{{name}}</h3>
+<p>{{link}}</p>
+<p>{{add1}}</p>
+<p>{{add2}}</p>
+<p>{{city}}, {{state}} {{zip}}</p>
+<p>{{country}}</p>
+<p>{{phone}}</p>
+<pre>{{desc}}</pre>
+</section>
+{{/loggedIn}}
+
+{{#loggedIn}}
+<section>
+<form method="POST" action="/api/{{resourceName}}/{{id}}">
+<input type="hidden" name="method" value="PUT">
+
+<p><label>Name</label>*<br>
+    <input type="text" name="name" value="{{name}}" autofocus="autofocus" required="required">
+
+<p><label>Venue Link</label><br>
+    <input type="text" name="link" value="{{link}}">
+
+<p><label>Address 1</label><br>
+    <input type="text" name="add1" value="{{add1}}">
+
+<p><label>Address 2</label><br>
+    <input type="text" name="add2" value="{{add2}}">
+
+<p><label>City</label>*<br>
+    <input type="text" name="city" value="{{city}}" required="required">
+
+<p><label>State</label>*<br>
+    <input type="text" name="state" value="{{state}}" required="required">
+
+<p><label>ZIP</label><br>
+    <input type="text" name="zip" value="{{zip}}">
+
+<p><label>Country</label><br>
+    <input type="text" name="country" value="US">
+
+<p><label>Phone</label><br>
+    <input type="text" name="phone" value="{{phone}}">
+
+<p><label>Description<br><textarea name="desc">{{desc}}</textarea></p>
+
+<p><button>Update {{resourceName}}</button>
+</form>
+</section>
+
+<section>
+<p><a class="button" href="/api/delete?resource={{resourceName}}&id={{id}}">Delete {{resourceName}}</a></p>
+</section>
+</section>
+{{/loggedIn}}
+</article>

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<title>{{resourceNameCap}}s - {{homeName}}</title>
+{{{head}}}
+
+<body>
+{{{header}}}
+
+<article>
+<h1>{{resourceName}}s</h1>
+
+{{#loggedIn}}
+<section>
+<h2>Create New {{resourceName}}</h2>
+<form method="POST" action="/api/{{resourceName}}/">
+
+<p><label>Date</label>*<br>
+    <input type="date" name="date" value="{{today}}" autofocus="autofocus" required="required">
+
+<p><label>Announcement</label>*<br>
+    <textarea name="copy" required="required"></textarea></p>
+<p>The announcement content must be plain text, but may also use <a href="https://www.markdownguide.org/" target="_blank">markdown syntax</a>.</p>
+
+<p><label>Include Song</label><br>
+    <select name="song">
+        <option value="">Select Optional Song</option>
+    {{#songs}}
+        <option value="{{id}}">{{name}}</option>
+    {{/songs}}
+    </select>
+
+<p><label><input type="checkbox" name="pinned" value="Y"> Pin to Home Page</label>
+
+<p><button>Create {{resourceName}}</button>
+</form>
+</section>
+{{/loggedIn}}
+
+<section>
+{{#announcement}}
+<h4><a href="/api/{{resourceName}}/{{id}}">{{formattedDate}}{{#pinned}}*{{/pinned}}
+    {{shortCopy}}</a>
+</h4>
+{{/announcement}}
+</section>
+
+</article>
