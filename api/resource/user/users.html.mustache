@@ -1,106 +1,29 @@
 <!doctype html>
 <html lang="en">
-<title>Speakers : {{eventName}} - {{homeName}}</title>
+<title>Users</title>
 {{{head}}}
-<style>
-pre {padding: 4px; background: #ddd; }
-</style>
 
-<body id="users-page">
+<body id="user-page">
 {{{header}}}
 
 <article>
 <h1>Users</h1>
 
-<section>
-<menu>
-
-{{^searchString.userType.all}}
-<li><a href="?">All</a>
-{{/searchString.userType.all}}
-{{#searchString.userType.all}}
-<li>All
-{{/searchString.userType.all}}
-
-{{^searchString.speaker}}
-<li><a href="?speaker=1">Speakers</a>
-{{/searchString.speaker}}
-{{#searchString.speaker}}
-<li>Speakers
-{{/searchString.speaker}}
-
-{{^searchString.moderator}}
-<li><a href="?moderator=1">Moderators</a>
-{{/searchString.moderator}}
-{{#searchString.moderator}}
-<li>Moderators
-{{/searchString.moderator}}
-
-{{^searchString.vendor}}
-<li><a href="?vendor=1">Vendors</a>
-{{/searchString.vendor}}
-{{#searchString.vendor}}
-<li>Vendors
-{{/searchString.vendor}}
-
-{{^searchString.userType.attendee}}
-<li><a href="?type=attendee">Attendees</a>
-{{/searchString.userType.attendee}}
-{{#searchString.userType.attendee}}
-<li>Attendees
-{{/searchString.userType.attendee}}
-
-{{^searchString.userType.producer}}
-<li><a href="?type=producer">Producers</a>
-{{/searchString.userType.producer}}
-{{#searchString.userType.producer}}
-<li>Producers
-{{/searchString.userType.producer}}
-
-{{^searchString.userType.administrator}}
-<li><a href="?type=administrator">Administrators</a>
-{{/searchString.userType.administrator}}
-{{#searchString.userType.administrator}}
-<li>Administrators
-{{/searchString.userType.administrator}}
-</menu>
-</section>
-
-{{#isMod}}
+{{#loggedIn}}
 <section>
 <h2>Create User</h2>
 <form method="POST" action="{{API_DIR}}/user/" enctype="application/x-www-form-urlencoded">
-<p><label>Honorific</label><br>
-    <input type="text" name="prefix" autofocus="autofocus">
-<p><label>*First Name</label><br>
-    <input type="text" name="firstName">
-<p><label>*Surname</label><br>
+<p><label>First Name</label><br>
+    <input type="text" name="givenName">
+<p><label>Surname</label><br>
     <input type="text" name="surname">
-<p><label>*Email</label><br>
-    <input type="text" name="email">
-<p><label>Company</label><br>
-    <input type="text" name="company">
-<p><label>Title</label><br>
-    <input type="text" name="title">
+<p><label>Email</label>*<br>
+    <input type="text" name="email" required="required">
 
-<p><label>User Type</label><br>
-    <select name="userType">
-        <option value="attendee">Attendee</option>
-        <option value="producer">Producer</option>
-        <option value="administrator">Administrator</option>
-    </select>
-
-<p><label><input type="checkbox" name="speaker" value="1"> Speaker</label>
-    <label><input type="checkbox" name="moderator" value="1"> Moderator</label>
-    <label><input type="checkbox" name="vendor" value="1"> Vendor</label>
-    <label><input type="checkbox" name="sponsor" value="1"> Sponsor</label>
+<p>
+    <label><input type="checkbox" value="Y" name="admin"> Admin</label>
+    <label><input type="checkbox" value="Y" name="bandMember"> Band Member</label>
 </p>
-
-<p><label>Image URL</label><br>
-    <input type="text" name="imageUrl" value="">
-
-<p><label>Data</label><br>
-    <input type="text" name="data" value="">
 
 <p><label>Bio</label><br><textarea name="bio"></textarea>
 
@@ -108,29 +31,17 @@ pre {padding: 4px; background: #ddd; }
     <input type="text" name="password">
 
 <p><button>Create New User</button>
-<h6>* Required</h6>
 </form>
 </section>
-{{/isMod}}
+{{/loggedIn}}
 
-{{#users}}
 <section>
-<h2><a href="{{API_DIR}}/user/{{id}}">{{prefix}} {{firstName}} {{surname}}</a></h2>
-{{#titleHeader}}
-<h3>{{title}}{{comma}}{{company}}
-</h3>
-{{/titleHeader}}
-{{#data}}
-<pre>{{.}}</pre>
-{{/data}}
-<div>{{{bioFormatted}}}</div>
-{{#isMod}}
+{{#user}}
+<h4><a href="{{API_DIR}}/user/{{id}}">{{givenName}} {{surname}} {{email}}</a></h4>
 {{#token}}
 <p><a href="{{subDir}}/password/{{id}}?token={{token}}">Reset URL</a>
 {{/token}}
-<!--<p>{{email}}-->
-{{/isMod}}
+{{/user}}
 </section>
-{{/users}}
 
 </article>

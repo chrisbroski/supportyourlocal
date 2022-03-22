@@ -33,6 +33,11 @@ function makeTimestamp(date, time, tz) {
 }
 this.makeTimestamp = makeTimestamp;
 
+function hashPassword(password, salt) {
+    return crypto.pbkdf2Sync(password, salt, 1, 63, 'sha512').toString('base64');
+}
+this.hashPassword = hashPassword;
+
 function zeroPad(n) {
     if (n < 10) {
         return '0' + n;

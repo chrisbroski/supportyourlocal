@@ -58,6 +58,13 @@ Each has it's own user management (for admin purposes) Reset password with local
 
 Get user management in a reasonable state
 
+* Put an admin key in the .env file
+* Allow owner to add managers/band members
+* List users
+* Change password
+* Change user information
+* Reset another user's password
+
 Initial setup (create user and password with a token, direct to band data)
 
 Choose fonts

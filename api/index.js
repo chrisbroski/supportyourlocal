@@ -5,7 +5,7 @@ const fs = require("fs");
 const qs = require('querystring');
 const util = require('util');
 const url = require('url');
-const crypto = require('crypto');
+// const crypto = require('crypto');
 
 const readFile = util.promisify(fs.readFile);
 
@@ -23,7 +23,7 @@ const venue = require('./resource/venue/venue.js');
 const home = require('./resource/home.js');
 const song = require('./resource/song/song.js');
 const announcement = require('./resource/announcement/announcement.js');
-const user = require('./resource/user.js');
+const user = require('./resource/user/user.js');
 
 // Configuration
 var PORT = 29170;
@@ -46,10 +46,6 @@ var data;
 var failedLogins = {};
 // var log;
 var sessionTimeout = 31622400;
-
-function hashPassword(password, salt) {
-    return crypto.pbkdf2Sync(password, salt, 1, 63, 'sha512').toString('base64');
-}
 
 function updatePassword(id, req, rsp, formData) {
     // var cookies;
@@ -144,7 +140,7 @@ function login(req, rsp, body) {
         return false;
     }
 
-    if (userData.hash === hashPassword(body.password, userData.salt)) {
+    if (userData.hash === main.hashPassword(body.password, userData.salt)) {
         var secure = " Secure";
         secure = ""; // at least until I get https on everything
         if (process.env.QA) {
@@ -192,86 +188,6 @@ function authenticate(req, rsp) {
     }
 
     return true;
-}
-
-function checkEmailExists(email, users) {
-    return Object.keys(users).some(function (id) {
-        return users[id].email === email;
-    });
-}
-
-function isUserInvalid(registrant, data) {
-    var msg = [];
-    var userMsg = "";
-
-    if (registrant.index) {
-        userMsg = ` as user #${registrant.index + 1}`;
-    }
-
-    if (!registrant.email) {
-        msg.push(`Email is required${userMsg}.`);
-    }
-
-    if (checkEmailExists(registrant.email, data.user)) {
-        msg.push(`Email ${registrant.email} already registered${userMsg}.`);
-    }
-
-    return msg;
-}
-
-function createUser(req, rsp, formData) {
-    var count = 0;
-    var arrayMsg = [];
-
-    if (!Array.isArray(formData)) {
-        formData = [formData];
-    }
-
-    if (formData.length < 2) {
-        if (isInvalid(invalidCreateUser, rsp, formData[0], data)) {
-            return;
-        }
-
-        var userid = resourceData.addUser(formData[0]);
-        rsp.writeHead(201, {'Content-Type': 'text/plain', "Location": `${API_DIR}/user/${userid[0]}`});
-        rsp.end(`User ${userid[0]} created.`);
-        return;
-    } else {
-        formData.forEach(function (registrant, index) {
-            var dataWithIndex = Object.assign({"index": index}, registrant);
-            var msg = isUserInvalid(dataWithIndex, data);
-
-            if (msg.length > 0) {
-                console.log('msg.length > 0');
-                arrayMsg = arrayMsg.concat(msg);
-            } else {
-                console.log('no error msg');
-                resourceData.addUser(registrant);
-                count += 1;
-            }
-        });
-
-        rsp.writeHead(201, {'Content-Type': 'text/plain'});
-        rsp.end(`${arrayMsg.join("\n")}
-
-${count} Users created.`);
-    }
-
-    return;
-}
-
-function updateUser(id, rsp, formData, moderator) {
-    formData = Object.assign({"id": id}, formData);
-    if (isInvalid(invalidUpdateUser, rsp, formData, data)) {
-        return;
-    }
-
-    // valid email, password strength, max size for fields
-    resourceData.updateUser(id, formData, moderator);
-
-    rsp.writeHead(200, {'Content-Type': 'text/plain'});
-    rsp.end(`User ${id} updated.`);
-    return;
 }
 
 /*function resetPassword(rsp, path, body) {
@@ -339,78 +255,6 @@ function isMod(req) {
         return false;
     }
     return (userData.userType === "administrator");
-}
-
-function invalidCreateUser(registrant, data) {
-    var msg = [];
-    var userMsg = "";
-
-    if (registrant.index) {
-        userMsg = ` for user ${registrant.index}`;
-    }
-
-    if (!registrant.email) {
-        msg.push(`Email is required${userMsg}.`);
-    }
-
-    if (checkEmailExists(registrant.email, data.user)) {
-        msg.push(`Email ${registrant.email} already registered${userMsg}.`);
-    }
-
-    return msg;
-}
-
-/*function invalidEmail(body, data) {
-    var msg = [];
-
-    if (!body.email) {
-        msg.push(`Email is required.`);
-    }
-
-    if (!body.locationId) {
-        msg.push(`Location is required.`);
-    }
-
-    return msg;
-}
-
-function invalidPassword(registrant, data) {
-    var msg = [];
-
-    if (!registrant.email) {
-        msg.push(`Password is required.`);
-    }
-
-    return msg;
-}*/
-
-function invalidUpdateUser(registrant, data) {
-    var msg = [];
-    var userMsg = "";
-
-    if (registrant.index) {
-        userMsg = ` for user ${registrant.index}`;
-    }
-
-    if (!registrant.email) {
-        msg.push(`Email is required${userMsg}.`);
-    }
-
-    if (data.user[registrant.id].email !== registrant.email && checkEmailExists(registrant.email, data.user)) {
-        msg.push(`Email ${registrant.email} already registered${userMsg}.`);
-    }
-
-    return msg;
-}
-
-function isInvalid(func, rsp, body, data) {
-    var msg = func(body, data);
-    if (msg.length) {
-        rsp.writeHead(400, {'Content-Type': 'text/plain'});
-        rsp.end(msg.join("\n"));
-        return true;
-    }
-    return false;
 }
 
 function getDelete(req, rsp) {
@@ -574,7 +418,7 @@ function rspPost(req, rsp, body) {
     }
 
     if (path.path === `${API_DIR}/user`) {
-        return createUser(req, rsp, body, data, resourceData.save);
+        return user.create(req, rsp, body, data, resourceData.save, API_DIR);
     }
 
     return main.notFound(rsp, req.url, 'POST', req, data);
@@ -582,7 +426,6 @@ function rspPost(req, rsp, body) {
 
 function rspPut(req, rsp, body) {
     var path = getPath(req.url);
-    var moderator = isMod(req);
     var userid;
     // var querystring = url.parse(req.url, true).query;
 
@@ -591,7 +434,7 @@ function rspPut(req, rsp, body) {
     }
     if (path.path === `${API_DIR}/user`) {
         if (path.id) {
-            updateUser(path.id, rsp, body, moderator);
+            user.update(req, rsp, path.id, body, data, resourceData.save, API_DIR);
         }
         return;
     }
