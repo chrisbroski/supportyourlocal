@@ -42,28 +42,17 @@ Fan accounts. Like/follow bands. Write "reviews"
 
 ## Monitization
 
-If you want a custom domain, it'll cost you $100 a year and we'll manage it. Plus, I don't know, white glove customer service? Maybe add a few other perks.
+Custom domain, more storage space (for photos.)
 
 Advertise for local venues and bands.
 
 # Architecture
 
-It'd be nice to be able to pull latest and have it be back-compatible. (All differences come from the data, and maybe env files.)
+Separate api and font-end into different repos.
 
 Make all sites https
 
-Each has it's own user management (for admin purposes) Reset password with local node util.
-
 ## Features for next version
-
-Get user management in a reasonable state
-
-* Put an admin key in the .env file
-* Allow owner to add managers/band members
-* List users
-* Change password
-* Change user information
-* Reset another user's password
 
 Initial setup (create user and password with a token, direct to band data)
 
@@ -72,3 +61,9 @@ Choose fonts
 Image upload and selection
 
 Albums (Need for B&B to adopt framework)
+
+Songs (Add duration)
+
+* Song duration
+* video embed (FB and YouTube)
+* Manage cover vs original recordings
