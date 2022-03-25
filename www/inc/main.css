@@ -1,7 +1,8 @@
 @import url("/api/custom.css");
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
 
 :root {
-    --header-font: 'Bowlby One SC';
+    --header-font: 'Great Vibes', cursive;
 }
 
 @font-face {
@@ -45,7 +46,7 @@ html {
 
 body {
     margin: 0; padding-top: 56px;
-    background: black url(/photos/ab676186000010160f19b83bd0f1ef92ace25e4e.jpeg) no-repeat;
+    background: black url(/photos/bg3.jpeg) no-repeat;
     background-attachment: fixed;
     background-size: cover;
     background-position: top center;
@@ -66,7 +67,7 @@ h4 {margin: 0.5em 0; font-size: 18px; font-weight: bold; color: rgb(var(--color2
 h5 {margin: 0.5em 0; font-size: 17px; font-weight: bold; }
 h6 {margin: 0.5em 0; font-size: 12px; font-weight: bold; }
 
-h1, h2, h3 {font-family: var(--header-font); font-weight: normal; color: rgb(var(--color2)); }
+h1, h2, h3 {font-family: var(--header-font); color: rgb(var(--color2)); font-weight: bold; }
 
 pre {
     margin: 12px 16px; padding: 8px;

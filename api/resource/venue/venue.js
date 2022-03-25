@@ -45,18 +45,18 @@ function listData(db) {
 }
 
 // Form validation
-function isUpdateInvalid(rsp, formData) {
+function isUpdateInvalid(req, rsp, formData, db, API_DIR) {
     var msg = [];
 
     if (!formData.name) {
         msg.push('Name is required.');
     }
 
-    return main.invalidMsg(rsp, msg);
+    return main.invalidMsg(rsp, msg, req, db, API_DIR);
 }
 
 this.create = function (req, rsp, formData, db, save, API_DIR) {
-    if (isUpdateInvalid(rsp, formData)) {
+    if (isUpdateInvalid(req, rsp, formData, db, API_DIR)) {
         return;
     }
 
@@ -65,7 +65,7 @@ this.create = function (req, rsp, formData, db, save, API_DIR) {
 
     if (req.headers.accept === 'application/json') {
         rsp.setHeader("Location", returnData.link);
-        return main.returnJson(rsp, returnData, true);
+        return main.returnJson(rsp, returnData, 201);
     }
 
     returnData.back = req.headers.referer;

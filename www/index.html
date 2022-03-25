@@ -5,9 +5,6 @@
 <title></title>
 <meta name="format-detection" content="telephone=no">
 <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bowlby+One+SC&display=swap" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="/inc/main.css">
 
 <body>
@@ -19,12 +16,12 @@
 </main>
 
 <script type="text/javascript" src="/inc/Aerophane.js"></script>
-<script type="text/javascript" src="/inc/main.js"></script>
 <script type="text/javascript" src="/inc/showdown.min.js"></script>
+<script type="text/javascript" src="/inc/main.js"></script>
 <script>
-var converter = new showdown.Converter();
 
 function showAnnouncements(announcementData) {
+    var converter = new showdown.Converter();
     var marquee = document.querySelector("main#home article:first-child");
 
     announcementData.announcements.forEach(function (a, idx) {
@@ -43,6 +40,7 @@ function showAnnouncements(announcementData) {
 }
 
 function showBandInfo(info) {
+    var converter = new showdown.Converter();
     var article;
     var section;
     var h1;
@@ -65,6 +63,8 @@ function showBandInfo(info) {
         article.appendChild(moreButton("/about", "More…"));
         document.querySelector("main").appendChild(article);
     }
+
+    getJsonData("/api/announcement/?pinned=Y", showAnnouncements);
 }
 
 function showShows(info) {
@@ -96,6 +96,7 @@ function showShows(info) {
 }
 
 function showMusic(info) {
+    var converter = new showdown.Converter();
     var article;
     var section;
     var h1;
@@ -150,7 +151,6 @@ function showMusic(info) {
 }
 
 getJsonData("/api/home/", showBandInfo);
-getJsonData("/api/announcement/?pinned=Y", showAnnouncements);
 getJsonData("/api/gig/?range=upcoming", showShows);
 getJsonData("/api/song/", showMusic);
 </script>

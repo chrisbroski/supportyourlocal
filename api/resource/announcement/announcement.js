@@ -79,14 +79,14 @@ function listData(db, req) {
 }
 
 // Form validation
-function isUpdateInvalid(req, rsp, formData, db) {
+function isUpdateInvalid(req, rsp, formData, db, API_DIR) {
     var msg = [];
 
     if (!formData.copy) {
         msg.push('Copy text is required.');
     }
 
-    return main.invalidMsg(rsp, msg, req, db);
+    return main.invalidMsg(rsp, msg, req, db, API_DIR);
 }
 
 function updateResource(id, formData, db, save) {
@@ -99,7 +99,7 @@ function updateResource(id, formData, db, save) {
 }
 
 this.create = function (req, rsp, formData, db, save, API_DIR) {
-    if (isUpdateInvalid(req, rsp, formData, db)) {
+    if (isUpdateInvalid(req, rsp, formData, db, API_DIR)) {
         return;
     }
 
@@ -108,7 +108,7 @@ this.create = function (req, rsp, formData, db, save, API_DIR) {
 
     if (req.headers.accept === 'application/json') {
         rsp.setHeader("Location", returnData.link);
-        return main.returnJson(rsp, returnData, true);
+        return main.returnJson(rsp, returnData, 201);
     }
 
     returnData.back = req.headers.referer;
@@ -120,7 +120,7 @@ this.update = function (req, rsp, id, formData, db, save, API_DIR) {
     if (!db[resourceName][id]) {
         return main.notFound(rsp, req.url, 'PUT', req, db);
     }
-    if (isUpdateInvalid(req.headers.accept, rsp, formData, db)) {
+    if (isUpdateInvalid(req.headers.accept, rsp, formData, db, API_DIR)) {
         return;
     }
 

@@ -1,9 +1,9 @@
 <!doctype html>
 <html lang="en">
-<title>{{givenName}} {{surname}} : {{eventName}}</title>
+<title>{{pageName}} - {{resourceNameCap}} - {{homeName}}</title>
 {{{head}}}
 
-<body id="user-page">
+<body>
 {{{header}}}
 
 <article>
@@ -15,7 +15,7 @@
 <input type="hidden" name="method" value="PUT">
 
 <p><label>First Name</label><br>
-    <input type="text" name="givenName" value="{{givenName}}">
+    <input type="text" name="givenName" value="{{givenName}}" autofocus="autofocus">
 <p><label>Last Name</label><br>
     <input type="text" name="surname" value="{{surname}}">
 <p><label>Email</label>*<br>
@@ -35,26 +35,42 @@
 </form>
 </section>
 
-<!--<section>
-<h3>Reset Password</h3>
-{{#token}}
-<p>Reset Link: <a href="{{API_DIR}}/password/{{id}}?token={{token}}">{{API_DIR}}/password/{{id}}?token={{token}}</a>
-<form method="POST" action="{{API_DIR}}/resend-reg/{{id}}">
-<p><button>Resend Register Email</button>
-</form>
-{{/token}}
-{{^token}}
+{{#isOwnUser}}
+<section>
+<h3>Change Password</h3>
 <form method="POST" action="{{API_DIR}}/password/{{id}}">
+<input type="hidden" name="method" value="PUT">
+<p><label>Current Password</label><br>
+    <input type="password" id="password" name="password" required="required">
+<p><label>New Password</label><br>
+    <input type="password" id="password" name="passwordNew" required="required">
+<p><label>Confirm New Password</label><br>
+    <input type="password" name="passwordConfirm" id="passwordConfirm" required="required">
+<p><button>Change Password</button></p>
+</form>
+</section>
+{{/isOwnUser}}
+
+{{^isOwnUser}}
+<section>
+{{#admin}}
+{{^token}}
+<form method="POST" action="{{API_DIR}}/password/{{id}}" enctype="application/x-www-form-urlencoded">
 <input type="hidden" name="method" value="DELETE">
-<p><button>Reset Password</button></p>
+<p><button>Reset Password</button>
 </form>
 {{/token}}
+{{#token}}
+<p><a href="{{API_DIR}}/password/{{id}}?token={{token}}">Password reset URL</a>
+{{/token}}
+{{/admin}}
 </section>
+{{/isOwnUser}}
 
 <section>
 <p><a class="button" href="{{API_DIR}}/delete?resource={{resourceName}}&id={{id}}">Delete {{resourceName}}</a></p>
 </section>
-{{/loggedIn}}-->
+{{/loggedIn}}
 
 {{^loggedIn}}
 <section>

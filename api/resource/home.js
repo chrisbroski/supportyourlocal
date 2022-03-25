@@ -4,7 +4,7 @@ const main = require('../inc/main.js');
 const resourceName = 'home';
 const template = {};
 
-function isUpdateInvalid(rsp, body) {
+function isUpdateInvalid(req, rsp, body, db, API_DIR) {
     var msg = [];
 
     if (!body.name) {
@@ -17,7 +17,7 @@ function isUpdateInvalid(rsp, body) {
         msg.push('Secondary color is required.');
     }
     // return msg;
-    return main.invalidMsg(rsp, msg);
+    return main.invalidMsg(rsp, msg, req, db, API_DIR);
 }
 
 function updateResource(body, db, save) {
@@ -40,13 +40,13 @@ function updateResource(body, db, save) {
 }
 
 this.update = function (req, rsp, formData, db, save, API_DIR) {
-    if (isUpdateInvalid(rsp, formData)) {
+    if (isUpdateInvalid(req, rsp, formData, db, API_DIR)) {
         return;
     }
 
     updateResource(formData, db, save);
 
-    var returnData = main.responseData("", resourceName, db, "Updated", API_DIR);
+    var returnData = main.responseData("", resourceName, db, "Updated", API_DIR, ["Band information updated."]);
 
     if (req.headers.accept === 'application/json') {
         return main.returnJson(rsp, returnData);

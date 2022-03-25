@@ -14,7 +14,7 @@
 <h2>Create User</h2>
 <form method="POST" action="{{API_DIR}}/user/" enctype="application/x-www-form-urlencoded">
 <p><label>First Name</label><br>
-    <input type="text" name="givenName">
+    <input type="text" name="givenName" autofocus="autofocus">
 <p><label>Surname</label><br>
     <input type="text" name="surname">
 <p><label>Email</label>*<br>
@@ -39,7 +39,7 @@
 {{#user}}
 <h4><a href="{{API_DIR}}/user/{{id}}">{{givenName}} {{surname}} {{email}}</a></h4>
 {{#token}}
-<p><a href="{{subDir}}/password/{{id}}?token={{token}}">Reset URL</a>
+<ul><li><a href="{{subDir}}/password/{{id}}?token={{token}}">{{email}} reset URL</a></ul>
 {{/token}}
 {{/user}}
 </section>

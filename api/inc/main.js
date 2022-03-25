@@ -9,6 +9,67 @@ require('dotenv').config({path: `${__dirname}/.env`});
 
 const TEMPLATE = {};
 
+function removeQs(fullUrl) {
+    if (!fullUrl) {
+        return '';
+    }
+    if (fullUrl.indexOf('?') === -1) {
+        return fullUrl;
+    }
+    return fullUrl.slice(0, fullUrl.indexOf('?'));
+}
+
+function extractResource(pathname) {
+    var resource = "";
+    var reResource;
+    var val;
+
+    if (pathname.slice(-1) !== "/") {
+        pathname = pathname + "/";
+    }
+    reResource = new RegExp("^\/([^\/]+)[\/]", "i");
+    val = reResource.exec(pathname);
+    if (val) {
+        resource = val[1];
+    }
+    return decodeURIComponent(resource);
+}
+
+function extractId(pathname, resource) {
+    var id = "";
+    var reId;
+    var val;
+
+    if (pathname.slice(-1) !== "/") {
+        pathname = pathname + "/";
+    }
+
+    reId = new RegExp('^\/' + resource + '\/([^\/]+)', "i");
+    val = reId.exec(pathname);
+    if (val) {
+        id = val[1];
+    }
+    return decodeURIComponent(id);
+}
+
+function getPath(pathname, API_DIR) {
+    var path;
+
+    pathname = removeQs(pathname);
+    path = pathname.slice(API_DIR.length);
+    if (!path) {
+        return {"pathname": pathname, id: "", resource: ""};
+    }
+
+    var resource = extractResource(path);
+    return {
+        "id": extractId(path, resource),
+        "pathname": decodeURI(pathname),
+        "resource": resource
+    };
+}
+this.getPath = getPath;
+
 const timeZones = {
     "EST": "-0500",
     "EDT": "-0400",
@@ -33,10 +94,10 @@ function makeTimestamp(date, time, tz) {
 }
 this.makeTimestamp = makeTimestamp;
 
-function hashPassword(password, salt) {
+function hash(password, salt) {
     return crypto.pbkdf2Sync(password, salt, 1, 63, 'sha512').toString('base64');
 }
-this.hashPassword = hashPassword;
+this.hash = hash;
 
 function zeroPad(n) {
     if (n < 10) {
@@ -136,13 +197,15 @@ this.createResource = createResource;
 
 function responseData(id, resourceName, db, action, API_DIR, msg) {
     var responseJson = {
-        "id": id,
-        "data": db[resourceName][id],
-        "link": `${API_DIR}/${resourceName}/${id}`,
-        "title": `${action} ${toTitleCase(resourceName)}`
+        "id": id
     };
+    if (resourceName && id) {
+        responseJson.data = db[resourceName][id];
+        responseJson.link = `${API_DIR}/${resourceName}/${id}`;
+        responseJson.title = `${action} ${toTitleCase(resourceName)}`;
+    }
 
-    if (action === "Deleted") {
+    if (action === "Deleted" && resourceName) {
         responseJson.link = `${API_DIR}/${resourceName}/`;
     }
 
@@ -156,7 +219,16 @@ function responseData(id, resourceName, db, action, API_DIR, msg) {
 }
 this.responseData = responseData;
 
-function invalidMsg(rsp, msg, req, db) {
+function isMod(req, db) {
+    var userData = getAuthUserData(req, db.user);
+    if (!userData) {
+        return false;
+    }
+    return (userData.admin === "Y");
+}
+this.isMod = isMod;
+
+function invalidMsg(rsp, msg, req, db, API_DIR) {
     if (!msg.length) {
         return false;
     }
@@ -167,12 +239,13 @@ function invalidMsg(rsp, msg, req, db) {
         return true;
     }
 
+    // this should go back to its own page with messages
     rsp.writeHead(400, {'Content-Type': 'text/html'});
     rsp.end(renderPage(req, null, {
         "resourceName": "400 Bad Request",
         "title": "Invalid Request (400)",
         "msg": msg
-    }, db));
+    }, db, API_DIR));
     return true;
 }
 this.invalidMsg = invalidMsg;
@@ -214,6 +287,8 @@ this.getUserIdByEmail = getUserIdByEmail;
 function renderPage(req, pageTemplate, d, db, API_DIR) {
     var userData = getAuthUserData(req, db.user);
     var loggedIn = true;
+    var hideLogin = false;//(req.pathname);
+    var cssVer = "22"; // maybe get hash or date of file?
     pageTemplate = pageTemplate || TEMPLATE.generic;
 
     if (!userData || !userData.userid || userData.userid === 'logout') {
@@ -226,11 +301,12 @@ function renderPage(req, pageTemplate, d, db, API_DIR) {
         "site": db.site,
         "server": req.headers.host,
         "loggedIn": loggedIn,
-        "API_DIR": API_DIR
+        "API_DIR": API_DIR,
+        "hideLogin": hideLogin
     });
 
     var head = mustache.render(TEMPLATE.head, {
-        "cssVersion": "12",
+        "cssVersion": cssVer,
         "API_DIR": API_DIR
     });
 
@@ -247,8 +323,8 @@ function renderPage(req, pageTemplate, d, db, API_DIR) {
 }
 this.renderPage = renderPage;
 
-this.returnJson = function (rsp, jsonData, created) {
-    var statusCode = created ? 201 : 200;
+this.returnJson = function (rsp, jsonData, statusCode) {
+    statusCode = statusCode || 200;
     rsp.writeHead(statusCode, {'Content-Type': 'application/json'});
     rsp.end(JSON.stringify(jsonData));
     return;

@@ -1,4 +1,5 @@
 /* jshint unused: false */
+/* global showdown*/
 var aero = new Aerophane();
 
 // aero.createMenu(document.querySelector("#select-admin"));
@@ -87,6 +88,7 @@ function ord(num) {
 }
 
 function gigInfoDiv(gig) {
+    var converter = new showdown.Converter();
     var div = document.createElement("div");
     var h3;
     var p;
@@ -115,6 +117,13 @@ function gigInfoDiv(gig) {
     p = document.createElement("p");
     p.textContent = `${gig.venueData.city}, ${gig.venueData.state}`;
     div.appendChild(p);
+
+    var markdown;
+    if (gig.desc) {
+        markdown = document.createElement("div");
+        markdown.innerHTML = converter.makeHtml(gig.desc);
+        div.appendChild(markdown);
+    }
     return div;
 }
 

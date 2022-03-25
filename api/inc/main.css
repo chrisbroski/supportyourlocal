@@ -32,6 +32,20 @@ body > header p {
 body > header p a {
     display: block;
 }
+body > header p input[type="text"], body > header p input[type="email"], body > header p input[type="password"] {
+    width: 90%;
+}
+body > header p label {
+    color: white;
+    font-weight: normal;
+}
+body > header button, body > header input[type="button"], body > header input[type="submit"], input[type="reset"], body > header a.button {
+    background-color: rgb(var(--color2));
+}
+body > header form {
+    margin: 4px;
+    padding: 4px;
+}
 li {font-size: 16px; margin-bottom: 0.3em; line-height: 1.4em; }
 h1 {
     margin: 0.5em 12px; padding: 8px;
@@ -72,10 +86,12 @@ input:invalid, select:invalid {
 section {
     margin: 12px; padding: 8px;
     background: white;
+}
+section + section {
     border-top: 1px #888 solid;
 }
 section > *:first-child {
-    margin-top: 0;
+    margin-top: 12px;
 }
 
 @media (max-width: 800px) {

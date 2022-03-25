@@ -3,15 +3,16 @@ const main = require('../../inc/main.js');
 const resourceName = 'user';
 const template = {};
 
-function single(db, id) {
-    // console.log(id);
-    // console.log(db[resourceName][id]);
+function single(db, id, req) {
+    var authUserData = main.getAuthUserData(req, db.user);
+
     var resourceData = Object.assign({
         "id": id,
         "resourceName": resourceName,
         "pageName": db[resourceName][id].name,
         "adminChecked": !!db[resourceName][id].admin ? ' checked="checked"' : '',
-        "memberChecked": !!db[resourceName][id].bandMember ? ' checked="checked"' : ''
+        "memberChecked": !!db[resourceName][id].bandMember ? ' checked="checked"' : '',
+        "isOwnUser": (authUserData.userid === id)
     }, db[resourceName][id]);
 
     return resourceData;
@@ -42,7 +43,7 @@ function checkEmailExists(email, users) {
 }
 
 // Form validation
-function isCreateInvalid(req, rsp, formData, db) {
+function isCreateInvalid(req, rsp, formData, db, API_DIR) {
     var msg = [];
 
     if (!formData.email) {
@@ -53,16 +54,16 @@ function isCreateInvalid(req, rsp, formData, db) {
         msg.push(`Email ${formData.email} already exists.`);
     }
 
-    return main.invalidMsg(rsp, msg, req, db);
+    return main.invalidMsg(rsp, msg, req, db, API_DIR);
 }
-function isUpdateInvalid(req, rsp, formData, db) {
+function isUpdateInvalid(req, rsp, formData, db, API_DIR) {
     var msg = [];
 
     if (!formData.email) {
         msg.push('Email is required.');
     }
 
-    return main.invalidMsg(rsp, msg, req, db);
+    return main.invalidMsg(rsp, msg, req, db, API_DIR);
 }
 
 function updateResource(id, formData, db, save) {
@@ -89,7 +90,7 @@ this.create = function (req, rsp, formData, db, save, API_DIR) {
 
     salt = main.makeId(12);
     if (formData.password) {
-        hash = main.hashPassword(formData.password, salt);
+        hash = main.hash(formData.password, salt);
     }
 
     db[resourceName][id].token = (formData.password) ? '' : salt;
@@ -100,7 +101,7 @@ this.create = function (req, rsp, formData, db, save, API_DIR) {
 
     if (req.headers.accept === 'application/json') {
         rsp.setHeader("Location", returnData.link);
-        return main.returnJson(rsp, returnData, true);
+        return main.returnJson(rsp, returnData, 201);
     }
 
     returnData.back = req.headers.referer;
@@ -159,7 +160,7 @@ this.get = function (req, rsp, id, db, API_DIR) {
             return main.returnJson(rsp, singleData(db, id));
         }
         rsp.writeHead(200, {'Content-Type': 'text/html'});
-        rsp.end(main.renderPage(req, template.single, single(db, id), db, API_DIR));
+        rsp.end(main.renderPage(req, template.single, single(db, id, req), db, API_DIR));
     } else {
         if (req.headers.accept === 'application/json') {
             return main.returnJson(rsp, listData(db, req));

@@ -1,32 +1,115 @@
 <!doctype html>
 <html lang="en">
-<title>Band - {{homeName}}</title>
+<title>API Tests - {{homeName}}</title>
 {{{head}}}
+<style>
+p.fail {color: red; }
+</style>
 
 <body id="site-page">
 {{{header}}}
 
 <article>
-<h1>{{name}}</h1>
+<h1>API Tests</h1>
 
 <section>
+<p><button>Run tests</button>
 <h2>Results</h2>
 </section>
 </article>
 
 <script>
-function getJsonData(url, verb, bodyData) {
+var API_DIR = "/api";
+var createdUrl;
+
+var tests = [
+    {
+        "name": "Get all songs",
+        "url": "/api/song/",
+        "verb": "GET"
+    },
+    {
+        "name": "Create invalid song",
+        "url": "/api/song/",
+        "verb": "POST",
+        "body": "{}",
+        "resultStatus": 400
+    },
+    {
+        "name": "Create new song",
+        "url": "/api/song/",
+        "verb": "POST",
+        "body": '{"name": "Song Title"}',
+        "resultStatus": 201
+    },
+    {
+        "name": "Check created song",
+        "url": "createdUrl",
+        "verb": "GET",
+        "resultData": [["name", "Song Title"]]
+    },
+    {
+        "name": "Delete created test song",
+        "url": "createdUrl",
+        "verb": "DELETE"
+    }
+];
+function runTest(test) {
     var xhr = new XMLHttpRequest();
-    xhr.open(verb, url, false);
+    var url = test.url;
+    if (url === "createdUrl") {
+        url = createdUrl;
+    }
+    xhr.open(test.verb, url, false);
     xhr.setRequestHeader("Accept", "application/json");
-    xhr.send(bodyData);
-    return xhr;
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.send(test.body);
+
+    var success = true;
+    var p = document.createElement("p");
+    var resultStatus = "OK";
+    test.resultStatus = test.resultStatus || 200;
+    if (xhr.status !== test.resultStatus) {
+        resultStatus = "FAIL";
+        success = false;
+    }
+
+    var resultText = "";
+    if (test.resultText) {
+        if (xhr.responseText !== test.resultText) {
+            resultText = "Body response FAIL";
+            success = false;
+        } else {
+            resultText = "Body response OK";
+        }
+    }
+    var resultData = {};
+    if (test.resultData) {
+        resultData = JSON.parse(xhr.responseText);
+        resultText = "Data response OK";
+        test.resultData.forEach(testData => {
+            if (testData[1] !== resultData[testData[0]]) {
+                resultText = "Data response FAIL";
+                success = false;
+            }
+        });
+    }
+    if (!success) {
+        p.className = "fail";
+    }
+    p.textContent = `${test.name} ${xhr.status} ${resultStatus} ${resultText}`;
+    document.querySelector("section").appendChild(p);
+
+    if (xhr.status === 201) {
+        createdUrl = xhr.getResponseHeader("location");
+    }
 }
 
-function testSongs() {
-    var xhr = getJsonData("/api/song/", "POST", "name=Test+Name+6789");
-    console.log(xhr.status);
-    // console.log(xhr.responseData);
+function runTests() {
+    tests.forEach(test => {
+        runTest(test);
+    });
 }
-testSongs();
+
+document.querySelector("button").addEventListener("click", runTests);
 </script>

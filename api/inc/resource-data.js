@@ -32,23 +32,6 @@ resourceData.completePasswordReset = function (id, newPassword) {
     resourceData.save();
 };
 
-resourceData.setPassword = function (id, formData) {
-    var salt = makeId(12);
-    var hash = hashPassword(formData.passwordNew, salt);
-
-    data.user[id].salt = salt;
-    data.user[id].hash = hash;
-    data.user[id].token = '';
-
-    if (formData.firstName) {
-        data.user[id].firstName = formData.firstName;
-    }
-    if (formData.surname) {
-        data.user[id].surname = formData.surname;
-    }
-    resourceData.save();
-};
-
 function save(sync) {
     var dataPath = `${__dirname}/../../data/data.json`;
     // This is only meant to be used on exit, so no data is lost
@@ -71,35 +54,6 @@ function save(sync) {
         });
     }, saveDelay);
 }
-
-resourceData.addUser = function (formData) {
-    var id = makeId();
-    var salt = makeId(12);
-    var hash;
-
-    if (formData.password) {
-        hash = hashPassword(formData.password, salt);
-    }
-
-    data.user[id] = {};
-    data.user[id].email = formData.email;
-    data.user[id].role = formData.role || "administrator";
-    // data.user[id].location = formData.location;
-
-    data.user[id].token = (formData.password) ? '' : salt;
-    data.user[id].salt = !formData.password ? '' : salt;
-    data.user[id].hash = !formData.password ? '' : hash;
-
-    save();
-    return [id, salt];
-};
-
-resourceData.updateUser = function (id, formData) {
-    data.user[id].email = formData.email;
-    data.user[id].role = formData.role;
-    data.user[id].location = formData.location;
-    save();
-};
 
 function ifNotUndefinedUpdate(key, formData, obj) {
     if (formData[key] !== undefined) {
@@ -141,14 +95,6 @@ resourceData.patchUser = function (id, formData, moderator) {
 resourceData.deleteUser = function (id) {
     delete data.user[id];
     save();
-};
-
-resourceData.resetPassword = function (id) {
-    data.user[id].salt = '';
-    data.user[id].hash = '';
-    data.user[id].token = makeId(6);
-    save();
-    return data.user[id].token;
 };
 
 resourceData.load = async function (saveLag) {
