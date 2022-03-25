@@ -109,43 +109,10 @@ function rspPost(req, rsp, path, body) {
     }
 
     if (path.resource === "password") {
-        // console.log("id", path.id);
-        // console.log(path);
         return auth.set(req, rsp, path.id, body, data, resourceData.save, API_DIR);
     }
 
-    // if (path.pathname === `${API_DIR}/forgot-password`) {
-    //     if (!body.email) {
-    //         rsp.writeHead(400, {'Content-Type': 'text/plain'});
-    //         rsp.end('Email is required.');
-    //         return;
-    //     }
-    //     userid = main.getUserIdByEmail(body.email, data.user);
-    //     if (!userid) {
-    //         if (req.headers.accept === 'application/json') {
-    //             rsp.writeHead(404, {'Content-Type': 'text/plain'});
-    //             rsp.end('Email not found.');
-    //         } else {
-    //             rsp.writeHead(303, {"Location": `https://${req.headers.host}/auth-forgot?msg=Email%20${body.email}%20not%20found.`});
-    //             rsp.end();
-    //         }
-    //         return;
-    //     }
-    //
-    //     token = resourceData.resetPassword(userid);
-    //     returnUrl = `https://${req.headers.host}/auth-reset?userid=${userid}&token=${token}`;
-    //     // sendResetEmail(returnUrl, data.user[userid].email);
-    //
-    //     if (req.headers.accept === 'application/json') {
-    //         rsp.writeHead(200, {'Content-Type': 'application/json'}).end(JSON.stringify({
-    //             "returnUrl": returnUrl
-    //         }));
-    //     } else {
-    //         rsp.writeHead(303, {"Location": `https://${req.headers.host}/`});
-    //     }
-    //     rsp.end();
-    //     return;
-    // }
+    // if (path.pathname === `${API_DIR}/forgot-password`) {}
 
     if (path.resource === `gig`) {
         return gig.create(req, rsp, body, data, resourceData.save, API_DIR);
@@ -239,31 +206,40 @@ function rspGet(req, rsp, path) {
         rsp.writeHead(200, {'Content-Type': 'image/png'});
         rsp.end(ASSET.favicon);
         return;
-    } else if (path.pathname === `${API_DIR}/main.css`) {
+    }
+    if (path.pathname === `${API_DIR}/main.css`) {
         rsp.setHeader('Cache-Control', 'max-age=31536000,public');
         rsp.writeHead(200, {'Content-Type': 'text/css'});
         rsp.end(ASSET.mainCss);
         return;
-    } else if (path.pathname === `${API_DIR}/custom.css`) {
+    }
+    if (path.pathname === `${API_DIR}/custom.css`) {
         return home.getCss(req, rsp, data, true);
-    } else if (path.pathname === `${API_DIR}/header.pht`) {
+    }
+    if (path.pathname === `${API_DIR}/header.pht`) {
         return home.getHeader(req, rsp, data);
-    } else if (path.pathname === `/ajax-tool`) {
+    }
+    if (path.pathname === `/ajax-tool`) {
         rsp.setHeader('Cache-Control', 'max-age=31536000,public');
         rsp.writeHead(200, {'Content-Type': 'text/html'});
         rsp.end(ASSET.ajaxTool);
         return;
-    } else if (path.pathname === `${API_DIR}/tests`) {
+    }
+    if (path.pathname === `${API_DIR}/tests`) {
         rsp.writeHead(200, {'Content-Type': 'text/html'});
         rsp.end(main.renderPage(req, TEMPLATE.tests, {}, data, API_DIR));
         return;
-    } else if (path.pathname === `${API_DIR}/login`) {
+    }
+    if (path.pathname === `${API_DIR}/login`) {
         return auth.get(req, rsp, data, API_DIR);
-    } else if (path.pathname === `${API_DIR}/`) {
+    }
+    if (path.pathname === `${API_DIR}/`) {
         return homePage(req, rsp);
-    } else if (path.pathname === `${API_DIR}/home` || path.pathname === `${API_DIR}/home/`) {
+    }
+    if (path.pathname === `${API_DIR}/home` || path.pathname === `${API_DIR}/home/`) {
         return home.get(req, rsp, data, API_DIR);
-    } else if (path.pathname === `${API_DIR}/logout`) {
+    }
+    if (path.pathname === `${API_DIR}/logout`) {
         cookies = main.parseCookie(req.headers.cookie);
         rsp.setHeader('Set-Cookie', [
             `token=; Path=/; SameSite=Strict;`, // make secure later
@@ -272,7 +248,8 @@ function rspGet(req, rsp, path) {
         rsp.writeHead(303, {'Content-Type': 'text/html', "Location": `${API_DIR}/home`});
         rsp.end(main.renderPage(req, null, {"msg": ["Logged out"], "title": `Logged out`, "link": `${API_DIR}/home/`}, data, API_DIR));
         return;
-    } else if (path.resource === `data`) {
+    }
+    if (path.resource === `data`) {
         rsp.setHeader('Cache-Control', 'max-age=0,no-cache,no-store,post-check=0,pre-check=0');
         rsp.writeHead(200, {'Content-Type': 'application/json'});
         if (path.id) {
@@ -286,57 +263,32 @@ function rspGet(req, rsp, path) {
             rsp.end(JSON.stringify(data));
         }
         return;
-    } else if (path.resource === `gig`) {
+    }
+    if (path.resource === `gig`) {
         // rsp.setHeader('Cache-Control', 'max-age=0,no-cache,no-store,post-check=0,pre-check=0');
         return gig.get(req, rsp, path.id, data, API_DIR, MAP_KEY);
-    } else if (path.resource === `venue`) {
-        return venue.get(req, rsp, path.id, data, API_DIR);
-    } else if (path.resource === `song`) {
-        return song.get(req, rsp, path.id, data, API_DIR);
-    } else if (path.resource === `announcement`) {
-        return announcement.get(req, rsp, path.id, data, API_DIR);
-    } else if (path.resource === `user`) {
-        return user.get(req, rsp, path.id, data, API_DIR);
-    } else if (path.resource === `delete`) {
-        return getDelete(req, rsp, data, API_DIR);
-    } else if (path.resource === "password") {
-        return auth.getPassword(req, rsp, path.id, data, API_DIR);
-    } else if (path.pathname === `${API_DIR}/forgot-password`) {
-    //     if (authenticate(req, rsp, path)) {
-    //         rsp.writeHead(400, {'Content-Type': 'text/plain'});
-    //         rsp.end(`You are already logged in.`);
-    //         return;
-    //     }
-    //
-    //     rsp.writeHead(200, {'Content-Type': 'text/html'});
-    //     rsp.end("temp");
-    //     // rsp.end(main.renderPage(req, TEMPLATE.forgotPassword, forgotPassword(querystring), data));
-    //     return;
-    // // } else if (path.pathname === `${API_DIR}/auth`) {
-    // //     cookies = main.parseCookie(req.headers.cookie);
-    // //     if (cookies.user) {
-    // //         authUserData = data.user[cookies.user];
-    // //     } else {
-    // //         authUserData = {};
-    // //     }
-    //
-    //     /*if (!authUserData.email) {
-    //         rsp.writeHead(403, {'Content-Type': 'application/json'});
-    //         rsp.end("{}");
-    //         return;
-    //     }*/
-    //
-    //     // rsp.writeHead(200, {'Content-Type': 'application/json'});
-    //     // rsp.end(JSON.stringify({
-    //     //     "id": cookies.user,
-    //     //     "email": authUserData.email,
-    //     //     "role": authUserData.role,
-    //     //     "location": authUserData.location || ""
-    //     // }));
-    //     // return;
-    } else {
-        return main.notFound(rsp, path.pathname, 'GET', req, data);
     }
+    if (path.resource === `venue`) {
+        return venue.get(req, rsp, path.id, data, API_DIR);
+    }
+    if (path.resource === `song`) {
+        return song.get(req, rsp, path.id, data, API_DIR);
+    }
+    if (path.resource === `announcement`) {
+        return announcement.get(req, rsp, path.id, data, API_DIR);
+    }
+    if (path.resource === `user`) {
+        return user.get(req, rsp, path.id, data, API_DIR);
+    }
+    if (path.resource === `delete`) {
+        return getDelete(req, rsp, data, API_DIR);
+    }
+    if (path.resource === "password") {
+        return auth.getPassword(req, rsp, path.id, data, API_DIR);
+    }
+    // if (path.pathname === `${API_DIR}/forgot-password`) {}
+
+    return main.notFound(rsp, path.pathname, 'GET', req, data);
 }
 
 function getMethod(req, body) {
