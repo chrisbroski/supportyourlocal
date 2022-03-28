@@ -54,16 +54,15 @@ Make all sites https
 
 ## Features for next version
 
-Initial setup (create user and password with a token, direct to band data)
+### Front-end nav build from JSON
 
-Choose fonts
+### Image upload and selection
 
-Image upload and selection
+### Releases (include albums) (Needed for B&B to fully adopt back end)
 
-Albums (Need for B&B to adopt framework)
+* Select and original recording of an album or song.
 
-Songs (Add duration)
+### Songs (Add duration)
 
 * Song duration
 * video embed (FB and YouTube)
-* Manage cover vs original recordings

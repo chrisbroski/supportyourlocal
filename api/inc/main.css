@@ -1,7 +1,7 @@
 @import url("custom.css");
 
 * {box-sizing: border-box; }
-html {padding: 0; font-family: droid sans, sans-serif; }
+html {padding: 0; font-family: var(--body-font); }
 body {margin: 0; padding-left: 240px; padding-bottom: 200px; }
 a {color: rgb(var(--color1))}
 a:visited {rgba(var(--color1), 0.9); }
@@ -47,17 +47,22 @@ body > header form {
     padding: 4px;
 }
 li {font-size: 16px; margin-bottom: 0.3em; line-height: 1.4em; }
+h1, h2, h3 {
+    font-family: var(--header-font);
+    color: rgb(var(--color2));
+    font-weight: var(--header-font-weight);
+}
 h1 {
     margin: 0.5em 12px; padding: 8px;
     font-size: 36px;
     text-transform: capitalize;
-    color: rgb(var(--color2));
 }
-h2 {margin: 0.5em 0; font-size: 32px; text-transform: capitalize; }
-h3 {margin: 0.5em 0; font-size: 28px; }
-h4 {margin: 0.5em 0; font-size: 24px; }
+h2 {margin: 0.5em 0; font-size: 32px; color: rgb(var(--color2)); text-transform: capitalize; }
+h3 {margin: 0.5em 0; font-size: 28px; color: rgb(var(--color2)); }
+h4 {margin: 0.5em 0; font-size: 24px; color: rgb(var(--color2)); }
+h5 {color: rgb(var(--color2)); }
 p, h5 {margin: 0.5em 0; font-size: 17px; line-height: 1.4em; max-width: 580px; }
-h6 {margin: 0.5em 0; }
+h6 {margin: 0.5em 0; color: rgb(var(--color2)); }
 input, select {font-size: 17px; }
 input[type="text"], input[type="email"], input[type="password"] {
     width: 22em;
@@ -65,6 +70,7 @@ input[type="text"], input[type="email"], input[type="password"] {
 textarea {width: 100%; height: 8em; font-size: 16px; max-width: 580px; }
 button, input[type="button"], input[type="submit"], input[type="reset"], a.button {
     padding: 12px;
+    font-family: var(--body-font);
     font-size: 17px;
     background-color: rgb(var(--color1));
     color: #fff;

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<title>Band - {{homeName}}</title>
+{{{head}}}
+
+<body id="site-page">
+{{{header}}}
+
+<article>
+<h1>{{name}}</h1>
+
+<section>
+<h2>Band Info</h2>
+{{^loggedIn}}
+<h5>Bio</h5>
+<pre>{{bio}}</pre>
+<h5>Contact Info</h5>
+<pre>{{contact}}</pre>
+</section>
+{{/loggedIn}}
+
+{{#loggedIn}}
+<form method="POST" action="{{API_DIR}}/band" enctype="application/x-www-form-urlencoded">
+<input type="hidden" name="method" value="PUT">
+<p><label>Band Name</label>*<br>
+    <input type="text" name="name" value="{{name}}" autofocus="autofocus" required="required">
+<p><label>Bio</label><br>
+    <textarea name="bio">{{bio}}</textarea></p>
+<p><label>Contact Information</label><br>
+<textarea name="contact">{{contact}}</textarea></p>
+<p>Your bio and contact information must be plain text, but may also use <a href="https://www.markdownguide.org/" target="_blank">markdown syntax</a>.</p>
+
+<p><button>Update Band Information</button>
+</form>
+{{/loggedIn}}
+</section>
+
+</article>

@@ -17,16 +17,12 @@
 <p><label>Name</label>*<br>
     <input type="text" name="name" autofocus="autofocus" required="required">
 
-<p><label>Release Date</label><br>
-    <input type="date" name="date" value="{{today}}">
-
-<p><label>Front Cover</label><br>
-    <input type="text" name="cover-front">
-
-<p><label>Back Cover</label><br>
-    <input type="text" name="cover-back">
+<p><label>Duration</label><br>
+    <input type="number" name="durationM" min="0" max="120" step="1" value="1"> minutes
+    <input type="number" name="durationS" min="0" max="60" step="1" value="0"> seconds
 
 <p><label>Description<br><textarea name="desc"></textarea></p>
+<p><label>Story<br><textarea name="story"></textarea></p>
 
 <h3>Audio</h3>
 
@@ -39,11 +35,19 @@
 <p><label>Amazon Music</label><br>
     <input type="text" name="amazon">
 
+<p><label>CD Baby</label><br>
+    <input type="text" name="cdbaby">
+
 <p><label>YouTube</label><br>
     <input type="text" name="youtube">
 
-<p><label>CD Baby</label><br>
-    <input type="text" name="cdbaby">
+<h3>Video</h3>
+
+<p><label>YouTube</label><br>
+<input type="text" name="video-youtube">
+
+<p><label>Facebook</label><br>
+<input type="text" name="videofb">
 
 <p><label>Lyrics<br><textarea name="lyrics"></textarea></p>
 

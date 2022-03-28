@@ -1,9 +1,9 @@
 {
-    "home": {
-        "name": "Band Name",
+    "site": {
         "color1": "#000000",
-        "color2": "#000000"
+        "color2": "#0000ff"
     },
+    "band": {},
     "gig": {},
     "venue": {},
     "song": {},

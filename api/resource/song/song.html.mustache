@@ -12,7 +12,6 @@
 {{^loggedIn}}
 <section>
 <h3>{{name}}</h3>
-<p>Released on {{date}}</p>
 <p><img src="{{cover-front}}"></p>
 <p><img src="{{cover-back}}"></p>
 <pre>{{desc}}</pre>
@@ -21,8 +20,10 @@
 <p><a href="{{audio.apple}}">{{audio.apple}}</a></p>
 <p><a href="{{audio.amazon}}">{{audio.amazon}}</a></p>
 <p><a href="{{audio.cdbaby}}">{{audio.cdbaby}}</a></p>
-<h4>Video</h4>
 <p><a href="{{audio.youtube}}">{{audio.youtube}}</a></p>
+<h4>Video</h4>
+<p><a href="{{video.youtube}}">{{video.youtube}}</a></p>
+<p><a href="{{video.fb}}">{{video.fb}}</a></p>
 </section>
 {{/loggedIn}}
 
@@ -33,16 +34,13 @@
 
 <p><label>Name</label>*<br>
     <input type="text" name="name" value="{{name}}" autofocus="autofocus" required="required">
-<p><label>Release Date</label><br>
-    <input type="date" name="date" value="{{date}}">
-<p><label>Front Cover</label><br>
-    <input type="text" name="cover-front" value="{{cover-front}}">
-<p><label>Back Cover</label><br>
-    <input type="text" name="cover-back" value="{{cover-back}}">
+<p><label>Duration</label>*<br>
+    <input type="number" name="durationM" min="0" max="120" step="1" value="{{durationM}}"> minutes
+    <input type="number" name="durationS" min="0" max="60" step="1" value="{{durationS}}"> seconds
 <p><label>Description<br><textarea name="desc">{{desc}}</textarea></p>
+<p><label>Story<br><textarea name="desc">{{story}}</textarea></p>
 
 <h3>Audio</h3>
-
 <p><label>Spotify</label><br>
     <input type="text" name="spotify" value="{{audio.spotify}}">
 <p><label>Apple Music</label><br>
@@ -53,6 +51,12 @@
     <input type="text" name="youtube" value="{{audio.youtube}}">
 <p><label>CD Baby</label><br>
     <input type="text" name="cdbaby" value="{{audio.cdbaby}}">
+
+<h3>Audio</h3>
+<p><label>YouTube</label><br>
+    <input type="text" name="video-youtube" value="{{video.youtube}}">
+<p><label>CD Baby</label><br>
+    <input type="text" name="video-fb" value="{{video.fb}}">
 
 <p><label>Lyrics<br><textarea name="lyrics">{{lyrics}}</textarea></p>
 

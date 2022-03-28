@@ -1,17 +1,17 @@
 <header>
     <h2><a href="{{API_DIR}}/">Home</a></h2>
     <p>
-        <a href="{{API_DIR}}/home">Band</a>
+        <a href="{{API_DIR}}/site">Site</a>
+        <a href="{{API_DIR}}/band">Band</a>
         <a href="{{API_DIR}}/gig/">Gigs</a>
         <a href="{{API_DIR}}/venue/">Venues</a>
         <a href="{{API_DIR}}/song/">Songs</a>
-        <a href="{{API_DIR}}/album/">Albums</a>
-        <a href="{{API_DIR}}/announcement/">Anouncements</a>
+        <a href="{{API_DIR}}/album/">Releases</a>
+        <a href="{{API_DIR}}/announcement/">Announcements</a>
         <a href="{{API_DIR}}/user/">Members</a>
     </p>
     <p>
     {{#loggedIn}}
-        <a href="{{API_DIR}}/password">Change Password</a>
         <a href="{{API_DIR}}/logout">Logout</a>
     {{/loggedIn}}
     {{^loggedIn}}

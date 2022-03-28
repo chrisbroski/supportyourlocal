@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<title>{{pageName}} - {{resourceNameCap}} - {{homeName}}</title>
+{{{head}}}
+
+<body>
+{{{header}}}
+
+<article>
+<h1>{{resourceName}}</h1>
+
+{{^loggedIn}}
+<section>
+<h3>{{name}}</h3>
+<p>Released on {{date}}</p>
+<p><img src="{{cover-front}}"></p>
+<p><img src="{{cover-back}}"></p>
+<pre>{{desc}}</pre>
+</section>
+{{/loggedIn}}
+
+{{#loggedIn}}
+<section>
+<form method="POST" action="{{API_DIR}}/{{resourceName}}/{{id}}">
+<input type="hidden" name="method" value="PUT">
+
+<p><label>Name</label>*<br>
+    <input type="text" name="name" value="{{name}}" autofocus="autofocus" required="required">
+<p><label>Release Date</label><br>
+    <input type="date" name="date" value="{{date}}">
+<p><label>Front Cover</label><br>
+    <input type="text" name="cover-front" value="{{cover-front}}">
+<p><label>Back Cover</label><br>
+    <input type="text" name="cover-back" value="{{cover-back}}">
+<p><label>Description<br><textarea name="desc">{{desc}}</textarea></p>
+
+<p><button>Update {{resourceName}}</button>
+</form>
+</section>
+
+<section>
+<p><a class="button" href="{{API_DIR}}/delete?resource={{resourceName}}&id={{id}}">Delete {{resourceName}}</a></p>
+</section>
+{{/loggedIn}}
+</article>

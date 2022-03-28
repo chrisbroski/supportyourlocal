@@ -158,8 +158,8 @@ function login(req, rsp, body, db, API_DIR) {
             `user=${userId}; Path=/; SameSite=Strict; Max-Age=${SESSION_TIMEOUT_SECONDS};${secure}`
         ]);
 
-        rsp.writeHead(303, {'Content-Type': 'text/html', "Location": `${API_DIR}/home`});
-        rsp.end(main.renderPage(req, null, {"msg": ["Logged in"], "title": `Logged in`, "link": `${API_DIR}/home/`}, db, API_DIR));
+        rsp.writeHead(303, {'Content-Type': 'text/html', "Location": `${API_DIR}/site`});
+        rsp.end(main.renderPage(req, null, {"msg": ["Logged in"], "title": `Logged in`, "link": `${API_DIR}/`}, db, API_DIR));
         return true;
     }
 
@@ -170,13 +170,23 @@ function login(req, rsp, body, db, API_DIR) {
 }
 this.login = login;
 
+function logout(req, rsp, db, API_DIR) {
+    rsp.setHeader('Set-Cookie', [
+        `token=; Path=/; SameSite=Strict;`, // make secure later
+        `user=; Path=/; SameSite=Strict;` // make secure later
+    ]);
+    rsp.writeHead(303, {'Content-Type': 'text/html', "Location": `${API_DIR}/`});
+    rsp.end(main.renderPage(req, null, {"msg": ["Logged out"], "title": `Logged out`, "link": `${API_DIR}/`}, db, API_DIR));
+}
+this.logout = logout;
+
 function set(req, rsp, id, formData, db, save, API_DIR) {
     if (isSetInvalid(req, rsp, formData, db, id, API_DIR)) {
         return;
     }
     updatePassword(id, formData, db, save);
-    rsp.writeHead(303, {'Content-Type': 'text/html', "Location": `${API_DIR}/home`});
-    rsp.end(main.renderPage(req, null, {"msg": ["Password set"], "title": `Password set`, "link": `${API_DIR}/home/`}, db, API_DIR));
+    rsp.writeHead(303, {'Content-Type': 'text/html', "Location": `${API_DIR}/`});
+    rsp.end(main.renderPage(req, null, {"msg": ["Password set"], "title": `Password set`, "link": `${API_DIR}/`}, db, API_DIR));
     return;
 }
 this.set = set;

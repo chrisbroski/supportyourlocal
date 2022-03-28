@@ -1,5 +1,6 @@
 const main = require('../../inc/main.js');
-const resourceName = 'album';
+
+const resourceName = 'release';
 const template = {};
 
 function single(db, id) {
@@ -13,7 +14,7 @@ function single(db, id) {
 }
 
 function list(db) {
-    var resourceData = main.objToArray(db[resourceName]).sort(main.sortByName);
+    var resourceData = main.objToArray(db[resourceName]).sort(main.sortByDateDesc);
 
     return {
         [resourceName]: resourceData,
@@ -27,7 +28,7 @@ function singleData(db, id) {
 }
 
 function listData(db) {
-    return main.objToArray(db[resourceName]).sort(main.sortByName);
+    return main.objToArray(db[resourceName]).sort(main.sortByDateDesc);
 }
 
 // Form validation
@@ -35,7 +36,7 @@ function isUpdateInvalid(req, rsp, formData, db, API_DIR) {
     var msg = [];
 
     if (!formData.name) {
-        msg.push('Album name is required.');
+        msg.push('Name is required.');
     }
 
     return main.invalidMsg(rsp, msg, req, db, API_DIR);
@@ -43,7 +44,7 @@ function isUpdateInvalid(req, rsp, formData, db, API_DIR) {
 
 function updateResource(id, formData, db, save) {
     db[resourceName][id].name = formData.name;
-    db[resourceName][id].released = formData.released;
+    db[resourceName][id].date = formData.date;
     db[resourceName][id].desc = formData.desc;
     db[resourceName][id].lyrics = formData.lyrics;
 
@@ -63,7 +64,7 @@ function updateResource(id, formData, db, save) {
 }
 
 this.create = function (req, rsp, formData, db, save, API_DIR) {
-    if (isUpdateInvalid(req, rsp, formData, db, API_DIR)) {
+    if (isUpdateInvalid(req, rsp, formData, db)) {
         return;
     }
 
@@ -84,7 +85,7 @@ this.update = function (req, rsp, id, formData, db, save, API_DIR) {
     if (!db[resourceName][id]) {
         return main.notFound(rsp, req.url, 'PUT', req, db);
     }
-    if (isUpdateInvalid(req.headers.accept, rsp, formData, db, API_DIR)) {
+    if (isUpdateInvalid(req.headers.accept, rsp, formData, db)) {
         return;
     }
 

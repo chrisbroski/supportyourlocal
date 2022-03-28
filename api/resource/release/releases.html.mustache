@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<title>{{resourceNameCap}}s - {{homeName}}</title>
+{{{head}}}
+
+<body>
+{{{header}}}
+
+<article>
+<h1>{{resourceName}}s</h1>
+
+{{#loggedIn}}
+<section>
+<h2>Create New {{resourceName}}</h2>
+<form method="POST" action="{{API_DIR}}/{{resourceName}}/">
+
+<p><label>Name</label>*<br>
+    <input type="text" name="name" autofocus="autofocus" required="required">
+
+<p><label>Release Date</label><br>
+    <input type="date" name="date" value="{{today}}">
+
+<p><label>Front Cover</label><br>
+    <input type="text" name="cover-front">
+
+<p><label>Back Cover</label><br>
+    <input type="text" name="cover-back">
+
+<p><label>Description<br><textarea name="desc"></textarea></p>
+
+<p><button>Create {{resourceName}}</button>
+</form>
+</section>
+{{/loggedIn}}
+
+<section>
+{{#song}}
+<h4><a href="{{API_DIR}}/{{resourceName}}/{{id}}">{{name}}</a></h4>
+{{/song}}
+</section>
+
+</article>

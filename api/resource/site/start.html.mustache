@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<title>Setup - Support Your Local Band</title>
+{{{head}}}
+
+<body id="start">
+
+<article>
+<h1>Set Up Your Site</h1>
+
+<section>
+<p>First we need your band's name and a primary login account. Don't worry too much because you can easily change these later.
+
+{{#msg}}
+<p>{{.}}</p>
+{{/msg}}
+
+<form method="POST" action="{{API_DIR}}/start" enctype="application/x-www-form-urlencoded">
+<p><label>Setup Token</label>*<br>
+    <input type="text" name="setupToken" value="{{setup-token}}" autofocus="autofocus">
+<p><label>Band Name</label>*<br>
+    <input type="text" name="name" value="{{name}}" required="required">
+<p><label>Primary Email</label>*<br>
+    <input type="email" name="email" value="{{email}}" required="required">
+<p><label>Password</label>*<br>
+    <input type="password" name="password" required="required">
+<p><label>Confirm Password</label>*<br>
+    <input type="password" name="confirmPassword" required="required">
+
+<p><button>Complete Initial Setup</button>
+</form>
+
+</section>
+
+</article>

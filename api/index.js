@@ -1,6 +1,5 @@
 // Standard libs
 const http = require('http');
-// const https = require('https');
 const fs = require("fs");
 const qs = require('querystring');
 const util = require('util');
@@ -22,51 +21,50 @@ const SESSION_TIMEOUT_SECONDS = process.env.SESSION_TIMEOUT_SECONDS || 31622400;
 
 // Custom libs
 const main = require('./inc/main.js');
-const resourceData = require('./inc/resource-data.js');
+const endure = require('./inc/endure.js');
 
 // Resources
 const auth = require('./resource/auth/auth.js');
 auth.init(FAIL_UNTIL_LOCKOUT, LOCKOUT_DURATION_SECONDS, SESSION_TIMEOUT_SECONDS);
 const gig = require('./resource/gig/gig.js');
 const venue = require('./resource/venue/venue.js');
-const home = require('./resource/home.js');
+const band = require('./resource/band/band.js');
 const song = require('./resource/song/song.js');
 const announcement = require('./resource/announcement/announcement.js');
 const user = require('./resource/user/user.js');
+const site = require('./resource/site/site.js');
 
 // Application state
 const ASSET = {};
 const TEMPLATE = {};
-var data;
+var db;
 
 function authenticate(req, rsp, path) {
     var cookies, userid;
     var userData;
 
-    var exceptions = ["login", "password"];
-
-    // also exclude password set after reset w/ token
+    var exceptions = ["login", "password", "forgot-password", "start"];
     if (exceptions.indexOf(path.resource) > -1) {
         return true;
     }
 
     cookies = main.parseCookie(req.headers.cookie);
     if (!cookies.user) {
-        return auth.fail(req, rsp, 'Not logged in', data, API_DIR);
+        return auth.fail(req, rsp, 'Not logged in', db, API_DIR);
     }
     userid = cookies.user;
 
-    userData = data.user[userid];
+    userData = db.user[userid];
     if (!userData) {
-        return auth.fail(req, rsp, 'User id not found', data, API_DIR);
+        return auth.fail(req, rsp, 'User id not found', db, API_DIR);
     }
 
     if (!userData.hash) {
-        return auth.fail(req, rsp, 'User not able to log in. Please contact your moderator.', data, API_DIR);
+        return auth.fail(req, rsp, 'User not able to log in. Please contact your moderator.', db, API_DIR);
     }
 
     if (main.hash(userData.password + userid, userData.salt) !== cookies.token) {
-        return auth.fail(req, rsp, 'Invalid token', data, API_DIR);
+        return auth.fail(req, rsp, 'Invalid token', db, API_DIR);
     }
 
     return true;
@@ -83,15 +81,15 @@ function isFileForm(req) {
 
 function homePage(req, rsp) {
     rsp.writeHead(200, {'Content-Type': 'text/html'});
-    rsp.end(main.renderPage(req, TEMPLATE.home, data.home, data, API_DIR));
+    rsp.end(main.renderPage(req, TEMPLATE.home, db.band, db, API_DIR));
     return;
 }
 
 function getDelete(req, rsp) {
     var searchParams = url.parse(req.url, true).query;
 
-    if (!data[searchParams.resource][searchParams.id]) {
-        return main.notFound(rsp, req.url, 'GET', req, data);
+    if (!db[searchParams.resource][searchParams.id]) {
+        return main.notFound(rsp, req.url, 'GET', req, db);
     }
 
     var deleteData = {
@@ -100,124 +98,131 @@ function getDelete(req, rsp) {
         "back": req.headers.referer
     };
     rsp.writeHead(200, {'Content-Type': 'text/html'});
-    rsp.end(main.renderPage(req, TEMPLATE.delete, deleteData, data, API_DIR));
+    rsp.end(main.renderPage(req, TEMPLATE.delete, deleteData, db, API_DIR));
 }
 
 function rspPost(req, rsp, path, body) {
-    if (path.pathname === `${API_DIR}/login`) {
-        return auth.login(req, rsp, body, data, API_DIR);
+    if (path.path === '/login') {
+        return auth.login(req, rsp, body, db, API_DIR);
     }
 
     if (path.resource === "password") {
-        return auth.set(req, rsp, path.id, body, data, resourceData.save, API_DIR);
+        return auth.set(req, rsp, path.id, body, db, endure.save, API_DIR);
     }
 
     // if (path.pathname === `${API_DIR}/forgot-password`) {}
 
-    if (path.resource === `gig`) {
-        return gig.create(req, rsp, body, data, resourceData.save, API_DIR);
+    if (path.resource === 'gig') {
+        return gig.create(req, rsp, body, db, endure.save, API_DIR);
     }
 
-    if (path.resource === `venue`) {
-        return venue.create(req, rsp, body, data, resourceData.save, API_DIR);
+    if (path.resource === 'venue') {
+        return venue.create(req, rsp, body, db, endure.save, API_DIR);
     }
 
-    if (path.resource === `song`) {
-        return song.create(req, rsp, body, data, resourceData.save, API_DIR);
+    if (path.resource === 'song') {
+        return song.create(req, rsp, body, db, endure.save, API_DIR);
     }
 
-    if (path.resource === `announcement`) {
-        return announcement.create(req, rsp, body, data, resourceData.save, API_DIR);
+    if (path.resource === 'announcement') {
+        return announcement.create(req, rsp, body, db, endure.save, API_DIR);
     }
 
-    if (path.resource === `user`) {
-        return user.create(req, rsp, body, data, resourceData.save, API_DIR);
+    if (path.resource === 'user') {
+        return user.create(req, rsp, body, db, endure.save, API_DIR);
     }
 
-    return main.notFound(rsp, req.url, 'POST', req, data);
+    if (path.resource === 'start') {
+        return site.setup(req, rsp, body, db, endure.save, API_DIR, process.env.SETUP_TOKEN);
+    }
+
+    return main.notFound(rsp, req.url, 'POST', req, db);
 }
 
 function rspPut(req, rsp, path, body) {
-    if (path.pathname === `${API_DIR}/home`) {
-        return home.update(req, rsp, body, data, resourceData.save, API_DIR);
+    if (path.path === '/band') {
+        return band.update(req, rsp, body, db, endure.save, API_DIR);
     }
     if (path.resource === `user`) {
         if (path.id) {
-            user.update(req, rsp, path.id, body, data, resourceData.save, API_DIR);
+            user.update(req, rsp, path.id, body, db, endure.save, API_DIR);
         }
         return;
     }
     if (path.resource === `gig`) {
-        return gig.update(req, rsp, path.id, body, data, resourceData.save, API_DIR);
+        return gig.update(req, rsp, path.id, body, db, endure.save, API_DIR);
     }
     if (path.resource === `venue`) {
-        return venue.update(req, rsp, path.id, body, data, resourceData.save, API_DIR);
+        return venue.update(req, rsp, path.id, body, db, endure.save, API_DIR);
     }
     if (path.resource === `song`) {
-        return song.update(req, rsp, path.id, body, data, resourceData.save, API_DIR);
+        return song.update(req, rsp, path.id, body, db, endure.save, API_DIR);
     }
     if (path.resource === `announcement`) {
-        return announcement.update(req, rsp, path.id, body, data, resourceData.save, API_DIR);
+        return announcement.update(req, rsp, path.id, body, db, endure.save, API_DIR);
+    }
+    if (path.resource === `site`) {
+        return site.update(req, rsp, body, db, endure.save, API_DIR);
     }
 
     if (path.resource === `password`) {
         if (path.id) {
-            return auth.update(req, rsp, path.id, body, data, resourceData.save, API_DIR);
+            return auth.update(req, rsp, path.id, body, db, endure.save, API_DIR);
         }
         return;
     }
 
-    return main.notFound(rsp, req.url, 'PUT', req, data);
+    return main.notFound(rsp, req.url, 'PUT', req, db);
 }
 
 function rspDelete(req, rsp, path) {
     if (path.resource === `user`) {
-        return user.remove(req, rsp, path.id, data, resourceData.save, API_DIR);
+        return user.remove(req, rsp, path.id, db, endure.save, API_DIR);
     }
 
     if (path.resource === `venue`) {
-        return venue.remove(req, rsp, path.id, data, resourceData.save, API_DIR);
+        return venue.remove(req, rsp, path.id, db, endure.save, API_DIR);
     }
 
     if (path.resource === `song`) {
-        return song.remove(req, rsp, path.id, data, resourceData.save, API_DIR);
+        return song.remove(req, rsp, path.id, db, endure.save, API_DIR);
     }
 
     if (path.resource === `announcement`) {
-        return announcement.remove(req, rsp, path.id, data, resourceData.save, API_DIR);
+        return announcement.remove(req, rsp, path.id, db, endure.save, API_DIR);
     }
 
     if (path.resource === `gig`) {
-        return gig.remove(req, rsp, path.id, data, resourceData.save, API_DIR);
+        return gig.remove(req, rsp, path.id, db, endure.save, API_DIR);
     }
 
     if (path.resource === `password`) {
-        return auth.reset(req, rsp, path.id, data, resourceData.save, API_DIR);
+        return auth.reset(req, rsp, path.id, db, endure.save, API_DIR);
     }
 
-    return main.notFound(rsp, req.url, 'DELETE', req, data);
+    return main.notFound(rsp, req.url, 'DELETE', req, db);
 }
 
 function rspGet(req, rsp, path) {
-    var cookies;
+    // var cookies;
 
-    if (path.pathname === `${API_DIR}/favicon.ico`) {
+    if (path.path === '/favicon.ico') {
         rsp.setHeader('Cache-Control', 'max-age=31536000,public');
         rsp.writeHead(200, {'Content-Type': 'image/png'});
         rsp.end(ASSET.favicon);
         return;
     }
-    if (path.pathname === `${API_DIR}/main.css`) {
+    if (path.path === '/main.css') {
         rsp.setHeader('Cache-Control', 'max-age=31536000,public');
         rsp.writeHead(200, {'Content-Type': 'text/css'});
         rsp.end(ASSET.mainCss);
         return;
     }
-    if (path.pathname === `${API_DIR}/custom.css`) {
-        return home.getCss(req, rsp, data, true);
+    if (path.path === '/custom.css') {
+        return site.getCss(req, rsp, db, true);
     }
-    if (path.pathname === `${API_DIR}/header.pht`) {
-        return home.getHeader(req, rsp, data);
+    if (path.path === '/header.pht') {
+        return site.getHeader(req, rsp, db);
     }
     if (path.pathname === `/ajax-tool`) {
         rsp.setHeader('Cache-Control', 'max-age=31536000,public');
@@ -225,70 +230,66 @@ function rspGet(req, rsp, path) {
         rsp.end(ASSET.ajaxTool);
         return;
     }
-    if (path.pathname === `${API_DIR}/tests`) {
+    if (path.path === '/tests') {
         rsp.writeHead(200, {'Content-Type': 'text/html'});
-        rsp.end(main.renderPage(req, TEMPLATE.tests, {}, data, API_DIR));
+        rsp.end(main.renderPage(req, TEMPLATE.tests, {}, db, API_DIR));
         return;
     }
-    if (path.pathname === `${API_DIR}/login`) {
-        return auth.get(req, rsp, data, API_DIR);
+    if (path.path === '/login') {
+        return auth.get(req, rsp, db, API_DIR);
     }
-    if (path.pathname === `${API_DIR}/`) {
+    if (path.path === '/') {
         return homePage(req, rsp);
     }
-    if (path.pathname === `${API_DIR}/home` || path.pathname === `${API_DIR}/home/`) {
-        return home.get(req, rsp, data, API_DIR);
+    if (path.resource === 'band') {
+        return band.get(req, rsp, db, API_DIR);
     }
-    if (path.pathname === `${API_DIR}/logout`) {
-        cookies = main.parseCookie(req.headers.cookie);
-        rsp.setHeader('Set-Cookie', [
-            `token=; Path=/; SameSite=Strict;`, // make secure later
-            `user=; Path=/; SameSite=Strict;` // make secure later
-        ]);
-        rsp.writeHead(303, {'Content-Type': 'text/html', "Location": `${API_DIR}/home`});
-        rsp.end(main.renderPage(req, null, {"msg": ["Logged out"], "title": `Logged out`, "link": `${API_DIR}/home/`}, data, API_DIR));
-        return;
+    if (path.path === '/logout') {
+        return auth.logout(req, rsp, db, API_DIR);
     }
     if (path.resource === `data`) {
         rsp.setHeader('Cache-Control', 'max-age=0,no-cache,no-store,post-check=0,pre-check=0');
         rsp.writeHead(200, {'Content-Type': 'application/json'});
         if (path.id) {
-            if (data[path.id]) {
-                rsp.end(JSON.stringify(data[path.id]));
+            if (db[path.id]) {
+                rsp.end(JSON.stringify(db[path.id]));
             } else {
                 rsp.end("{}");
             }
 
         } else {
-            rsp.end(JSON.stringify(data));
+            rsp.end(JSON.stringify(db));
         }
         return;
     }
-    if (path.resource === `gig`) {
+    if (path.resource === 'gig') {
         // rsp.setHeader('Cache-Control', 'max-age=0,no-cache,no-store,post-check=0,pre-check=0');
-        return gig.get(req, rsp, path.id, data, API_DIR, MAP_KEY);
+        return gig.get(req, rsp, path.id, db, API_DIR, MAP_KEY);
     }
-    if (path.resource === `venue`) {
-        return venue.get(req, rsp, path.id, data, API_DIR);
+    if (path.resource === 'venue') {
+        return venue.get(req, rsp, path.id, db, API_DIR);
     }
-    if (path.resource === `song`) {
-        return song.get(req, rsp, path.id, data, API_DIR);
+    if (path.resource === 'song') {
+        return song.get(req, rsp, path.id, db, API_DIR);
     }
-    if (path.resource === `announcement`) {
-        return announcement.get(req, rsp, path.id, data, API_DIR);
+    if (path.resource === 'announcement') {
+        return announcement.get(req, rsp, path.id, db, API_DIR);
     }
-    if (path.resource === `user`) {
-        return user.get(req, rsp, path.id, data, API_DIR);
+    if (path.resource === 'user') {
+        return user.get(req, rsp, path.id, db, API_DIR);
     }
-    if (path.resource === `delete`) {
-        return getDelete(req, rsp, data, API_DIR);
+    if (path.resource === 'site') {
+        return site.get(req, rsp, db, API_DIR);
+    }
+    if (path.resource === 'delete') {
+        return getDelete(req, rsp, db, API_DIR);
     }
     if (path.resource === "password") {
-        return auth.getPassword(req, rsp, path.id, data, API_DIR);
+        return auth.getPassword(req, rsp, path.id, db, API_DIR);
     }
     // if (path.pathname === `${API_DIR}/forgot-password`) {}
 
-    return main.notFound(rsp, path.pathname, 'GET', req, data);
+    return main.notFound(rsp, path.pathname, 'GET', req, db);
 }
 
 function getMethod(req, body) {
@@ -328,6 +329,16 @@ function parseBody(req, body) {
     return qs.parse(body);
 }
 
+function allowedBeforeSetup(method, path) {
+    if (path.type === "css" || path.type === "ico") {
+        return false;
+    }
+    if (method === "POST" && path.resource === "start") {
+        return false;
+    }
+    return true;
+}
+
 function routeMethods(req, rsp, body) {
     var parsedBody = parseBody(req, body);
     var method = getMethod(req, parsedBody);
@@ -348,6 +359,11 @@ function routeMethods(req, rsp, body) {
         });
         rsp.end('OK');
         return;
+    }
+
+    // redirect for initial setup
+    if (allowedBeforeSetup(method, path) && Object.keys(db.user) < 1) {
+        return site.start(req, rsp, db, API_DIR, path.qs);
     }
 
     if (method === 'GET') {
@@ -386,9 +402,9 @@ function collectReqBody(req, rsp) {
 function init() {
     process.stdin.resume();
     process.on('SIGINT', function () {
-        if (data) {
+        if (db) {
             console.log('Saving data...');
-            resourceData.save(true);
+            endure.save(true);
         }
         console.log('Exiting...');
         process.exit();
@@ -396,7 +412,7 @@ function init() {
 }
 
 async function loadData() {
-    data = await resourceData.load();
+    db = await endure.load(`${__dirname}/../data`);
 
     ASSET.favicon = await readFile(`${__dirname}/inc/favicon.png`);
     ASSET.mainCss = await readFile(`${__dirname}/inc/main.css`, 'utf8');

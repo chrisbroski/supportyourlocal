@@ -2,12 +2,23 @@ const fs = require("fs");
 const util = require('util');
 const crypto = require("crypto");
 const readFile = util.promisify(fs.readFile);
+const fileStat = util.promisify(fs.stat);
 this.readFile = readFile;
 
 const mustache = require("mustache");
 require('dotenv').config({path: `${__dirname}/.env`});
 
 const TEMPLATE = {};
+
+function parseQs(qs, requireQuestion) {
+    var questionIndex = qs.indexOf("?");
+    if (questionIndex > -1) {
+        qs = qs.slice(questionIndex + 1);
+    } else if (requireQuestion) {
+        return {};
+    }
+    return Object.fromEntries(new URLSearchParams(qs));
+}
 
 function removeQs(fullUrl) {
     if (!fullUrl) {
@@ -52,9 +63,22 @@ function extractId(pathname, resource) {
     return decodeURIComponent(id);
 }
 
+function extractFileType(path) {
+    var lastDot;
+    if (!path) {
+        return "";
+    }
+    lastDot = path.lastIndexOf(".");
+    if (lastDot === -1) {
+        return "";
+    }
+    return path.slice(lastDot + 1);
+}
+
 function getPath(pathname, API_DIR) {
     var path;
-
+    var qs = parseQs(pathname, true);
+    var raw = pathname;
     pathname = removeQs(pathname);
     path = pathname.slice(API_DIR.length);
     if (!path) {
@@ -65,7 +89,11 @@ function getPath(pathname, API_DIR) {
     return {
         "id": extractId(path, resource),
         "pathname": decodeURI(pathname),
-        "resource": resource
+        "resource": resource,
+        "path": path,
+        "type": extractFileType(path),
+        "qs": qs,
+        "raw": raw
     };
 }
 this.getPath = getPath;
@@ -287,8 +315,7 @@ this.getUserIdByEmail = getUserIdByEmail;
 function renderPage(req, pageTemplate, d, db, API_DIR) {
     var userData = getAuthUserData(req, db.user);
     var loggedIn = true;
-    var hideLogin = false;//(req.pathname);
-    var cssVer = "22"; // maybe get hash or date of file?
+
     pageTemplate = pageTemplate || TEMPLATE.generic;
 
     if (!userData || !userData.userid || userData.userid === 'logout') {
@@ -301,8 +328,7 @@ function renderPage(req, pageTemplate, d, db, API_DIR) {
         "site": db.site,
         "server": req.headers.host,
         "loggedIn": loggedIn,
-        "API_DIR": API_DIR,
-        "hideLogin": hideLogin
+        "API_DIR": API_DIR
     });
 
     var head = mustache.render(TEMPLATE.head, {
@@ -316,7 +342,7 @@ function renderPage(req, pageTemplate, d, db, API_DIR) {
         "head": head,
         "isMod": (userData.userType === "administrator"),
         "userid": userData.userid,
-        "homeName": db.home.name,
+        "homeName": db.band.name,
         "resourceNameCap": toTitleCase(d.resourceName),
         "API_DIR": API_DIR
     }, d));
@@ -379,10 +405,14 @@ function getAuthUserData(req, users) {
 }
 this.getAuthUserData = getAuthUserData;
 
+var cssVer;
 async function loadData() {
     TEMPLATE.head = await readFile(`${__dirname}/head.pht.mustache`, 'utf8');
     TEMPLATE.header = await readFile(`${__dirname}/header.pht.mustache`, 'utf8');
     TEMPLATE.generic = await readFile(`${__dirname}/generic.html.mustache`, 'utf8');
+
+    const fileStats = await fileStat(`${__dirname}/main.css`);
+    cssVer = +fileStats.mtime;
 }
 
 loadData();
