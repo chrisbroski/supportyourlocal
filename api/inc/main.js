@@ -8,6 +8,9 @@ this.readFile = readFile;
 const mustache = require("mustache");
 require('dotenv').config({path: `${__dirname}/.env`});
 
+const countries = require('./countries.json');
+const genres = require('./genres.json');
+
 const TEMPLATE = {};
 
 function parseQs(qs, requireQuestion) {
@@ -19,84 +22,73 @@ function parseQs(qs, requireQuestion) {
     }
     return Object.fromEntries(new URLSearchParams(qs));
 }
+this.parseQs = parseQs;
 
-function removeQs(fullUrl) {
-    if (!fullUrl) {
-        return '';
-    }
-    if (fullUrl.indexOf('?') === -1) {
-        return fullUrl;
-    }
-    return fullUrl.slice(0, fullUrl.indexOf('?'));
+function genre(selected) {
+    var displayGenres = [];
+    genres.forEach(g => {
+        var sel = "";
+        if (selected === g) {
+            sel = ' selected="selected"';
+        }
+        displayGenres.push({
+            "name": g,
+            "selected": sel
+        });
+    });
+    return displayGenres;
 }
+this.genre = genre;
 
-function extractResource(pathname) {
-    var resource = "";
-    var reResource;
-    var val;
-
-    if (pathname.slice(-1) !== "/") {
-        pathname = pathname + "/";
-    }
-    reResource = new RegExp("^\/([^\/]+)[\/]", "i");
-    val = reResource.exec(pathname);
-    if (val) {
-        resource = val[1];
-    }
-    return decodeURIComponent(resource);
+function country(selected) {
+    var displayCountries = [];
+    selected = selected || "US";
+    Object.keys(countries).forEach(c => {
+        var sel = "";
+        if (selected === c) {
+            sel = ' selected="selected"';
+        }
+        displayCountries.push({
+            "code": c,
+            "name": countries[c],
+            "selected": sel
+        });
+    });
+    return displayCountries;
 }
+this.country = country;
 
-function extractId(pathname, resource) {
-    var id = "";
-    var reId;
-    var val;
-
-    if (pathname.slice(-1) !== "/") {
-        pathname = pathname + "/";
+function displayPhotos(photos, selected) {
+    var photoData = [];
+    var selectedIdx;
+    var selectedPhoto;
+    photos.forEach((p, idx) => {
+        var sel = '';
+        if (selected === p) {
+            sel = ' checked="checked"';
+            selectedIdx = idx;
+        }
+        photoData.push({
+            "file": p,
+            "selected": sel
+        });
+    });
+    if (selectedIdx) {
+        selectedPhoto = photoData.splice(selectedIdx, 1);
+        photoData.unshift(selectedPhoto[0]);
     }
-
-    reId = new RegExp('^\/' + resource + '\/([^\/]+)', "i");
-    val = reId.exec(pathname);
-    if (val) {
-        id = val[1];
-    }
-    return decodeURIComponent(id);
+    return photoData;
 }
+this.displayPhotos = displayPhotos;
 
-function extractFileType(path) {
-    var lastDot;
-    if (!path) {
-        return "";
+function noPhotoSelected(photoValue) {
+    var sel = '';
+    if (!photoValue) {
+        sel = ' checked="checked"';
     }
-    lastDot = path.lastIndexOf(".");
-    if (lastDot === -1) {
-        return "";
-    }
-    return path.slice(lastDot + 1);
+    return sel;
 }
-
-function getPath(pathname, API_DIR) {
-    var path;
-    var qs = parseQs(pathname, true);
-    var raw = pathname;
-    pathname = removeQs(pathname);
-    path = pathname.slice(API_DIR.length);
-    if (!path) {
-        return {"pathname": pathname, id: "", resource: ""};
-    }
-
-    var resource = extractResource(path);
-    return {
-        "id": extractId(path, resource),
-        "pathname": decodeURI(pathname),
-        "resource": resource,
-        "path": path,
-        "type": extractFileType(path),
-        "qs": qs,
-        "raw": raw
-    };
-}
-this.getPath = getPath;
+this.noPhotoSelected = noPhotoSelected;
 
 const timeZones = {
     "EST": "-0500",

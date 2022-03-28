@@ -15,7 +15,11 @@ function single(db) {
         "resourceName": resourceName,
         "pageName": db[resourceName].name,
         "header-font-normal": headerFontNormal,
-        "header-font-bold": headerFontBold
+        "header-font-bold": headerFontBold,
+        "bg-photos": main.displayPhotos(db.photos, db[resourceName].background),
+        "bg-no-photo": main.noPhotoSelected(db[resourceName].background),
+        "thumb-photos": main.displayPhotos(db.photos, db[resourceName].thumbnail),
+        "thumb-no-photo": main.noPhotoSelected(db[resourceName].thumbnail)
     }, db[resourceName]);
 
     return resourceData;
@@ -96,14 +100,8 @@ function updateResource(body, db, save) {
     db[resourceName]["body-font"] = body["body-font"];
     db[resourceName]["body-font-default"] = body["body-font-default"];
 
-    if (!db[resourceName].social) {
-        db[resourceName].social = {};
-    }
-    db[resourceName].social.fb = body["social-fb"];
-    db[resourceName].social.spotify = body["social-spotify"];
-    db[resourceName].social.instagram = body["social-instagram"];
-    db[resourceName].social.youtube = body["social-youtube"];
-    db[resourceName].social.anchor = body["social-anchor"];
+    db[resourceName].background = body.background;
+    db[resourceName].thumbnail = body.thumbnail;
 
     save();
 }
@@ -209,8 +207,8 @@ this.getHeader = function (req, rsp, db) {
     if (db.site.social.youtube) {
         socials.push(`        <a href="${db.site.social.youtube}"><img src="/img/social/youtube.svg" alt="YouTube"></a>`);
     }
-    if (db.site.social.anchor) {
-        socials.push(`        <a href="${db.site.social.anchor}"><img src="/img/social/anchor.svg" alt="Anchor Podcasts"></a>`);
+    if (db.site.social.podcast) {
+        socials.push(`        <a href="${db.site.social.podcast}"><img src="/img/social/anchor.svg" alt="Podcast"></a>`);
     }
 
     var nav = `<nav id="main">

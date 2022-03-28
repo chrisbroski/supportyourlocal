@@ -17,11 +17,25 @@
 <p><label>Name</label>*<br>
     <input type="text" name="name" autofocus="autofocus" required="required">
 
+<p><label>Made Popular By</label> (If not an original song)*<br>
+    <input type="text" name="artist">
+
 <p><label>Duration</label><br>
-    <input type="number" name="durationM" min="0" max="120" step="1" value="1"> minutes
+    <input type="number" name="durationM" min="0" max="120" step="1" value="0"> minutes
     <input type="number" name="durationS" min="0" max="60" step="1" value="0"> seconds
 
 <p><label>Description<br><textarea name="desc"></textarea></p>
+
+<p><label>Genre</label><br>
+    <select name="genre1">
+        <option value="">Select Main Genre</option>
+        {{#genres}}
+        <option value="{{name}}"{{{selected}}}>{{name}}</option>{{/genres}}
+    </select>
+
+<p><label>Sub-genre</label><br><input type="text" name="genre2">
+<p><label>Sub-genre</label><br><input type="text" name="genre3">
+
 <p><label>Story<br><textarea name="story"></textarea></p>
 
 <h3>Audio</h3>

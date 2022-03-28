@@ -1,6 +1,5 @@
 // Custom libs
 const main = require('../../inc/main.js');
-
 const resourceName = 'band';
 const template = {};
 
@@ -16,8 +15,22 @@ function isUpdateInvalid(req, rsp, body, db, API_DIR) {
 
 function updateResource(body, db, save) {
     db[resourceName].name = body.name;
+    db[resourceName].desc = body.desc;
     db[resourceName].bio = body.bio;
     db[resourceName].contact = body.contact;
+    
+    db[resourceName].genre1 = body.genre1;
+    db[resourceName].genre2 = body.genre2;
+    db[resourceName].genre3 = body.genre3;
+
+    if (!db[resourceName].social) {
+        db[resourceName].social = {};
+    }
+    db[resourceName].social.fb = body["social-fb"];
+    db[resourceName].social.spotify = body["social-spotify"];
+    db[resourceName].social.instagram = body["social-instagram"];
+    db[resourceName].social.youtube = body["social-youtube"];
+    db[resourceName].social.podcast = body["social-podcast"];
 
     save();
 }

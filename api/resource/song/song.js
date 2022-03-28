@@ -7,7 +7,8 @@ function single(db, id) {
     var resourceData = Object.assign({
         "id": id,
         "resourceName": resourceName,
-        "pageName": db[resourceName][id].name
+        "pageName": db[resourceName][id].name,
+        "genres": main.genre(db[resourceName][id].genre1)
     }, db[resourceName][id]);
 
     return resourceData;
@@ -19,7 +20,8 @@ function list(db) {
     return {
         [resourceName]: resourceData,
         "today": main.dateFormat(new Date()),
-        "resourceName": resourceName
+        "resourceName": resourceName,
+        "genres": main.genre()
     };
 }
 
@@ -44,9 +46,16 @@ function isUpdateInvalid(req, rsp, formData, db, API_DIR) {
 
 function updateResource(id, formData, db, save) {
     db[resourceName][id].name = formData.name;
+    db[resourceName][id].artist = formData.artist;
     db[resourceName][id].date = formData.date;
     db[resourceName][id].desc = formData.desc;
     db[resourceName][id].lyrics = formData.lyrics;
+    db[resourceName][id].durationM = formData.durationM;
+    db[resourceName][id].durationS = formData.durationS;
+
+    db[resourceName][id].genre1 = formData.genre1;
+    db[resourceName][id].genre2 = formData.genre2;
+    db[resourceName][id].genre3 = formData.genre3;
 
     db[resourceName][id]["cover-front"] = formData["cover-front"];
     db[resourceName][id]["cover-back"] = formData["cover-back"];

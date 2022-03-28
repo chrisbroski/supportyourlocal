@@ -1,5 +1,4 @@
 const main = require('../../inc/main.js');
-
 const resourceName = 'user';
 const template = {};
 
@@ -12,7 +11,10 @@ function single(db, id, req) {
         "pageName": db[resourceName][id].name,
         "adminChecked": !!db[resourceName][id].admin ? ' checked="checked"' : '',
         "memberChecked": !!db[resourceName][id].bandMember ? ' checked="checked"' : '',
-        "isOwnUser": (authUserData.userid === id)
+        "isOwnUser": (authUserData.userid === id),
+        "countries": main.country(db[resourceName][id].country),
+        "photos": main.displayPhotos(db.photos, db[resourceName][id].photo),
+        "no-photo": main.noPhotoSelected(db[resourceName][id].photo)
     }, db[resourceName][id]);
 
     return resourceData;
@@ -24,7 +26,10 @@ function list(db) {
     return {
         [resourceName]: resourceData,
         "today": main.dateFormat(new Date()),
-        "resourceName": resourceName
+        "resourceName": resourceName,
+        "countries": main.country(),
+        "photos": db.photos,
+        "no-photo": main.noPhotoSelected()
     };
 }
 
@@ -72,7 +77,12 @@ function updateResource(id, formData, db, save) {
     db[resourceName][id].surname = formData.surname;
     db[resourceName][id].admin = formData.admin;
     db[resourceName][id].bandMember = formData.bandMember;
+    db[resourceName][id].desc = formData.desc;
     db[resourceName][id].bio = formData.bio;
+    db[resourceName][id].city = formData.city;
+    db[resourceName][id].state = formData.state;
+    db[resourceName][id].country = formData.country;
+    db[resourceName][id].photo = formData.photo;
 
     save();
 }

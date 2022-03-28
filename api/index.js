@@ -6,6 +6,7 @@ const util = require('util');
 const url = require('url');
 
 const readFile = util.promisify(fs.readFile);
+const readDir = util.promisify(fs.readdir);
 
 // npm modules
 require('dotenv').config({path: `${__dirname}/.env`});
@@ -38,6 +39,94 @@ const site = require('./resource/site/site.js');
 const ASSET = {};
 const TEMPLATE = {};
 var db;
+
+function removeQs(fullUrl) {
+    if (!fullUrl) {
+        return '';
+    }
+    if (fullUrl.indexOf('?') === -1) {
+        return fullUrl;
+    }
+    return fullUrl.slice(0, fullUrl.indexOf('?'));
+}
+
+function extractResource(pathname) {
+    var resource = "";
+    var reResource;
+    var val;
+
+    if (pathname.slice(-1) !== "/") {
+        pathname = pathname + "/";
+    }
+    reResource = new RegExp("^\/([^\/]+)[\/]", "i");
+    val = reResource.exec(pathname);
+    if (val) {
+        resource = val[1];
+    }
+    return decodeURIComponent(resource);
+}
+
+function extractId(pathname, resource) {
+    var id = "";
+    var reId;
+    var val;
+
+    if (pathname.slice(-1) !== "/") {
+        pathname = pathname + "/";
+    }
+
+    reId = new RegExp('^\/' + resource + '\/([^\/]+)', "i");
+    val = reId.exec(pathname);
+    if (val) {
+        id = val[1];
+    }
+    return decodeURIComponent(id);
+}
+
+function extractFileType(path) {
+    var lastDot;
+    if (!path) {
+        return "";
+    }
+    lastDot = path.lastIndexOf(".");
+    if (lastDot === -1) {
+        return "";
+    }
+    return path.slice(lastDot + 1);
+}
+
+function getPath(pathname, API_DIR) {
+    var path;
+    var qs = main.parseQs(pathname, true);
+    var raw = pathname;
+    pathname = removeQs(pathname);
+    path = pathname.slice(API_DIR.length);
+    if (!path) {
+        return {"pathname": pathname, id: "", resource: ""};
+    }
+
+    var resource = extractResource(path);
+    return {
+        "id": extractId(path, resource),
+        "pathname": decodeURI(pathname),
+        "resource": resource,
+        "path": path,
+        "type": extractFileType(path),
+        "qs": qs,
+        "raw": raw
+    };
+}
+
+async function photos(path) {
+    var photos = await readDir(path);
+    var fileTypes = [".jpg", ".jpeg", ".png"];
+    // console.log(photos);
+    return photos.filter(p => {
+        var extension = p.slice(p.lastIndexOf(".")).toLowerCase();
+        // console.log(p.slice(p.lastIndexOf(".")));
+        return (fileTypes.indexOf(extension) > -1);
+    });
+}
 
 function authenticate(req, rsp, path) {
     var cookies, userid;
@@ -204,12 +293,16 @@ function rspDelete(req, rsp, path) {
 }
 
 function rspGet(req, rsp, path) {
-    // var cookies;
-
     if (path.path === '/favicon.ico') {
         rsp.setHeader('Cache-Control', 'max-age=31536000,public');
         rsp.writeHead(200, {'Content-Type': 'image/png'});
         rsp.end(ASSET.favicon);
+        return;
+    }
+    if (path.path === '/nophoto.png') {
+        rsp.setHeader('Cache-Control', 'max-age=31536000,public');
+        rsp.writeHead(200, {'Content-Type': 'image/png'});
+        rsp.end(ASSET.noPhoto);
         return;
     }
     if (path.path === '/main.css') {
@@ -342,7 +435,7 @@ function allowedBeforeSetup(method, path) {
 function routeMethods(req, rsp, body) {
     var parsedBody = parseBody(req, body);
     var method = getMethod(req, parsedBody);
-    var path = main.getPath(req.url, API_DIR);
+    var path = getPath(req.url, API_DIR);
 
     // To trigger a 500 for testing:
     // if (req.method !== 'OPTIONS') {
@@ -413,9 +506,11 @@ function init() {
 
 async function loadData() {
     db = await endure.load(`${__dirname}/../data`);
+    db.photos = await photos("/Users/christopherbroski/projects/supportyourlocal/www/photos");
 
     ASSET.favicon = await readFile(`${__dirname}/inc/favicon.png`);
     ASSET.mainCss = await readFile(`${__dirname}/inc/main.css`, 'utf8');
+    ASSET.noPhoto = await readFile(`${__dirname}/inc/nophoto.png`);
     ASSET.ajaxTool = await readFile(`${__dirname}/ajax-tool.html`, 'utf8');
 
     TEMPLATE.home = await readFile(`${__dirname}/index.html.mustache`, 'utf8');

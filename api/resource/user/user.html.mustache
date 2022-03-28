@@ -7,7 +7,7 @@
 {{{header}}}
 
 <article>
-<h1>{{givenName}} {{surname}}</h1>
+<h1>Member</h1>
 
 {{#loggedIn}}
 <section>
@@ -20,6 +20,24 @@
     <input type="text" name="surname" value="{{surname}}">
 <p><label>Email</label>*<br>
     <input type="text" name="email" value="{{email}}" required="required">
+<p><label>City</label><br>
+    <input type="text" name="city" value="{{city}}">
+<p><label>State</label><br>
+    <input type="text" name="state" value="{{state}}">
+<p><label>Country</label><br>
+    <select name="country">
+        <option value="">Select Country</option>
+        {{#countries}}
+        <option value="{{code}}"{{{selected}}}>{{name}}</option>{{/countries}}
+    </select>
+
+<h4>Photo</h4>
+<div class="photos">
+<input type="radio" name="photo" value="" id="photo-none"{{{no-photo}}}><label for="photo-none"><img src="{{API_DIR}}/nophoto.png" alt="No photo"></label>
+{{#photos}}
+<input type="radio" name="photo" value="{{file}}" id="photo-{{file}}"{{{selected}}}><label for="photo-{{file}}"><img src="/photos/{{file}}"></label>
+{{/photos}}
+</div>
 
 <p>
     <label><input type="checkbox" value="Y"{{{adminChecked}}} name="admin"> Admin</label>
@@ -52,8 +70,8 @@
 {{/isOwnUser}}
 
 {{^isOwnUser}}
-<section>
 {{#admin}}
+<section>
 {{^token}}
 <form method="POST" action="{{API_DIR}}/password/{{id}}" enctype="application/x-www-form-urlencoded">
 <input type="hidden" name="method" value="DELETE">
@@ -63,8 +81,8 @@
 {{#token}}
 <p><a href="{{API_DIR}}/password/{{id}}?token={{token}}">Password reset URL</a>
 {{/token}}
-{{/admin}}
 </section>
+{{/admin}}
 {{/isOwnUser}}
 
 <section>
@@ -74,9 +92,12 @@
 
 {{^loggedIn}}
 <section>
+<h2>{{givenName}} {{surname}}</h2>
+<p>{{city}}, {{state}}, {{country}}</p>
 <p>Band Member {{bandMember}}</p>
 <p>Admin {{admin}}</p>
-<pre>{{bio}}</pre>
+<p><pre>{{desc}}</pre></p>
+<p><pre>{{bio}}</pre></p>
 </section>
 {{/loggedIn}}
 </article>

@@ -49,7 +49,11 @@
     <input type="text" name="zip" value="{{zip}}">
 
 <p><label>Country</label><br>
-    <input type="text" name="country" value="US">
+    <select name="country">
+        <option value="">Select Country</option>
+        {{#countries}}
+        <option value="{{code}}"{{{selected}}}>{{name}}</option>{{/countries}}
+    </select>
 
 <p><label>Phone</label><br>
     <input type="text" name="phone" value="{{phone}}">

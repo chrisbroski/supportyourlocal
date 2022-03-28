@@ -12,10 +12,20 @@
 <section>
 <h2>Band Info</h2>
 {{^loggedIn}}
+<p>Genres {{genres}}
+<h5>Description</h5>
+<pre>{{desc}}</pre>
 <h5>Bio</h5>
 <pre>{{bio}}</pre>
 <h5>Contact Info</h5>
 <pre>{{contact}}</pre>
+
+<h3>Social Media Links</h3>
+<p>Facebook: <a href="{{social.fb}}">{{social.fb}}</a></p>
+<p>Spotify: <a href="{{social.spotify}}">{{social.spotify}}</a></p>
+<p>Instagram: <a href="{{social.instagram}}">{{social.instagram}}</a></p>
+<p>YouTube: <a href="{{social.youtube}}">{{social.youtube}}</a></p>
+<p>Podcast: <a href="{{social.podcast}}">{{social.podcast}}</a></p>
 </section>
 {{/loggedIn}}
 
@@ -24,11 +34,30 @@
 <input type="hidden" name="method" value="PUT">
 <p><label>Band Name</label>*<br>
     <input type="text" name="name" value="{{name}}" autofocus="autofocus" required="required">
+
+<p><label>Genre</label><br><input type="text" name="genre1" value="{{genre1}}">
+<p><label>Genre</label><br><input type="text" name="genre2" value="{{genre2}}">
+<p><label>Genre</label><br><input type="text" name="genre3" value="{{genre3}}">
+
+<p><label>Description (Short Bio)</label><br>
+    <textarea name="desc">{{desc}}</textarea></p>
 <p><label>Bio</label><br>
     <textarea name="bio">{{bio}}</textarea></p>
 <p><label>Contact Information</label><br>
 <textarea name="contact">{{contact}}</textarea></p>
 <p>Your bio and contact information must be plain text, but may also use <a href="https://www.markdownguide.org/" target="_blank">markdown syntax</a>.</p>
+
+<h2>Social Media</h2>
+<p><label>Facebook</label><br>
+    <input type="text" name="social-fb" value="{{social.fb}}">
+<p><label>Spotify</label><br>
+    <input type="text" name="social-spotify" value="{{social.spotify}}">
+<p><label>Instagram</label><br>
+    <input type="text" name="social-instagram" value="{{social.instagram}}">
+<p><label>YouTube</label><br>
+    <input type="text" name="social-youtube" value="{{social.youtube}}">
+<p><label>Podcast</label><br>
+    <input type="text" name="social-pocast" value="{{social.podcast}}">
 
 <p><button>Update Band Information</button>
 </form>

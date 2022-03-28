@@ -1,5 +1,4 @@
 const main = require('../../inc/main.js');
-// var url = require('url');
 
 const resourceName = 'venue';
 const template = {};
@@ -22,7 +21,8 @@ function single(db, id) {
     var venueData = Object.assign({
         "id": id,
         "resourceName": resourceName,
-        "pageName": db[resourceName][id].name
+        "pageName": db[resourceName][id].name,
+        "countries": main.country(db[resourceName][id].country)
     }, db[resourceName][id]);
 
     return venueData;
@@ -32,7 +32,8 @@ function list(db) {
     var venues = main.objToArray(db[resourceName]).sort(main.sortByName);
     return {
         "venue": venues,
-        "resourceName": resourceName
+        "resourceName": resourceName,
+        "countries": main.country()
     };
 }
 

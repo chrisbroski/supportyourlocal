@@ -19,6 +19,22 @@
     <input type="text" name="surname">
 <p><label>Email</label>*<br>
     <input type="text" name="email" required="required">
+<p><label>City</label><br>
+    <input type="text" name="city">
+<p><label>State</label><br>
+    <input type="text" name="state">
+<p><label>Country</label><br>
+    <select name="country">
+        <option value="">Select Country</option>
+        {{#countries}}
+        <option value="{{code}}"{{{selected}}}>{{name}}</option>{{/countries}}
+    </select>
+
+<h4>Photo</h4>
+<div class="photos">
+<input type="radio" name="photo" value="" id="photo-none"{{{no-photo}}}><label for="photo-none"><img src="{{API_DIR}}/nophoto.png" alt="No photo"></label>
+{{#photos}}<input type="radio" name="photo" value="{{.}}" id="photo-{{.}}"><label for="photo-{{.}}"><img src="/photos/{{.}}"></label>{{/photos}}
+</div>
 
 <p>
     <label><input type="checkbox" value="Y" name="admin"> Admin</label>
@@ -27,7 +43,7 @@
 
 <p><label>Bio</label><br><textarea name="bio"></textarea>
 
-<p><label>Password</label><br>
+<p><label>Initial Password</label><br>
     <input type="text" name="password">
 
 <p><button>Create New User</button>

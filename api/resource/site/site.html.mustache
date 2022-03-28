@@ -21,13 +21,6 @@
 <p>Header generic font: {{header-font-default}}</p>
 <p>Body font: {{body-font}}</p>
 <p>Body generic font: {{body-font-default}}</p>
-
-<h3>Social Media Links</h3>
-<p>Facebook: <a href="{{social.fb}}">{{social.fb}}</a></p>
-<p>Spotify: <a href="{{social.spotify}}">{{social.spotify}}</a></p>
-<p>Instagram: <a href="{{social.instagram}}">{{social.instagram}}</a></p>
-<p>YouTube: <a href="{{social.youtube}}">{{social.youtube}}</a></p>
-<p>Anchor: <a href="{{social.anchor}}">{{social.anchor}}</a></p>
 </section>
 {{/loggedIn}}
 
@@ -41,10 +34,7 @@
 
 <h4><label>Header Font</label></h4>
 <p><input type="text" name="header-font" value="{{header-font}}"></p>
-<p><label>Normal <input type="radio" name="header-font-weight" value="normal"{{{header-font-normal}}}></label>
-<label>Bold <input type="radio" name="header-font-weight" value="bold"{{{header-font-bold}}}></label>
-</p>
-<p><label>Generic Font</label> <select name="header-font-default">
+<p><label>Generic Font Family</label><br><select name="header-font-default">
     <option value="sans-serif"{{header-sans-serif-selected}}>Sans-serif</option>
     <option value="serif"{{header-serif-selected}}>Serif</option>
     <option value="monospace"{{header-monospace-selected}}>Monospace</option>
@@ -52,10 +42,13 @@
     <option value="fantasy"{{header-fantasy-selected}}>Fantasy</option>
 </select>
 </p>
+<p><label>Normal <input type="radio" name="header-font-weight" value="normal"{{{header-font-normal}}}></label>
+<label>Bold <input type="radio" name="header-font-weight" value="bold"{{{header-font-bold}}}></label>
+</p>
 
 <h4><label>Body Font</label></h4>
 <p><input type="text" name="body-font" value="{{body-font}}"><br>
-<p><label>Generic Font</label> <select name="body-font-default">
+<p><label>Generic Font Family</label><br><select name="body-font-default">
     <option value="sans-serif"{{body-sans-serif-selected}}>Sans-serif</option>
     <option value="serif"{{body-serif-selected}}>Serif</option>
     <option value="monospace"{{body-monospace-selected}}>Monospace</option>
@@ -63,17 +56,21 @@
     <option value="fantasy"{{body-fantasy-selected}}>Fantasy</option>
 </select>
 
-<h2>Social Media</h2>
-<p><label>Facebook</label><br>
-    <input type="text" name="social-fb" value="{{social.fb}}">
-<p><label>Spotify</label><br>
-    <input type="text" name="social-spotify" value="{{social.spotify}}">
-<p><label>Instagram</label><br>
-    <input type="text" name="social-instagram" value="{{social.instagram}}">
-<p><label>YouTube</label><br>
-    <input type="text" name="social-youtube" value="{{social.youtube}}">
-<p><label>Anchor</label><br>
-    <input type="text" name="social-anchor" value="{{social.anchor}}">
+<h4>Background Photo</h4>
+<div class="photos">
+<input type="radio" name="background" value="" id="bg-none"{{{bg-no-photo}}}><label for="bg-none"><img src="{{API_DIR}}/nophoto.png" alt="No photo"></label>
+{{#bg-photos}}
+<input type="radio" name="background" value="{{file}}" id="bg-{{file}}"{{{selected}}}><label for="bg-{{file}}"><img src="/photos/{{file}}"></label>
+{{/bg-photos}}
+</div>
+
+<h4>Thumbnail Photo</h4>
+<div class="photos">
+<input type="radio" name="thumbnail" value="" id="thumb-none"{{{thumb-no-photo}}}><label for="thumb-none"><img src="{{API_DIR}}/nophoto.png" alt="No photo"></label>
+{{#thumb-photos}}
+<input type="radio" name="thumbnail" value="{{file}}" id="thumb-{{file}}"{{{selected}}}><label for="thumb-{{file}}"><img src="/photos/{{file}}"></label>
+{{/thumb-photos}}
+</div>
 
 <p><button>Update Site Information</button>
 </form>

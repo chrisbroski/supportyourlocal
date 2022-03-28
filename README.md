@@ -48,21 +48,40 @@ Advertise for local venues and bands.
 
 # Architecture
 
-Separate api and font-end into different repos.
+Separate api and front-end into different repos.
 
 Make all sites https
 
+Admin key in .env (for backups and troubleshooting)
+
+### env
+
+* Site URL
+* admin token
+
 ## Features for next version
 
-### Front-end nav build from JSON
+Deploy separate font and back ends to prod.
 
-### Image upload and selection
+Put sites in /srv/bandname/supportyourlocal /srv/bandname/kandy
+
+When a user is added, create a token and reset link.
 
 ### Releases (include albums) (Needed for B&B to fully adopt back end)
 
-* Select and original recording of an album or song.
+* Name (if album)
+* Select an original recording song or songs.
+* Release date
+* Description
+* Front and back covers
+* Song list
+* Album links (Spotify, etc.)
+* Add alert
 
-### Songs (Add duration)
+#### Front End
 
-* Song duration
+* Front-end nav build from JSON
 * video embed (FB and YouTube)
+* Songs page. If no releases, then list.
+* If releases, then show with top button to "All Songs"
+* Include upcoming releases somehow?

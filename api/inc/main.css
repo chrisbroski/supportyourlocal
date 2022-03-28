@@ -64,7 +64,7 @@ h5 {color: rgb(var(--color2)); }
 p, h5 {margin: 0.5em 0; font-size: 17px; line-height: 1.4em; max-width: 580px; }
 h6 {margin: 0.5em 0; color: rgb(var(--color2)); }
 input, select {font-size: 17px; }
-input[type="text"], input[type="email"], input[type="password"] {
+input[type="text"], input[type="email"], input[type="password"], select {
     width: 22em;
 }
 textarea {width: 100%; height: 8em; font-size: 16px; max-width: 580px; }
@@ -100,6 +100,24 @@ section > *:first-child {
     margin-top: 12px;
 }
 
+div.photos {
+    height: 120px;
+    overflow: auto;
+    white-space: nowrap;
+}
+div.photos img {
+    margin: 4px 2px;
+    padding: 6px;
+    height: 100px;
+}
+div.photos input {
+    display: none;
+}
+div.photos input:checked + label img {
+    padding: 4px;
+    border: 2px solid rgb(var(--color2));
+}
+
 @media (max-width: 800px) {
     body {
         padding-top: 64px;
@@ -120,5 +138,9 @@ section > *:first-child {
         height: auto;
         bottom: 0;
         overflow: auto;
+    }
+
+    input[type="text"], input[type="email"], input[type="password"], select {
+        width: 100%;
     }
 }
