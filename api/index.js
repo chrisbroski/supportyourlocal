@@ -1,7 +1,7 @@
 // Standard libs
 const http = require('http');
 const fs = require("fs");
-const qs = require('querystring');
+// const qs = require('querystring');
 const util = require('util');
 const url = require('url');
 
@@ -34,6 +34,7 @@ const song = require('./resource/song/song.js');
 const announcement = require('./resource/announcement/announcement.js');
 const user = require('./resource/user/user.js');
 const site = require('./resource/site/site.js');
+const release = require('./resource/release/release.js');
 
 // Application state
 const ASSET = {};
@@ -221,6 +222,14 @@ function rspPost(req, rsp, path, body) {
         return user.create(req, rsp, body, db, endure.save, API_DIR);
     }
 
+    if (path.resource === 'release') {
+        if (path.id) {
+            return release.addSong(req, rsp, path.id, body, db, endure.save, API_DIR);
+        } else {
+            return release.create(req, rsp, body, db, endure.save, API_DIR);
+        }
+    }
+
     if (path.resource === 'start') {
         return site.setup(req, rsp, body, db, endure.save, API_DIR, process.env.SETUP_TOKEN);
     }
@@ -232,26 +241,29 @@ function rspPut(req, rsp, path, body) {
     if (path.path === '/band') {
         return band.update(req, rsp, body, db, endure.save, API_DIR);
     }
-    if (path.resource === `user`) {
+    if (path.resource === 'user') {
         if (path.id) {
             user.update(req, rsp, path.id, body, db, endure.save, API_DIR);
         }
         return;
     }
-    if (path.resource === `gig`) {
+    if (path.resource === 'gig') {
         return gig.update(req, rsp, path.id, body, db, endure.save, API_DIR);
     }
-    if (path.resource === `venue`) {
+    if (path.resource === 'venue') {
         return venue.update(req, rsp, path.id, body, db, endure.save, API_DIR);
     }
-    if (path.resource === `song`) {
+    if (path.resource === 'song') {
         return song.update(req, rsp, path.id, body, db, endure.save, API_DIR);
     }
-    if (path.resource === `announcement`) {
+    if (path.resource === 'announcement') {
         return announcement.update(req, rsp, path.id, body, db, endure.save, API_DIR);
     }
-    if (path.resource === `site`) {
+    if (path.resource === 'site') {
         return site.update(req, rsp, body, db, endure.save, API_DIR);
+    }
+    if (path.resource === 'release') {
+        return release.update(req, rsp, path.id, body, db, endure.save, API_DIR);
     }
 
     if (path.resource === `password`) {
@@ -265,24 +277,28 @@ function rspPut(req, rsp, path, body) {
 }
 
 function rspDelete(req, rsp, path) {
-    if (path.resource === `user`) {
+    if (path.resource === 'user') {
         return user.remove(req, rsp, path.id, db, endure.save, API_DIR);
     }
 
-    if (path.resource === `venue`) {
+    if (path.resource === 'venue') {
         return venue.remove(req, rsp, path.id, db, endure.save, API_DIR);
     }
 
-    if (path.resource === `song`) {
+    if (path.resource === 'song') {
         return song.remove(req, rsp, path.id, db, endure.save, API_DIR);
     }
 
-    if (path.resource === `announcement`) {
+    if (path.resource === 'announcement') {
         return announcement.remove(req, rsp, path.id, db, endure.save, API_DIR);
     }
 
-    if (path.resource === `gig`) {
+    if (path.resource === 'gig') {
         return gig.remove(req, rsp, path.id, db, endure.save, API_DIR);
+    }
+
+    if (path.resource === 'release') {
+        return release.remove(req, rsp, path.id, db, endure.save, API_DIR);
     }
 
     if (path.resource === `password`) {
@@ -374,6 +390,9 @@ function rspGet(req, rsp, path) {
     if (path.resource === 'site') {
         return site.get(req, rsp, db, API_DIR);
     }
+    if (path.resource === 'release') {
+        return release.get(req, rsp, path.id, db, API_DIR);
+    }
     if (path.resource === 'delete') {
         return getDelete(req, rsp, db, API_DIR);
     }
@@ -415,11 +434,7 @@ function parseBody(req, body) {
         return parsedBody;
     }
 
-    if (contentType === 'text/csv') {
-        return main.parseCsv(body);
-    }
-
-    return qs.parse(body);
+    return main.parseQs(body);
 }
 
 function allowedBeforeSetup(method, path) {

@@ -21,6 +21,56 @@ p.fail {color: red; }
 <script>
 var API_DIR = "/api";
 var createdUrl;
+var testData = {
+    "song": {
+        "name": "Song Title",
+        "artist": "Beatles",
+        "desc": `Song desc
+
+Next line
+`,
+        "lyrics": `La la
+La la`,
+        "durationM": "3",
+        "durationS": "30",
+        "genre1": "Folk",
+        "genre2": "Americana",
+        "genre3": "Humor",
+        "cover-front": "t483wohfuoeis.jpg",
+        "cover-back": "njvaosnjkldsanjl.png",
+        "spotify": "https://open.spotify.com/track/6MjKUWOgJIoAXDlXAO9loY?si=0f2f2cfcdbb94a64",
+        "apple": "",
+        "amazon": "",
+        "youtube": "",
+        "cdbaby": "",
+        "video-youtube": "",
+        "video-fb": ""
+    },
+    "song-result": {
+        "resourceName":"song",
+        "name":"Song Title",
+        "artist":"Beatles",
+        "desc":"Song desc\n\nNext line\n",
+        "lyrics":"La la\nLa la","durationM":"3",
+        "durationS":"30",
+        "genre1":"Folk",
+        "genre2":"Americana",
+        "genre3":"Humor",
+        "cover-front":"t483wohfuoeis.jpg",
+        "cover-back":"njvaosnjkldsanjl.png",
+        "audio": {
+            "spotify":"https://open.spotify.com/track/6MjKUWOgJIoAXDlXAO9loY?si=0f2f2cfcdbb94a64",
+            "apple":"",
+            "amazon":"",
+            "youtube":"",
+            "cdbaby":""
+        },
+        "video": {
+            "youtube":"",
+            "cdbaby":""
+        }
+    }
+};
 
 var tests = [
     {
@@ -32,21 +82,23 @@ var tests = [
         "name": "Create invalid song",
         "url": "/api/song/",
         "verb": "POST",
-        "body": "{}",
+        "body": {},
+        "Content-Type": "application/json",
         "resultStatus": 400
     },
     {
         "name": "Create new song",
         "url": "/api/song/",
         "verb": "POST",
-        "body": '{"name": "Song Title"}',
+        "body": testData.song,
+        "Content-Type": "application/json",
         "resultStatus": 201
     },
     {
         "name": "Check created song",
         "url": "createdUrl",
         "verb": "GET",
-        "resultData": [["name", "Song Title"]]
+        "resultData": testData["song-result"]
     },
     {
         "name": "Delete created test song",
@@ -62,8 +114,13 @@ function runTest(test) {
     }
     xhr.open(test.verb, url, false);
     xhr.setRequestHeader("Accept", "application/json");
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.send(test.body);
+    var bodyString = test.body;
+
+    if (test["Content-Type"]) {
+        xhr.setRequestHeader("Content-Type", "application/json");
+        bodyString = JSON.stringify(bodyString);
+    }
+    xhr.send(bodyString);
 
     var success = true;
     var p = document.createElement("p");
@@ -75,24 +132,17 @@ function runTest(test) {
     }
 
     var resultText = "";
-    if (test.resultText) {
-        if (xhr.responseText !== test.resultText) {
-            resultText = "Body response FAIL";
-            success = false;
-        } else {
-            resultText = "Body response OK";
-        }
-    }
-    var resultData = {};
+    var testString = "";
     if (test.resultData) {
-        resultData = JSON.parse(xhr.responseText);
-        resultText = "Data response OK";
-        test.resultData.forEach(testData => {
-            if (testData[1] !== resultData[testData[0]]) {
-                resultText = "Data response FAIL";
-                success = false;
-            }
-        });
+        testString = JSON.stringify(test.resultData);
+        responseString = JSON.stringify(JSON.parse(xhr.responseText));
+
+        if (testString === responseString) {
+            resultText = "Data response OK";
+        } else {
+            resultText = "Data response FAIL";
+            success = false;
+        }
     }
     if (!success) {
         p.className = "fail";

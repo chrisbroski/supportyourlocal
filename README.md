@@ -85,3 +85,5 @@ When a user is added, create a token and reset link.
 * Songs page. If no releases, then list.
 * If releases, then show with top button to "All Songs"
 * Include upcoming releases somehow?
+
+### Tests
