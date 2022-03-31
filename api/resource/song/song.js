@@ -47,7 +47,7 @@ function isUpdateInvalid(req, rsp, formData, db, API_DIR) {
 function updateResource(id, formData, db, save) {
     db[resourceName][id].name = formData.name;
     db[resourceName][id].artist = formData.artist;
-    db[resourceName][id].date = formData.date;
+    // db[resourceName][id].date = formData.date;
     db[resourceName][id].desc = formData.desc;
     db[resourceName][id].lyrics = formData.lyrics;
     db[resourceName][id].durationM = formData.durationM;
@@ -68,6 +68,12 @@ function updateResource(id, formData, db, save) {
     db[resourceName][id].audio.amazon = formData.amazon;
     db[resourceName][id].audio.youtube = formData.youtube;
     db[resourceName][id].audio.cdbaby = formData.cdbaby;
+
+    if (!db[resourceName][id].video) {
+        db[resourceName][id].video = {};
+    }
+    db[resourceName][id].video.youtube = formData["video-youtube"];
+    db[resourceName][id].video.cdbaby = formData["video-fb"];
 
     save();
 }
