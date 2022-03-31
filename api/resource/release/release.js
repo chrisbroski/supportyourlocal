@@ -3,12 +3,24 @@ const main = require('../../inc/main.js');
 const resourceName = 'release';
 const template = {};
 
-function single(db, id) {
+function single(db, id, msg) {
     var resourceData = Object.assign({
         "id": id,
         "resourceName": resourceName,
-        "pageName": db[resourceName][id].name
+        "pageName": db[resourceName][id].name,
+        "songlist": main.objToArray(db.song)
     }, db[resourceName][id]);
+
+    resourceData.songs = resourceData.songs.map(s => {
+        return {
+            "song-id": s,
+            "song-name": db.song[s].name
+        };
+    });
+
+    if (msg) {
+        resourceData.msg = msg;
+    }
 
     return resourceData;
 }
@@ -19,7 +31,8 @@ function list(db) {
     return {
         [resourceName]: resourceData,
         "today": main.dateFormat(new Date()),
-        "resourceName": resourceName
+        "resourceName": resourceName,
+        "songlist": main.objToArray(db.song)
     };
 }
 
@@ -42,6 +55,18 @@ function isUpdateInvalid(req, rsp, formData, db, API_DIR) {
     return main.invalidMsg(rsp, msg, req, db, API_DIR);
 }
 
+function isSongInvalid(req, rsp, id, formData, db, API_DIR) {
+    var msg = [];
+
+    if (!formData["song-id"]) {
+        msg.push('Song is required.');
+    }
+    // Make sure it is not a duplicate song
+    // maybe check that the song id is valid too
+
+    return main.invalidMsg(rsp, msg, req, db, API_DIR);
+}
+
 function updateResource(id, formData, db, save) {
     db[resourceName][id].name = formData.name;
     db[resourceName][id].date = formData.date;
@@ -60,8 +85,37 @@ function updateResource(id, formData, db, save) {
     db[resourceName][id].audio.youtube = formData.youtube;
     db[resourceName][id].audio.cdbaby = formData.cdbaby;
 
+    if (!db[resourceName][id].songs) {
+        db[resourceName][id].songs = [];
+    }
+    if (formData["initial-song"]) {
+        db[resourceName][id].songs.push(formData["initial-song"]);
+    }
+
     save();
 }
+
+this.addSong = function (req, rsp, id, formData, db, save, API_DIR) {
+    if (isSongInvalid(req, rsp, id, formData, db)) {
+        return;
+    }
+
+    // var id = main.createResource(formData, db, save, resourceName, updateResource);
+    // var returnData = main.responseData(id, resourceName, db, "Song Added", API_DIR, ["Song added"]);
+    if (formData["song-id"]) {
+        db[resourceName][id].songs.push(formData["song-id"]);
+    }
+    save();
+
+    if (req.headers.accept === 'application/json') {
+        // rsp.setHeader("Location", returnData.link);
+        return main.returnJson(rsp, {}, 201);
+    }
+
+    // returnData.back = req.headers.referer;
+    rsp.writeHead(201, {'Content-Type': 'text/html'});
+    rsp.end(main.renderPage(req, template.single, single(db, id, ["Song added"]), db, API_DIR));
+};
 
 this.create = function (req, rsp, formData, db, save, API_DIR) {
     if (isUpdateInvalid(req, rsp, formData, db)) {

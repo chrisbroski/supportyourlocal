@@ -9,8 +9,13 @@
 <article>
 <h1>{{resourceName}}</h1>
 
-{{^loggedIn}}
 <section>
+
+{{#msg}}
+<p>{{.}}</p>
+{{/msg}}
+
+{{^loggedIn}}
 <h3>{{name}}</h3>
 <p>Released on {{date}}</p>
 <p><img src="{{cover-front}}"></p>
@@ -20,19 +25,30 @@
 {{/loggedIn}}
 
 {{#loggedIn}}
-<section>
 <form method="POST" action="{{API_DIR}}/{{resourceName}}/{{id}}">
 <input type="hidden" name="method" value="PUT">
 
-<p><label>Name</label>*<br>
+<p><label>Name</label><br>
     <input type="text" name="name" value="{{name}}" autofocus="autofocus" required="required">
-<p><label>Release Date</label><br>
+<p><label>Release Date</label>*<br>
     <input type="date" name="date" value="{{date}}">
 <p><label>Front Cover</label><br>
     <input type="text" name="cover-front" value="{{cover-front}}">
 <p><label>Back Cover</label><br>
     <input type="text" name="cover-back" value="{{cover-back}}">
 <p><label>Description<br><textarea name="desc">{{desc}}</textarea></p>
+
+<h4>Album Links</h4>
+<p><label>Spotify</label><br>
+    <input type="text" name="spotify" value="{{audio.spotify}}">
+<p><label>Apple Music</label><br>
+    <input type="text" name="apple" value="{{audio.apple}}">
+<p><label>Amazon Music</label><br>
+    <input type="text" name="amazon" value="{{audio.amazon}}">
+<p><label>YouTube</label><br>
+    <input type="text" name="youtube" value="{{audio.youtube}}">
+<p><label>CD Baby</label><br>
+    <input type="text" name="cdbaby" value="{{audio.cdbaby}}">
 
 <p><button>Update {{resourceName}}</button>
 </form>
@@ -41,5 +57,36 @@
 <section>
 <p><a class="button" href="{{API_DIR}}/delete?resource={{resourceName}}&id={{id}}">Delete {{resourceName}}</a></p>
 </section>
+
+<section>
+<h3>Songs</h3>
+<form method="POST" action="{{API_DIR}}/{{resourceName}}/{{id}}">
+    <select name="song-id">
+        <option value="">Select Song</option>
+        {{#songlist}}
+        <option value="{{id}}">{{name}}</option>
+        {{/songlist}}
+    </select>
+    <button>Add Song</button>
+</form>
+
+{{#songs}}
+<div>
+<p>{{song-name}}</p>
+<form method="POST" action="{{API_DIR}}/{{resourceName}}/{{id}}">
+    <input type="hidden" name="method" value="PATCH">
+    <input type="hidden" name="index" value="-1">
+    <input type="hidden" name="song-id" value="{{song-id}}">
+    <button>Remove</button>
+</form>
+<form method="POST" action="{{API_DIR}}/{{resourceName}}/{{id}}">
+    <input type="hidden" name="method" value="PATCH">
+    <input type="hidden" name="index" value="0">
+    <input type="hidden" name="song-id" value="{{song-id}}">
+    <button>Move to Top</button>
+</form>
+</div>
+{{/songs}}
 {{/loggedIn}}
+</section>
 </article>
