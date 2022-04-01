@@ -7,6 +7,24 @@ var LOGIN_FAIL_UNTIL_LOCKOUT;
 var LOCKOUT_DURATION_SECONDS;
 var SESSION_TIMEOUT_SECONDS;
 
+function single(db, id, req, msg, error) {
+    var authUserData = main.getAuthUserData(req, db.user);
+
+    var resourceData = Object.assign({
+        "id": id,
+        "resourceName": "user",
+        "pageName": db.user[id].name,
+        "adminChecked": !!db.user[id].admin ? ' checked="checked"' : '',
+        "memberChecked": !!db.user[id].bandMember ? ' checked="checked"' : '',
+        "isOwnUser": (authUserData.userid === id),
+        "countries": main.country(db.user[id].country),
+        "photos": main.displayPhotos(db.photos, db.user[id].photo),
+        "no-photo": main.noPhotoSelected(db.user[id].photo)
+    }, db.user[id]);
+
+    return Object.assign(main.addMessages(msg, error), resourceData);
+}
+
 function cleanFailedLogins() {
     var now = (new Date()).getTime();
 
@@ -72,7 +90,7 @@ function updatePassword(id, formData, db, save) {
 }
 this.updatePassword = updatePassword;
 
-function isSetInvalid(req, rsp, formData, db, id, API_DIR) {
+function isSetInvalid(req, formData, db, id) {
     var msg = [];
 
     if (!formData.passwordNew) {
@@ -87,14 +105,14 @@ function isSetInvalid(req, rsp, formData, db, id, API_DIR) {
     if (formData.token !== db.user[id].token) {
         msg.push('Token invalid.');
     }
-    if (!main.getAuthData(req, db.user).userid) {
+    if (main.getAuthUserData(req, db.user)) {
         msg.push("Cannot reset password when logged in. Please log out.");
     }
 
-    return main.invalidMsg(rsp, msg, req, db, API_DIR);
+    return msg;
 }
 
-function isUpdateInvalid(req, rsp, formData, db, id, API_DIR) {
+function isUpdateInvalid(formData, db, id) {
     var msg = [];
 
     if (!formData.passwordNew) {
@@ -110,7 +128,7 @@ function isUpdateInvalid(req, rsp, formData, db, id, API_DIR) {
         msg.push('Current password incorrect.');
     }
 
-    return main.invalidMsg(rsp, msg, req, db, API_DIR);
+    return msg;
 }
 
 function login(req, rsp, body, db, API_DIR) {
@@ -122,7 +140,6 @@ function login(req, rsp, body, db, API_DIR) {
     secure = ""; // at least until I get https on everything
 
     if (!body.email) {
-        // authFail(req, rsp, msg, db, API_DIR, email)
         return fail(req, rsp, `User email required.`, db, API_DIR);
     }
 
@@ -181,9 +198,13 @@ function logout(req, rsp, db, API_DIR) {
 this.logout = logout;
 
 function set(req, rsp, id, formData, db, save, API_DIR) {
-    if (isSetInvalid(req, rsp, formData, db, id, API_DIR)) {
+    var error = isSetInvalid(req, formData, db, id);
+    if (error.length) {
+        rsp.writeHead(400, {'Content-Type': 'text/html'});
+        rsp.end(main.renderPage(req, template.password, Object.assign(main.addMessages("", error), {"token": formData.token, "email": formData.email, "id": id}), db, API_DIR));
         return;
     }
+
     updatePassword(id, formData, db, save);
     rsp.writeHead(303, {'Content-Type': 'text/html', "Location": `${API_DIR}/`});
     rsp.end(main.renderPage(req, null, {"msg": ["Password set"], "title": `Password set`, "link": `${API_DIR}/`}, db, API_DIR));
@@ -218,13 +239,16 @@ this.update = function (req, rsp, id, formData, db, save, API_DIR) {
     if (!db.user[id]) {
         return main.notFound(rsp, req.url, 'PUT', req, db);
     }
-    if (isUpdateInvalid(req, rsp, formData, db, id, API_DIR)) {
+
+    var error = isUpdateInvalid(formData, db, id);
+    if (error.length) {
+        rsp.writeHead(400, {'Content-Type': 'text/html'});
+        rsp.end(main.renderPage(req, template.user, single(db, id, req, "", error), db, API_DIR));
         return;
     }
 
     // validate more fields
     updatePassword(id, formData, db, save);
-    // var returnData = main.responseData(id, resourceName, db, "Updated", API_DIR);
     var returnData = main.responseData("", "", db, "Change Password", API_DIR, ["Password updated."]);
 
     if (req.headers.accept === 'application/json') {
@@ -232,7 +256,7 @@ this.update = function (req, rsp, id, formData, db, save, API_DIR) {
     }
 
     returnData.back = req.headers.referer;
-    rsp.writeHead(200, {'Content-Type': 'text/html'});
+    rsp.writeHead(303, {'Content-Type': 'text/html', "Location": `${API_DIR}/login`});
     rsp.end(main.renderPage(req, null, returnData, db, API_DIR));
 };
 
@@ -287,6 +311,7 @@ async function loadData() {
     template.login = await main.readFile(`${__dirname}/login.html.mustache`, 'utf8');
     template.password = await main.readFile(`${__dirname}/password.html.mustache`, 'utf8');
     template.forgotPassword = await main.readFile(`${__dirname}/forgot-password.html.mustache`, 'utf8');
+    template.user = await main.readFile(`${__dirname}/../user/user.html.mustache`, 'utf8');
 }
 
 loadData();

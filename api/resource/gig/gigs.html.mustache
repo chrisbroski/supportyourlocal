@@ -9,9 +9,27 @@
 <article>
 <h1>{{resourceName}}s</h1>
 
+{{#hasError}}
+<ul class="msg error">
+{{#error}}
+<li>{{.}}</li>
+{{/error}}
+</ul>
+{{/hasError}}
+
+{{#hasMsg}}
+<ul class="msg">
+{{#msg}}
+<li>{{.}}</li>
+{{/msg}}
+{{#link}}
+<li><a href="{{href}}">{{text}}</a></li>
+{{/link}}
+</ul>
+{{/hasMsg}}
+
 {{#loggedIn}}
 <section>
-<h2>Create New {{resourceName}}</h2>
 <form method="POST" action="{{API_DIR}}/{{resourceName}}/">
 
 <p><label>Date</label>*<br>
@@ -42,10 +60,9 @@
 </section>
 {{/loggedIn}}
 
-<section>
-
+<section class="list">
 {{#gig}}
-<h4><a href="{{API_DIR}}/{{resourceName}}/{{id}}">{{formattedDate}} {{gigName}}</a></h4>
+<p><a href="{{API_DIR}}/{{resourceName}}/{{id}}">{{formattedDate}} {{gigName}}</a></p>
 {{/gig}}
 
 </section>

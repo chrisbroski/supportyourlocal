@@ -9,9 +9,28 @@
 <article>
 <h1>{{resourceName}}</h1>
 
+{{#hasError}}
+<ul class="msg error">
+{{#error}}
+<li>{{.}}</li>
+{{/error}}
+</ul>
+{{/hasError}}
+
+{{#hasMsg}}
+<ul class="msg">
+{{#msg}}
+<li>{{.}}</li>
+{{/msg}}
+{{#link}}
+<li><a href="{{href}}">{{text}}</a></li>
+{{/link}}
+</ul>
+{{/hasMsg}}
+
 {{^loggedIn}}
 <section>
-<h3>{{date}}</h3>
+<h2>{{date}}</h2>
 <pre>{{copy}}</pre>
 <p>Include song {{song}}</p>
 <p>Pinned: {{pinned}}

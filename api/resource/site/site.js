@@ -4,7 +4,7 @@ const main = require('../../inc/main.js');
 const resourceName = 'site';
 const template = {};
 
-function single(db) {
+function single(db, msg, error) {
     var headerFontNormal = ' checked="checked"';
     var headerFontBold = '';
     if (db[resourceName]["header-font-weight"] === "bold") {
@@ -22,10 +22,11 @@ function single(db) {
         "thumb-no-photo": main.noPhotoSelected(db[resourceName].thumbnail)
     }, db[resourceName]);
 
-    return resourceData;
+    // return resourceData;
+    return Object.assign(main.addMessages(msg, error), resourceData);
 }
 
-function isSetupInvalid(req, rsp, body, db, API_DIR, setupToken) {
+function isSetupInvalid(body, setupToken) {
     var msg = [];
 
     if (!body.name) {
@@ -47,20 +48,10 @@ function isSetupInvalid(req, rsp, body, db, API_DIR, setupToken) {
         msg.push("Invalid Setup Token.");
     }
 
-    if (msg.length) {
-        rsp.writeHead(400, {'Content-Type': 'text/html'});
-        rsp.end(main.renderPage(req, template.start, {
-            "setup-token": body.setupToken,
-            "msg": msg,
-            "name": body.name,
-            "email": body.email
-        }, db, API_DIR));
-        return true;
-    }
-    return false;
+    return msg;
 }
 
-function isUpdateInvalid(req, rsp, body, db, API_DIR) {
+function isUpdateInvalid(body) {
     var msg = [];
 
     if (!body.color1) {
@@ -70,7 +61,8 @@ function isUpdateInvalid(req, rsp, body, db, API_DIR) {
         msg.push('Secondary color is required.');
     }
 
-    return main.invalidMsg(rsp, msg, req, db, API_DIR);
+    return msg;
+    // return main.invalidMsg(rsp, msg, req, db, API_DIR);
 }
 
 function initialSetup(body, db, save) {
@@ -107,8 +99,30 @@ function updateResource(body, db, save) {
 }
 
 this.setup = function (req, rsp, formData, db, save, API_DIR, setupToken) {
-    if (isSetupInvalid(req, rsp, formData, db, API_DIR, setupToken)) {
+    // if (isSetupInvalid(req, rsp, formData, db, API_DIR, setupToken)) {
+    //     return;
+    // }
+    var error = isSetupInvalid(formData, setupToken);
+
+    if (error.length) {
+        rsp.writeHead(400, {'Content-Type': 'text/html'});
+        rsp.end(main.renderPage(req, template.list, Object.assign({
+            "setup-token": formData.setupToken,
+            "hasError": true,
+            "error": error,
+            "formData": formData
+        }, single(db)), db, API_DIR));
+        // ^ this needs selected values too
         return;
+        //
+        // rsp.writeHead(400, {'Content-Type': 'text/html'});
+        // rsp.end(main.renderPage(req, template.start, {
+        //     "setup-token": body.setupToken,
+        //     "msg": msg,
+        //     "name": body.name,
+        //     "email": body.email
+        // }, db, API_DIR));
+        // return true;
     }
 
     initialSetup(formData, db, save);
@@ -124,7 +138,10 @@ this.setup = function (req, rsp, formData, db, save, API_DIR, setupToken) {
 };
 
 this.update = function (req, rsp, formData, db, save, API_DIR) {
-    if (isUpdateInvalid(req, rsp, formData, db, API_DIR)) {
+    var error = isUpdateInvalid(formData);
+    if (error.length) {
+        rsp.writeHead(400, {'Content-Type': 'text/html'});
+        rsp.end(main.renderPage(req, template.single, single(db, "", error), db, API_DIR));
         return;
     }
 
@@ -136,9 +153,10 @@ this.update = function (req, rsp, formData, db, save, API_DIR) {
         return main.returnJson(rsp, returnData);
     }
 
-    returnData.back = req.headers.referer;
+    // returnData.back = req.headers.referer;
     rsp.writeHead(200, {'Content-Type': 'text/html'});
-    rsp.end(main.renderPage(req, null, returnData, db, API_DIR));
+    // rsp.end(main.renderPage(req, null, returnData, db, API_DIR));
+    rsp.end(main.renderPage(req, template.site, single(db, [`${resourceName} updated.`]), db, API_DIR));
 };
 
 function getCustomCSS(site) {

@@ -9,6 +9,25 @@
 <article>
 <h1>{{name}}</h1>
 
+{{#hasError}}
+<ul class="msg error">
+{{#error}}
+<li>{{.}}</li>
+{{/error}}
+</ul>
+{{/hasError}}
+
+{{#hasMsg}}
+<ul class="msg">
+{{#msg}}
+<li>{{.}}</li>
+{{/msg}}
+{{#link}}
+<li><a href="{{href}}">{{text}}</a></li>
+{{/link}}
+</ul>
+{{/hasMsg}}
+
 <section>
 <h2>Band Info</h2>
 {{^loggedIn}}
@@ -49,15 +68,15 @@
 
 <h2>Social Media</h2>
 <p><label>Facebook</label><br>
-    <input type="text" name="social-fb" value="{{social.fb}}">
+    <input type="url" name="social-fb" value="{{social.fb}}">
 <p><label>Spotify</label><br>
-    <input type="text" name="social-spotify" value="{{social.spotify}}">
+    <input type="url" name="social-spotify" value="{{social.spotify}}">
 <p><label>Instagram</label><br>
-    <input type="text" name="social-instagram" value="{{social.instagram}}">
+    <input type="url" name="social-instagram" value="{{social.instagram}}">
 <p><label>YouTube</label><br>
-    <input type="text" name="social-youtube" value="{{social.youtube}}">
+    <input type="url" name="social-youtube" value="{{social.youtube}}">
 <p><label>Podcast</label><br>
-    <input type="text" name="social-pocast" value="{{social.podcast}}">
+    <input type="url" name="social-pocast" value="{{social.podcast}}">
 
 <p><button>Update Band Information</button>
 </form>

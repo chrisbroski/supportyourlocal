@@ -207,6 +207,26 @@ function extractSpotifyTrackId(shareLink) {
 }
 this.extractSpotifyTrackId = extractSpotifyTrackId;
 
+function addMessages(msg, error, link) {
+    var returnData = {};
+    if (msg) {
+        returnData.hasMsg = true;
+        returnData.msg = msg;
+    }
+
+    if (error) {
+        returnData.hasError = true;
+        returnData.error = error;
+    }
+
+    if (link) {
+        returnData.hasMsg = true;
+        returnData.link = link;
+    }
+    return returnData;
+}
+this.addMessages = addMessages;
+
 function createResource(formData, db, save, resourceName, updateResource) {
     var id = makeId();
     db[resourceName][id] = {};
@@ -332,7 +352,7 @@ function renderPage(req, pageTemplate, d, db, API_DIR) {
         "loggedIn": loggedIn,
         "header": header,
         "head": head,
-        "isMod": (userData.userType === "administrator"),
+        "isMod": !!userData.admin,
         "userid": userData.userid,
         "homeName": db.band.name,
         "resourceNameCap": toTitleCase(d.resourceName),
@@ -362,36 +382,19 @@ function parseCookie(cookie) {
 }
 this.parseCookie = parseCookie;
 
-function getAuthData(req, users) {
-    var b64auth = (req.headers.authorization || '').split(' ')[1] || '',
-        auth = Buffer.from(b64auth, 'base64').toString().split(':'),
-        email = auth[0].toLowerCase(),
-        userIdFromEmail;
-
-    if (email === 'logout' || email === '') {
-        userIdFromEmail = email;
-    } else {
-        userIdFromEmail = getUserIdByEmail(email, users);
-    }
-
-    if (userIdFromEmail) {
-        return {"userid": userIdFromEmail, "password": auth[1], "email": email};
-    }
-
-    return {"userid": "", "password": "", "email": email};
-}
-this.getAuthData = getAuthData;
-
 function getAuthUserData(req, users) {
-    var userId = getAuthData(req, users).userid;
-    var cookies;
+    var cookies = parseCookie(req.headers.cookie);
+    var userId = cookies.user;
 
     if (!userId) {
-        cookies = parseCookie(req.headers.cookie);
-        userId = cookies.user;
-        if (!userId) {
-            return false;
-        }
+        return false;
+    }
+    if (!users[userId]) {
+        return false;
+    }
+    // Check auth token
+    if (hash(users[userId].password + userId, users[userId].salt) !== cookies.token) {
+        return false;
     }
     return Object.assign({"userid": userId}, users[userId]);
 }

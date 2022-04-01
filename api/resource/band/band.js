@@ -3,14 +3,24 @@ const main = require('../../inc/main.js');
 const resourceName = 'band';
 const template = {};
 
-function isUpdateInvalid(req, rsp, body, db, API_DIR) {
+function single(db, msg, error) {
+    var resourceData = Object.assign({
+        "resourceName": resourceName,
+        "pageName": db[resourceName].name
+    }, db[resourceName]);
+
+    return Object.assign(main.addMessages(msg, error), resourceData);
+}
+
+function isUpdateInvalid(body) {
     var msg = [];
 
     if (!body.name) {
         msg.push('Band name is required.');
     }
 
-    return main.invalidMsg(rsp, msg, req, db, API_DIR);
+    // return main.invalidMsg(rsp, msg, req, db, API_DIR);
+    return msg;
 }
 
 function updateResource(body, db, save) {
@@ -18,7 +28,7 @@ function updateResource(body, db, save) {
     db[resourceName].desc = body.desc;
     db[resourceName].bio = body.bio;
     db[resourceName].contact = body.contact;
-    
+
     db[resourceName].genre1 = body.genre1;
     db[resourceName].genre2 = body.genre2;
     db[resourceName].genre3 = body.genre3;
@@ -36,7 +46,11 @@ function updateResource(body, db, save) {
 }
 
 this.update = function (req, rsp, formData, db, save, API_DIR) {
-    if (isUpdateInvalid(req, rsp, formData, db, API_DIR)) {
+    var error = isUpdateInvalid(formData);
+    if (error.length) {
+        rsp.writeHead(400, {'Content-Type': 'text/html'});
+        // rsp.end(main.renderPage(req, template.single, single(db, id, "", error), db, API_DIR));
+        rsp.end(main.renderPage(req, template.band, single(db, [`${resourceName} updated.`]), db, API_DIR));
         return;
     }
 
@@ -48,9 +62,10 @@ this.update = function (req, rsp, formData, db, save, API_DIR) {
         return main.returnJson(rsp, returnData);
     }
 
-    returnData.back = req.headers.referer;
+    // returnData.back = req.headers.referer;
     rsp.writeHead(200, {'Content-Type': 'text/html'});
-    rsp.end(main.renderPage(req, null, returnData, db, API_DIR));
+    // rsp.end(main.renderPage(req, null, returnData, db, API_DIR));
+    rsp.end(main.renderPage(req, template.band, single(db, [`${resourceName} updated.`]), db, API_DIR));
 };
 
 this.get = function (req, rsp, db, API_DIR) {
@@ -59,11 +74,11 @@ this.get = function (req, rsp, db, API_DIR) {
         return main.returnJson(rsp, db.band);
     }
     rsp.writeHead(200, {'Content-Type': 'text/html'});
-    rsp.end(main.renderPage(req, template.site, db.band, db, API_DIR));
+    rsp.end(main.renderPage(req, template.band, db.band, db, API_DIR));
 };
 
 async function loadData() {
-    template.site = await main.readFile(`${__dirname}/${resourceName}.html.mustache`, 'utf8');
+    template.band = await main.readFile(`${__dirname}/${resourceName}.html.mustache`, 'utf8');
 }
 
 loadData();

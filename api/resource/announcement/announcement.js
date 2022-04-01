@@ -23,7 +23,7 @@ function songList(db, id) {
     return songs.sort(main.sortByDate);
 }
 
-function single(db, id) {
+function single(db, id, msg, error) {
     var resourceData = Object.assign({
         "id": id,
         "resourceName": resourceName,
@@ -32,22 +32,23 @@ function single(db, id) {
         "pinnedChecked": !!db[resourceName][id].pinned ? ' checked="checked"' : ''
     }, db[resourceName][id]);
 
-    return resourceData;
+    return Object.assign(main.addMessages(msg, error), resourceData);
 }
 
-function list(db) {
+function list(db, msg, error, link) {
     var resourceData = main.objToArray(db[resourceName]);
     resourceData.forEach(a => {
         a.shortCopy = a.copy.slice(0, 30);
         a.formattedDate = main.dateFormat(new Date(a.date + "T00:00:01"));
     });
 
-    return {
+    var returnData = {
         [resourceName]: resourceData,
         "today": main.dateFormat(new Date()),
         "resourceName": resourceName,
         "songs": songList(db, "")
     };
+    return Object.assign(main.addMessages(msg, error, link), returnData);
 }
 
 function singleData(db, id) {
@@ -79,14 +80,15 @@ function listData(db, req) {
 }
 
 // Form validation
-function isUpdateInvalid(req, rsp, formData, db, API_DIR) {
+function isUpdateInvalid(formData) {
     var msg = [];
 
     if (!formData.copy) {
         msg.push('Copy text is required.');
     }
 
-    return main.invalidMsg(rsp, msg, req, db, API_DIR);
+    // return main.invalidMsg(rsp, msg, req, db, API_DIR);
+    return msg;
 }
 
 function updateResource(id, formData, db, save) {
@@ -99,7 +101,15 @@ function updateResource(id, formData, db, save) {
 }
 
 this.create = function (req, rsp, formData, db, save, API_DIR) {
-    if (isUpdateInvalid(req, rsp, formData, db, API_DIR)) {
+    var error = isUpdateInvalid(formData);
+    if (error.length) {
+        rsp.writeHead(400, {'Content-Type': 'text/html'});
+        rsp.end(main.renderPage(req, template.list, Object.assign({
+            "hasError": true,
+            "error": error,
+            "formData": formData
+        }, list(db)), db, API_DIR));
+        // ^ this needs selected values too
         return;
     }
 
@@ -107,20 +117,27 @@ this.create = function (req, rsp, formData, db, save, API_DIR) {
     var returnData = main.responseData(id, resourceName, db, "Created", API_DIR);
 
     if (req.headers.accept === 'application/json') {
-        rsp.setHeader("Location", returnData.link);
+        rsp.setHeader("Location", `${API_DIR}/${resourceName}/${id}`);
         return main.returnJson(rsp, returnData, 201);
     }
 
-    returnData.back = req.headers.referer;
+    // returnData.back = req.headers.referer;
     rsp.writeHead(201, {'Content-Type': 'text/html'});
-    rsp.end(main.renderPage(req, null, returnData, db, API_DIR));
+    // rsp.end(main.renderPage(req, null, returnData, db, API_DIR));
+    rsp.end(main.renderPage(req, template.list, Object.assign({
+        "hasMsg": true,
+        "link": {"text": `Created ${resourceName} id ${id}`, "href": `${API_DIR}/${resourceName}/${id}`}
+    }, list(db)), db, API_DIR));
 };
 
 this.update = function (req, rsp, id, formData, db, save, API_DIR) {
     if (!db[resourceName][id]) {
         return main.notFound(rsp, req.url, 'PUT', req, db);
     }
-    if (isUpdateInvalid(req.headers.accept, rsp, formData, db, API_DIR)) {
+    var error = isUpdateInvalid(formData);
+    if (error.length) {
+        rsp.writeHead(400, {'Content-Type': 'text/html'});
+        rsp.end(main.renderPage(req, template.single, single(db, id, "", error), db, API_DIR));
         return;
     }
 
@@ -132,9 +149,10 @@ this.update = function (req, rsp, id, formData, db, save, API_DIR) {
         return main.returnJson(rsp, returnData);
     }
 
-    returnData.back = req.headers.referer;
+    // returnData.back = req.headers.referer;
     rsp.writeHead(200, {'Content-Type': 'text/html'});
-    rsp.end(main.renderPage(req, null, returnData, db, API_DIR));
+    // rsp.end(main.renderPage(req, null, returnData, db, API_DIR));
+    rsp.end(main.renderPage(req, template.single, single(db, id, [`${resourceName} id ${id} updated.`]), db, API_DIR));
 };
 
 this.remove = function (req, rsp, id, db, save, API_DIR) {

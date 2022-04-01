@@ -59,13 +59,19 @@ Admin key in .env (for backups and troubleshooting)
 * Site URL
 * admin token
 
+## API Style
+
+Is there a way to use a checkbox and sibling selector to manage pop-out mobile menu without JS?
+
+Auto login after password change or set
+
 ## Features for next version
 
 Deploy separate font and back ends to prod.
 
 Put sites in /srv/bandname/supportyourlocal /srv/bandname/kandy
 
-When a user is added, create a token and reset link.
+Breadcrumb nav
 
 ### Releases (include albums) (Needed for B&B to fully adopt back end)
 

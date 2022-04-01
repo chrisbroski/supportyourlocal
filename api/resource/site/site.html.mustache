@@ -9,6 +9,25 @@
 <article>
 <h1>{{resourceName}}</h1>
 
+{{#hasError}}
+<ul class="msg error">
+{{#error}}
+<li>{{.}}</li>
+{{/error}}
+</ul>
+{{/hasError}}
+
+{{#hasMsg}}
+<ul class="msg">
+{{#msg}}
+<li>{{.}}</li>
+{{/msg}}
+{{#link}}
+<li><a href="{{href}}">{{text}}</a></li>
+{{/link}}
+</ul>
+{{/hasMsg}}
+
 <section>
 <h2>Styles</h2>
 {{^loggedIn}}
@@ -32,7 +51,7 @@
 <p><label>Secondary Color</label><br>
     <input type="color" name="color2" value="{{color2}}">
 
-<h4><label>Header Font</label></h4>
+<h2><label>Header Font</label></h2>
 <p><input type="text" name="header-font" value="{{header-font}}"></p>
 <p><label>Generic Font Family</label><br><select name="header-font-default">
     <option value="sans-serif"{{header-sans-serif-selected}}>Sans-serif</option>
@@ -46,7 +65,7 @@
 <label>Bold <input type="radio" name="header-font-weight" value="bold"{{{header-font-bold}}}></label>
 </p>
 
-<h4><label>Body Font</label></h4>
+<h2><label>Body Font</label></h2>
 <p><input type="text" name="body-font" value="{{body-font}}"><br>
 <p><label>Generic Font Family</label><br><select name="body-font-default">
     <option value="sans-serif"{{body-sans-serif-selected}}>Sans-serif</option>
@@ -56,7 +75,7 @@
     <option value="fantasy"{{body-fantasy-selected}}>Fantasy</option>
 </select>
 
-<h4>Background Photo</h4>
+<h2>Background Photo</h2>
 <div class="photos">
 <input type="radio" name="background" value="" id="bg-none"{{{bg-no-photo}}}><label for="bg-none"><img src="{{API_DIR}}/nophoto.png" alt="No photo"></label>
 {{#bg-photos}}
@@ -64,7 +83,7 @@
 {{/bg-photos}}
 </div>
 
-<h4>Thumbnail Photo</h4>
+<h2>Thumbnail Photo</h2>
 <div class="photos">
 <input type="radio" name="thumbnail" value="" id="thumb-none"{{{thumb-no-photo}}}><label for="thumb-none"><img src="{{API_DIR}}/nophoto.png" alt="No photo"></label>
 {{#thumb-photos}}

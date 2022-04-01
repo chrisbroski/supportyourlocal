@@ -1,13 +1,32 @@
 <!doctype html>
 <html lang="en">
-<title>{{pageName}} - {{resourceNameCap}} - {{homeName}}</title>
+<title>{{name}} - {{resourceNameCap}} - {{homeName}}</title>
 {{{head}}}
 
 <body>
 {{{header}}}
 
 <article>
-<h1>{{resourceName}}</h1>
+<h1>{{name}}</h1>
+
+{{#hasError}}
+<ul class="msg error">
+{{#error}}
+<li>{{.}}</li>
+{{/error}}
+</ul>
+{{/hasError}}
+
+{{#hasMsg}}
+<ul class="msg">
+{{#msg}}
+<li>{{.}}</li>
+{{/msg}}
+{{#link}}
+<li><a href="{{href}}">{{text}}</a></li>
+{{/link}}
+</ul>
+{{/hasMsg}}
 
 {{^loggedIn}}
 <section>
@@ -15,13 +34,13 @@
 <p><img src="{{cover-front}}"></p>
 <p><img src="{{cover-back}}"></p>
 <pre>{{desc}}</pre>
-<h4>Audio</h4>
+<h2>Audio</h2>
 <p><a href="{{audio.spotify}}">{{audio.spotify}}</a></p>
 <p><a href="{{audio.apple}}">{{audio.apple}}</a></p>
 <p><a href="{{audio.amazon}}">{{audio.amazon}}</a></p>
 <p><a href="{{audio.cdbaby}}">{{audio.cdbaby}}</a></p>
 <p><a href="{{audio.youtube}}">{{audio.youtube}}</a></p>
-<h4>Video</h4>
+<h2>Video</h2>
 <p><a href="{{video.youtube}}">{{video.youtube}}</a></p>
 <p><a href="{{video.fb}}">{{video.fb}}</a></p>
 </section>
@@ -56,21 +75,21 @@
 
 <h3>Audio</h3>
 <p><label>Spotify</label><br>
-    <input type="text" name="spotify" value="{{audio.spotify}}">
+    <input type="url" name="spotify" value="{{audio.spotify}}">
 <p><label>Apple Music</label><br>
-    <input type="text" name="apple" value="{{audio.apple}}">
+    <input type="url" name="apple" value="{{audio.apple}}">
 <p><label>Amazon Music</label><br>
-    <input type="text" name="amazon" value="{{audio.amazon}}">
+    <input type="url" name="amazon" value="{{audio.amazon}}">
 <p><label>YouTube</label><br>
-    <input type="text" name="youtube" value="{{audio.youtube}}">
+    <input type="url" name="youtube" value="{{audio.youtube}}">
 <p><label>CD Baby</label><br>
-    <input type="text" name="cdbaby" value="{{audio.cdbaby}}">
+    <input type="url" name="cdbaby" value="{{audio.cdbaby}}">
 
 <h3>Video</h3>
 <p><label>YouTube</label><br>
-    <input type="text" name="video-youtube" value="{{video.youtube}}">
+    <input type="url" name="video-youtube" value="{{video.youtube}}">
 <p><label>Facebook</label><br>
-    <input type="text" name="video-fb" value="{{video.fb}}">
+    <input type="url" name="video-fb" value="{{video.fb}}">
 
 <p><label>Lyrics<br><textarea name="lyrics">{{lyrics}}</textarea></p>
 

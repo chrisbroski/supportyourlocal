@@ -9,6 +9,25 @@
 <article>
 <h1>{{resourceName}}s</h1>
 
+{{#hasError}}
+<ul class="msg error">
+{{#error}}
+<li>{{.}}</li>
+{{/error}}
+</ul>
+{{/hasError}}
+
+{{#hasMsg}}
+<ul class="msg">
+{{#msg}}
+<li>{{.}}</li>
+{{/msg}}
+{{#link}}
+<li><a href="{{href}}">{{text}}</a></li>
+{{/link}}
+</ul>
+{{/hasMsg}}
+
 {{#loggedIn}}
 <section>
 <form method="POST" action="{{API_DIR}}/{{resourceName}}/">
@@ -27,15 +46,15 @@
 
 <p><label>Description<br><textarea name="desc"></textarea></p>
 
-<h4>Songs</h4>
+<h2>Songs</h2>
 <p><select name="initial-song">
 <option value="">Select Song</option>
 {{#songlist}}
-<option value="{{id}}">{{name}}</option>
+<option value="{{song-id}}">{{song-name}}</option>
 {{/songlist}}
 </select>
 
-<h4>Album Links (if appropriate)</h4>
+<h2>Album Links (if appropriate)</h2>
 <p><label>Spotify</label><br>
     <input type="text" name="spotify">
 <p><label>Apple Music</label><br>
@@ -52,10 +71,10 @@
 </section>
 {{/loggedIn}}
 
-<section>
-{{#song}}
-<h4><a href="{{API_DIR}}/{{resourceName}}/{{id}}">{{name}}</a></h4>
-{{/song}}
+<section class="list">
+{{#release}}
+<p><a href="{{API_DIR}}/{{resourceName}}/{{id}}">{{name}}</a></p>
+{{/release}}
 </section>
 
 </article>

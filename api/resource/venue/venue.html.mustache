@@ -7,7 +7,26 @@
 {{{header}}}
 
 <article>
-<h1>{{resourceName}}</h1>
+<h1>{{name}}</h1>
+
+{{#hasError}}
+<ul class="msg error">
+{{#error}}
+<li>{{.}}</li>
+{{/error}}
+</ul>
+{{/hasError}}
+
+{{#hasMsg}}
+<ul class="msg">
+{{#msg}}
+<li>{{.}}</li>
+{{/msg}}
+{{#link}}
+<li><a href="{{href}}">{{text}}</a></li>
+{{/link}}
+</ul>
+{{/hasMsg}}
 
 {{^loggedIn}}
 <section>
@@ -31,7 +50,7 @@
     <input type="text" name="name" value="{{name}}" autofocus="autofocus" required="required">
 
 <p><label>Venue Link</label><br>
-    <input type="text" name="link" value="{{link}}">
+    <input type="url" name="link" value="{{link}}">
 
 <p><label>Address 1</label><br>
     <input type="text" name="add1" value="{{add1}}">

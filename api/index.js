@@ -266,7 +266,7 @@ function rspPut(req, rsp, path, body) {
         return release.update(req, rsp, path.id, body, db, endure.save, API_DIR);
     }
 
-    if (path.resource === `password`) {
+    if (path.resource === 'password') {
         if (path.id) {
             return auth.update(req, rsp, path.id, body, db, endure.save, API_DIR);
         }

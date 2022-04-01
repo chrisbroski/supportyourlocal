@@ -8,12 +8,27 @@
 <article>
 <h1>Set Up Your Site</h1>
 
+{{#hasError}}
+<ul class="msg error">
+{{#error}}
+<li>{{.}}</li>
+{{/error}}
+</ul>
+{{/hasError}}
+
+{{#hasMsg}}
+<ul class="msg">
+{{#msg}}
+<li>{{.}}</li>
+{{/msg}}
+{{#link}}
+<li><a href="{{href}}">{{text}}</a></li>
+{{/link}}
+</ul>
+{{/hasMsg}}
+
 <section>
 <p>First we need your band's name and a primary login account. Don't worry too much because you can easily change these later.
-
-{{#msg}}
-<p>{{.}}</p>
-{{/msg}}
 
 <form method="POST" action="{{API_DIR}}/start" enctype="application/x-www-form-urlencoded">
 <p><label>Setup Token</label>*<br>

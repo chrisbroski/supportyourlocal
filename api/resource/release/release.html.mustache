@@ -7,13 +7,28 @@
 {{{header}}}
 
 <article>
-<h1>{{resourceName}}</h1>
+<h1>{{resourceName}} {{name}}</h1>
+
+{{#hasError}}
+<ul class="msg error">
+{{#error}}
+<li>{{.}}</li>
+{{/error}}
+</ul>
+{{/hasError}}
+
+{{#hasMsg}}
+<ul class="msg">
+{{#msg}}
+<li>{{.}}</li>
+{{/msg}}
+{{#link}}
+<li><a href="{{href}}">{{text}}</a></li>
+{{/link}}
+</ul>
+{{/hasMsg}}
 
 <section>
-
-{{#msg}}
-<p>{{.}}</p>
-{{/msg}}
 
 {{^loggedIn}}
 <h3>{{name}}</h3>
@@ -38,7 +53,7 @@
     <input type="text" name="cover-back" value="{{cover-back}}">
 <p><label>Description<br><textarea name="desc">{{desc}}</textarea></p>
 
-<h4>Album Links</h4>
+<h2>Album Links</h2>
 <p><label>Spotify</label><br>
     <input type="text" name="spotify" value="{{audio.spotify}}">
 <p><label>Apple Music</label><br>
@@ -59,12 +74,12 @@
 </section>
 
 <section>
-<h3>Songs</h3>
+<h2>Songs</h2>
 <form method="POST" action="{{API_DIR}}/{{resourceName}}/{{id}}">
     <select name="song-id">
         <option value="">Select Song</option>
         {{#songlist}}
-        <option value="{{id}}">{{name}}</option>
+        <option value="{{song-id}}">{{song-name}}</option>
         {{/songlist}}
     </select>
     <button>Add Song</button>

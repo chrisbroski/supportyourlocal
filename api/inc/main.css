@@ -32,7 +32,7 @@ body > header p {
 body > header p a {
     display: block;
 }
-body > header p input[type="text"], body > header p input[type="email"], body > header p input[type="password"] {
+body > header p input[type="text"], body > header p input[type="email"], body > header p input[type="password"], body > header p input[type="url"] {
     width: 90%;
 }
 body > header p label {
@@ -46,26 +46,37 @@ body > header form {
     margin: 4px;
     padding: 4px;
 }
+
+body > article {
+    padding-right: 360px;
+}
 li {font-size: 16px; margin-bottom: 0.3em; line-height: 1.4em; }
-h1, h2, h3 {
+h1, h2 {
     font-family: var(--header-font);
     color: rgb(var(--color2));
     font-weight: var(--header-font-weight);
-}
-h1 {
-    margin: 0.5em 12px; padding: 8px;
-    font-size: 36px;
     text-transform: capitalize;
 }
-h2 {margin: 0.5em 0; font-size: 32px; color: rgb(var(--color2)); text-transform: capitalize; }
+h1 {
+    margin: 0.2em 12px; padding: 8px;
+    font-size: 64px;
+}
+h2 {margin: 0.5em 0; font-size: 36px; color: rgb(var(--color2)); }
 h3 {margin: 0.5em 0; font-size: 28px; color: rgb(var(--color2)); }
-h4 {margin: 0.5em 0; font-size: 24px; color: rgb(var(--color2)); }
-h5 {color: rgb(var(--color2)); }
+h4 {margin: 0.5em 0; font-size: 24px; color: rgb(var(--color2)); text-transform: uppercase; }
 p, h5 {margin: 0.5em 0; font-size: 17px; line-height: 1.4em; max-width: 580px; }
+h5 {color: rgb(var(--color2)); }
+h1 + h5 {margin-left: 20px; color: black; }
+h1 + h5 a {text-transform: capitalize; }
 h6 {margin: 0.5em 0; color: rgb(var(--color2)); }
 input, select {font-size: 17px; }
-input[type="text"], input[type="email"], input[type="password"], select {
-    width: 22em;
+input[type="text"], input[type="email"], input[type="password"], input[type="url"], select {
+    width: 400px;
+}
+input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus, input[type="url"]:focus, input[type="number"]:focus, select:focus, textarea:focus {
+    /* background-image: linear-gradient rgba(var(--color2), 0.05); */
+    background-image: linear-gradient(rgba(var(--color2), 0.05), rgba(var(--color2), 0.05));
+    background-color: white;
 }
 textarea {width: 100%; height: 8em; font-size: 16px; max-width: 580px; }
 button, input[type="button"], input[type="submit"], input[type="reset"], a.button {
@@ -99,6 +110,14 @@ section + section {
 section > *:first-child {
     margin-top: 12px;
 }
+section.list {
+    position: fixed;
+    top: 0; right: 0; bottom: 0;
+    width: 360px;
+    overflow: auto;
+    border-top: 0 none;
+    border-left: 1px solid #888;
+}
 
 div.photos {
     height: 120px;
@@ -116,6 +135,28 @@ div.photos input {
 div.photos input:checked + label img {
     padding: 4px;
     border: 2px solid rgb(var(--color2));
+}
+
+ul.error {color: red; }
+ul.msg {
+    animation: fadeOutAfterLoad 8.0s ease-out;
+    animation-fill-mode: forwards;
+}
+@keyframes fadeOutAfterLoad {
+    0% {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    80% {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+        visibility: hidden;
+    }
 }
 
 @media (max-width: 800px) {
@@ -140,7 +181,21 @@ div.photos input:checked + label img {
         overflow: auto;
     }
 
-    input[type="text"], input[type="email"], input[type="password"], select {
+    input[type="text"], input[type="email"], input[type="password"], input[type="url"], select {
         width: 100%;
+    }
+}
+
+@media (max-width: 1040px) {
+    body > article {
+        padding-right: 0;
+    }
+    section.list {
+        position: static;
+        top: 0; right: 0; bottom: 0;
+        width: auto;
+        overflow: visible;
+        border-top: 1px solid #888;
+        border-left: 0 none;
     }
 }
