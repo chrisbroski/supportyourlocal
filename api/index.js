@@ -238,14 +238,11 @@ function rspPost(req, rsp, path, body) {
 }
 
 function rspPut(req, rsp, path, body) {
-    if (path.path === '/band') {
+    if (path.resource === 'band') {
         return band.update(req, rsp, body, db, endure.save, API_DIR);
     }
     if (path.resource === 'user') {
-        if (path.id) {
-            user.update(req, rsp, path.id, body, db, endure.save, API_DIR);
-        }
-        return;
+        return user.update(req, rsp, path.id, body, db, endure.save, API_DIR);
     }
     if (path.resource === 'gig') {
         return gig.update(req, rsp, path.id, body, db, endure.save, API_DIR);
@@ -306,6 +303,14 @@ function rspDelete(req, rsp, path) {
     }
 
     return main.notFound(rsp, req.url, 'DELETE', req, db);
+}
+
+function rspPatch(req, rsp, path, body) {
+    if (path.resource === 'release') {
+        return release.reorderSong(req, rsp, path.id, body, db, endure.save, API_DIR);
+    }
+
+    return main.notFound(rsp, req.url, 'PUT', req, db);
 }
 
 function rspGet(req, rsp, path) {
@@ -406,8 +411,9 @@ function rspGet(req, rsp, path) {
 
 function getMethod(req, body) {
     var method = req.method;
-    if (req.method === 'POST' || req.method === 'PUT') {
-        if (body.method && (body.method === 'PUT' || body.method === 'DELETE')) {
+    var methodsAllowed = ['DELETE', 'PUT', 'PATCH'];
+    if (method === 'POST') {
+        if (methodsAllowed.indexOf(body.method) > -1) {
             method = body.method;
         }
     }
@@ -491,9 +497,12 @@ function routeMethods(req, rsp, body) {
     if (method === 'DELETE') {
         return rspDelete(req, rsp, path);
     }
+    if (method === 'PATCH') {
+        return rspPatch(req, rsp, path, parsedBody);
+    }
 
     rsp.writeHead(405, {'Content-Type': 'text/plain'});
-    rsp.end('GET, POST, PUT, DELETE, and OPTIONS only.');
+    rsp.end('GET, POST, PUT, DELETE, PATCH, and OPTIONS only.');
 }
 
 function collectReqBody(req, rsp) {

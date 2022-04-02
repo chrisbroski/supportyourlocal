@@ -71,8 +71,6 @@ Deploy separate font and back ends to prod.
 
 Put sites in /srv/bandname/supportyourlocal /srv/bandname/kandy
 
-Breadcrumb nav
-
 ### Releases (include albums) (Needed for B&B to fully adopt back end)
 
 * Name (if album)

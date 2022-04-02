@@ -78,32 +78,35 @@
 <section>
 <h2>Songs</h2>
 <form method="POST" action="{{API_DIR}}/{{resourceName}}/{{id}}">
-    <select name="song-id">
+    <p><select name="song-id">
         <option value="">Select Song</option>
         {{#songlist}}
         <option value="{{song-id}}">{{song-name}}</option>
         {{/songlist}}
     </select>
-    <button>Add Song</button>
+    <p><button>Add Song</button>
 </form>
 
-{{#songs}}
-<div>
-<p>{{song-name}}</p>
-<form method="POST" action="{{API_DIR}}/{{resourceName}}/{{id}}">
-    <input type="hidden" name="method" value="PATCH">
-    <input type="hidden" name="index" value="-1">
-    <input type="hidden" name="song-id" value="{{song-id}}">
-    <button>Remove</button>
-</form>
+<h3>Album Order</h3>
+{{#albumList}}
+<div class="songlist">
+<p>
 <form method="POST" action="{{API_DIR}}/{{resourceName}}/{{id}}">
     <input type="hidden" name="method" value="PATCH">
     <input type="hidden" name="index" value="0">
     <input type="hidden" name="song-id" value="{{song-id}}">
-    <button>Move to Top</button>
+    <button>↑</button>
 </form>
+{{song-name}}
+<form method="POST" action="{{API_DIR}}/{{resourceName}}/{{id}}">
+    <input type="hidden" name="method" value="PATCH">
+    <input type="hidden" name="index" value="-1">
+    <input type="hidden" name="song-id" value="{{song-id}}">
+    <button>×</button>
+</form>
+</p>
 </div>
-{{/songs}}
+{{/albumList}}
 {{/loggedIn}}
 </section>
 </article>

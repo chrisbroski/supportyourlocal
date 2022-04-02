@@ -12,12 +12,22 @@ function songList(songs) {
     });
 }
 
+function albumList(songs, db) {
+    return songs.map(s => {
+        return {
+            "song-id": s,
+            "song-name": db.song[s].name
+        };
+    });
+}
+
 function single(db, id, msg, error) {
     var resourceData = Object.assign({
         "id": id,
         "resourceName": resourceName,
         "pageName": db[resourceName][id].name,
-        "songlist": songList(main.objToArray(db.song))
+        "songlist": songList(main.objToArray(db.song)),
+        "albumList": albumList(db[resourceName][id].songs, db)
     }, db[resourceName][id]);
 
     return Object.assign(main.addMessages(msg, error), resourceData);
@@ -52,7 +62,6 @@ function isUpdateInvalid(formData) {
     }
 
     return msg;
-    // return main.invalidMsg(rsp, msg, req, db, API_DIR);
 }
 
 function isSongInvalid(formData) {
@@ -65,7 +74,21 @@ function isSongInvalid(formData) {
     // maybe check that the song id is valid too
 
     return msg;
-    // return main.invalidMsg(rsp, msg, req, db, API_DIR);
+}
+
+function isReorderInvalid(formData, db, id) {
+    var msg = [];
+
+    if (!formData["song-id"]) {
+        msg.push('Song is required.');
+    }
+    if (!formData.index) {
+        msg.push('New index is required.');
+    }
+    if (db.release[id].songs.indexOf(formData["song-id"]) < 0) {
+        msg.push('Song not found in release.');
+    }
+    return msg;
 }
 
 function updateResource(id, formData, db, save) {
@@ -91,6 +114,20 @@ function updateResource(id, formData, db, save) {
     }
     if (formData["initial-song"]) {
         db[resourceName][id].songs.push(formData["initial-song"]);
+    }
+
+    save();
+}
+
+function patchResource(id, formData, db, save) {
+    var currentIndex = db.release[id].songs.indexOf(formData["song-id"]);
+    var newIndex = formData.index;
+    if (newIndex >= db.release[id].songs.length) {
+        newIndex = db.release[id].songs.length - 1;
+    }
+    db.release[id].songs.splice(currentIndex, 1);
+    if (parseInt(formData.index) > -1) {
+        db.release[id].songs.splice(newIndex, 0, formData["song-id"]);
     }
 
     save();
@@ -131,10 +168,30 @@ this.addSong = function (req, rsp, id, formData, db, save, API_DIR) {
     rsp.end(main.renderPage(req, template.single, single(db, id, ["Song added"]), db, API_DIR));
 };
 
+this.reorderSong = function(req, rsp, id, formData, db, save, API_DIR) {
+    if (!db[resourceName][id]) {
+        return main.notFound(rsp, req.url, 'PATCH', req, db);
+    }
+
+    var error = isReorderInvalid(formData, db, id);
+    if (error.length) {
+        rsp.writeHead(400, {'Content-Type': 'text/html'});
+        rsp.end(main.renderPage(req, template.single, single(db, id, "", error), db, API_DIR));
+        return;
+    }
+
+    patchResource(id, formData, db, save);
+    var returnData = main.responseData(id, resourceName, db, "Updated", API_DIR);
+
+    if (req.headers.accept === 'application/json') {
+        return main.returnJson(rsp, returnData);
+    }
+
+    rsp.writeHead(200, {'Content-Type': 'text/html'});
+    rsp.end(main.renderPage(req, template.single, single(db, id, [`${resourceName} id ${id} songs updated.`]), db, API_DIR));
+};
+
 this.create = function (req, rsp, formData, db, save, API_DIR) {
-    // if (isUpdateInvalid(req, rsp, formData, db)) {
-    //     return;
-    // }
     var error = isUpdateInvalid(formData);
     if (error.length) {
         rsp.writeHead(400, {'Content-Type': 'text/html'});
@@ -155,9 +212,6 @@ this.create = function (req, rsp, formData, db, save, API_DIR) {
         return main.returnJson(rsp, returnData, 201);
     }
 
-    // returnData.back = req.headers.referer;
-    // rsp.writeHead(201, {'Content-Type': 'text/html'});
-    // rsp.end(main.renderPage(req, null, returnData, db, API_DIR));
     rsp.writeHead(201, {'Content-Type': 'text/html'});
     rsp.end(main.renderPage(req, template.list, Object.assign({
         "hasMsg": true,
@@ -184,9 +238,7 @@ this.update = function (req, rsp, id, formData, db, save, API_DIR) {
         return main.returnJson(rsp, returnData);
     }
 
-    // returnData.back = req.headers.referer;
     rsp.writeHead(200, {'Content-Type': 'text/html'});
-    // rsp.end(main.renderPage(req, null, returnData, db, API_DIR));
     rsp.end(main.renderPage(req, template.single, single(db, id, [`${resourceName} id ${id} updated.`]), db, API_DIR));
 };
 
