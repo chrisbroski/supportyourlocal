@@ -15,14 +15,23 @@ function single(db, msg, error) {
         "resourceName": resourceName,
         "pageName": main.toTitleCase(resourceName),
         "header-font-normal": headerFontNormal,
+        "header-sans-serif-selected": db.site["header-font-default"] === "sans-serif" ? ' selected="selected"' : '',
+        "header-serif-selected": db.site["header-font-default"] === "serif" ? ' selected="selected"' : '',
+        "header-monospace-selected": db.site["header-font-default"] === "monospace" ? ' selected="selected"' : '',
+        "header-cursive-selected": db.site["header-font-default"] === "cursive" ? ' selected="selected"' : '',
+        "header-fantasy-selected": db.site["header-font-default"] === "fantasy" ? ' selected="selected"' : '',
         "header-font-bold": headerFontBold,
+        "body-sans-serif-selected": db.site["body-font-default"] === "sans-serif" ? ' selected="selected"' : '',
+        "body-serif-selected": db.site["body-font-default"] === "serif" ? ' selected="selected"' : '',
+        "body-monospace-selected": db.site["body-font-default"] === "monospace" ? ' selected="selected"' : '',
+        "body-cursive-selected": db.site["body-font-default"] === "cursive" ? ' selected="selected"' : '',
+        "body-fantasy-selected": db.site["body-font-default"] === "fantasy" ? ' selected="selected"' : '',
         "bg-photos": main.displayPhotos(db.photos, db[resourceName].background),
         "bg-no-photo": main.noPhotoSelected(db[resourceName].background),
         "thumb-photos": main.displayPhotos(db.photos, db[resourceName].thumbnail),
         "thumb-no-photo": main.noPhotoSelected(db[resourceName].thumbnail)
     }, db[resourceName]);
 
-    // return resourceData;
     return Object.assign(main.addMessages(msg, error), resourceData);
 }
 
