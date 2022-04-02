@@ -106,30 +106,17 @@ function updateResource(body, db, save) {
 }
 
 this.setup = function (req, rsp, formData, db, save, API_DIR, setupToken) {
-    // if (isSetupInvalid(req, rsp, formData, db, API_DIR, setupToken)) {
-    //     return;
-    // }
     var error = isSetupInvalid(formData, setupToken);
 
     if (error.length) {
         rsp.writeHead(400, {'Content-Type': 'text/html'});
-        rsp.end(main.renderPage(req, template.list, Object.assign({
+        rsp.end(main.renderPage(req, template.start, {
             "setup-token": formData.setupToken,
             "hasError": true,
             "error": error,
             "formData": formData
-        }, single(db)), db, API_DIR));
-        // ^ this needs selected values too
+        }, db, API_DIR));
         return;
-        //
-        // rsp.writeHead(400, {'Content-Type': 'text/html'});
-        // rsp.end(main.renderPage(req, template.start, {
-        //     "setup-token": body.setupToken,
-        //     "msg": msg,
-        //     "name": body.name,
-        //     "email": body.email
-        // }, db, API_DIR));
-        // return true;
     }
 
     initialSetup(formData, db, save);
@@ -263,9 +250,10 @@ this.getCss = function (req, rsp, data, isCss) {
 };
 
 this.start = function (req, rsp, db, API_DIR, qs) {
+    var setupToken = qs["setup-token"] || "";
     // rsp.setHeader('Cache-Control', 'max-age=0,no-cache,no-store,post-check=0,pre-check=0');
     rsp.writeHead(200, {'Content-Type': 'text/html'});
-    rsp.end(main.renderPage(req, template.start, {"setup-token": qs["setup-token"]}, db, API_DIR));
+    rsp.end(main.renderPage(req, template.start, {"setup-token": setupToken}, db, API_DIR));
 };
 
 this.get = function (req, rsp, db, API_DIR) {

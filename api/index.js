@@ -530,7 +530,9 @@ function init() {
 
 async function loadData() {
     db = await endure.load(`${__dirname}/../data`);
-    db.photos = await photos("/Users/christopherbroski/projects/supportyourlocal/www/photos");
+    if (process.env.PHOTO_PATH) {
+        db.photos = await photos(process.env.PHOTO_PATH);
+    }
 
     ASSET.favicon = await readFile(`${__dirname}/inc/favicon.png`);
     ASSET.mainCss = await readFile(`${__dirname}/inc/main.css`, 'utf8');

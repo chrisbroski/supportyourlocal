@@ -51,7 +51,7 @@ body > article {
     padding-right: 360px;
 }
 li {font-size: 16px; margin-bottom: 0.3em; line-height: 1.4em; }
-h1, h2 {
+h1, h2, h4 {
     font-family: var(--header-font);
     color: rgb(var(--color2));
     font-weight: var(--header-font-weight);
@@ -63,7 +63,7 @@ h1 {
 }
 h2 {margin: 0.5em 0; font-size: 36px; color: rgb(var(--color2)); }
 h3 {margin: 0.5em 0; font-size: 28px; color: rgb(var(--color2)); }
-h4 {margin: 0.5em 0; font-size: 24px; color: rgb(var(--color2)); text-transform: uppercase; }
+h4 {margin: 0.5em 0; font-size: 24px; color: rgb(var(--color2)); }
 p, h5 {margin: 0.5em 0; font-size: 17px; line-height: 1.4em; max-width: 580px; }
 h5 {color: rgb(var(--color2)); }
 h1 + h5 {margin-left: 20px; color: black; }
