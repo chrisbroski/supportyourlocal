@@ -1,13 +1,15 @@
 <!doctype html>
 <html lang="en">
-<title>{{pageName}} - {{resourceNameCap}} - {{homeName}}</title>
+<title>{{pageName}} - {{resourceNameCap}} - API - {{homeName}}</title>
 {{{head}}}
 
 <body>
 {{{header}}}
 
 <article>
-<h1>{{resourceName}} {{name}}</h1>
+<h1>{{pageName}}</h1>
+
+<h5><a href="{{API_DIR}}/">Home</a> &gt; <a href="{{API_DIR}}/{{resourceName}}">{{resourceName}}s</a> &gt; {{pageName}}</h5>
 
 {{#hasError}}
 <ul class="msg error">

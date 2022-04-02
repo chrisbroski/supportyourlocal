@@ -93,3 +93,10 @@ Breadcrumb nav
 * Include upcoming releases somehow?
 
 ### Tests
+
+Songs
+
+### Known Bugs
+
+* Select boxes not persisting after 400
+* Deletion can cause invalid state

@@ -28,7 +28,8 @@ function list(db, msg, error, link) {
         [resourceName]: main.objToArray(db[resourceName]).sort(main.sortByDateDesc),
         "today": main.dateFormat(new Date()),
         "resourceName": resourceName,
-        "songlist": songList(main.objToArray(db.song))
+        "songlist": songList(main.objToArray(db.song)),
+        "pageName": `${main.toTitleCase(resourceName)}s`
     };
 
     return Object.assign(main.addMessages(msg, error, link), resourceData);

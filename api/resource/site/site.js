@@ -13,7 +13,7 @@ function single(db, msg, error) {
     }
     var resourceData = Object.assign({
         "resourceName": resourceName,
-        "pageName": db[resourceName].name,
+        "pageName": main.toTitleCase(resourceName),
         "header-font-normal": headerFontNormal,
         "header-font-bold": headerFontBold,
         "bg-photos": main.displayPhotos(db.photos, db[resourceName].background),
@@ -24,6 +24,13 @@ function single(db, msg, error) {
 
     // return resourceData;
     return Object.assign(main.addMessages(msg, error), resourceData);
+}
+
+function siteData(rsp, db) {
+    main.returnJson(rsp, {
+        "site": db.site,
+        "band": db.band
+    });
 }
 
 function isSetupInvalid(body, setupToken) {
@@ -205,28 +212,28 @@ this.getHeader = function (req, rsp, db) {
     var socials = [];
 
     if (req.headers.accept === 'application/json') {
-        return main.returnJson(rsp, db.site);
+        return main.returnJson(rsp, {"site": db.site, "band": db.band});
     }
     header = `<header>
     <button><span class="material-icons">menu</span></button>
-    <h1>${db.site.name}</h1>
+    <h1>${db.band.name}</h1>
 </header>
 `;
 
-    if (db.site.social.fb) {
-        socials.push(`        <a href="${db.site.social.fb}"><img src="/img/social/facebook.svg" alt="Facebook"></a>`);
+    if (db.band.social.fb) {
+        socials.push(`        <a href="${db.band.social.fb}"><img src="/img/social/facebook.svg" alt="Facebook"></a>`);
     }
-    if (db.site.social.spotify) {
-        socials.push(`        <a href="${db.site.social.spotify}"><img src="/img/social/spotify.svg" alt="Spotify"></a>`);
+    if (db.band.social.spotify) {
+        socials.push(`        <a href="${db.band.social.spotify}"><img src="/img/social/spotify.svg" alt="Spotify"></a>`);
     }
-    if (db.site.social.instagram) {
-        socials.push(`        <a href="${db.site.social.instagram}"><img src="/img/social/instagram.svg" alt="Instagram"></a>`);
+    if (db.band.social.instagram) {
+        socials.push(`        <a href="${db.band.social.instagram}"><img src="/img/social/instagram.svg" alt="Instagram"></a>`);
     }
-    if (db.site.social.youtube) {
-        socials.push(`        <a href="${db.site.social.youtube}"><img src="/img/social/youtube.svg" alt="YouTube"></a>`);
+    if (db.band.social.youtube) {
+        socials.push(`        <a href="${db.band.social.youtube}"><img src="/img/social/youtube.svg" alt="YouTube"></a>`);
     }
-    if (db.site.social.podcast) {
-        socials.push(`        <a href="${db.site.social.podcast}"><img src="/img/social/anchor.svg" alt="Podcast"></a>`);
+    if (db.band.social.podcast) {
+        socials.push(`        <a href="${db.band.social.podcast}"><img src="/img/social/anchor.svg" alt="Podcast"></a>`);
     }
 
     var nav = `<nav id="main">
@@ -264,7 +271,7 @@ this.start = function (req, rsp, db, API_DIR, qs) {
 this.get = function (req, rsp, db, API_DIR) {
     rsp.setHeader('Cache-Control', 'max-age=0,no-cache,no-store,post-check=0,pre-check=0');
     if (req.headers.accept === 'application/json') {
-        return main.returnJson(rsp, db.site);
+        return siteData(rsp, db);
     }
     rsp.writeHead(200, {'Content-Type': 'text/html'});
     rsp.end(main.renderPage(req, template.site, single(db), db, API_DIR));

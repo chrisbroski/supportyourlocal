@@ -46,7 +46,8 @@ function list(db, msg, error, link) {
         [resourceName]: resourceData,
         "today": main.dateFormat(new Date()),
         "resourceName": resourceName,
-        "songs": songList(db, "")
+        "songs": songList(db, ""),
+        "pageName": `${main.toTitleCase(resourceName)}s`
     };
     return Object.assign(main.addMessages(msg, error, link), returnData);
 }

@@ -6,9 +6,9 @@ const template = {};
 function single(db, msg, error) {
     var resourceData = Object.assign({
         "resourceName": resourceName,
-        "pageName": db[resourceName].name
+        "pageName": 'Band Facts'
     }, db[resourceName]);
-
+// console.lof(resourceData);
     return Object.assign(main.addMessages(msg, error), resourceData);
 }
 
@@ -74,7 +74,7 @@ this.get = function (req, rsp, db, API_DIR) {
         return main.returnJson(rsp, db.band);
     }
     rsp.writeHead(200, {'Content-Type': 'text/html'});
-    rsp.end(main.renderPage(req, template.band, db.band, db, API_DIR));
+    rsp.end(main.renderPage(req, template.band, single(db), db, API_DIR));
 };
 
 async function loadData() {

@@ -33,7 +33,8 @@ function list(db, msg, error, link) {
     var returnData = {
         "venue": resourceData,
         "resourceName": resourceName,
-        "countries": main.country()
+        "countries": main.country(),
+        "pageName": `${main.toTitleCase(resourceName)}s`
     };
 
     return Object.assign(main.addMessages(msg, error, link), returnData);

@@ -32,10 +32,14 @@ function venueList(db, id) {
 }
 
 function single(db, id, msg, error) {
+    var pageName = db[resourceName][id].title;
+    if (!pageName) {
+        pageName = `${db[resourceName][id].date} ${db.venue[db[resourceName][id].venue].name}`;
+    }
     var resourceData = Object.assign({
         "id": id,
         "resourceName": resourceName,
-        "pageName": db[resourceName][id].date,
+        "pageName": pageName,
         "venues": venueList(db, id),
         "venueName": db.venue[db[resourceName][id].venue].name
     }, db[resourceName][id]);
@@ -56,7 +60,8 @@ function list(db, msg, error, link) {
         "gig": gigs,
         "resourceName": resourceName,
         "today": main.dateFormat(new Date()),
-        "venues": venueList(db, "")
+        "venues": venueList(db, ""),
+        "pageName": `${main.toTitleCase(resourceName)}s`
     };
     return Object.assign(main.addMessages(msg, error, link), resourceData);
 }

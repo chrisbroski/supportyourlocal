@@ -1,13 +1,15 @@
 <!doctype html>
 <html lang="en">
-<title>Band - {{homeName}}</title>
+<title>{{pageName}} - API - {{homeName}}</title>
 {{{head}}}
 
 <body id="site-page">
 {{{header}}}
 
 <article>
-<h1>{{name}}</h1>
+<h1>{{pageName}}</h1>
+
+<h5><a href="{{API_DIR}}/">Home</a> &gt; {{pageName}}</h5>
 
 {{#hasError}}
 <ul class="msg error">
@@ -29,7 +31,6 @@
 {{/hasMsg}}
 
 <section>
-<h2>Band Info</h2>
 {{^loggedIn}}
 <p>Genres {{genres}}
 <h5>Description</h5>

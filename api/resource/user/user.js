@@ -12,6 +12,7 @@ function single(db, id, req, msg, error) {
     var resourceData = Object.assign({
         "id": id,
         "resourceName": resourceName,
+        "resourceDisplayName": "Members",
         "pageName": pageName,
         "adminChecked": !!db[resourceName][id].admin ? ' checked="checked"' : '',
         "memberChecked": !!db[resourceName][id].bandMember ? ' checked="checked"' : '',
@@ -32,7 +33,8 @@ function list(db, msg, error, link) {
         "resourceName": resourceName,
         "countries": main.country(),
         "photos": db.photos,
-        "no-photo": main.noPhotoSelected()
+        "no-photo": main.noPhotoSelected(),
+        "pageName": "Members"
     };
 
     resourceData[resourceName] = resourceData[resourceName].map(u => {
