@@ -51,12 +51,20 @@ function list(db, msg, error, link) {
     return Object.assign(main.addMessages(msg, error, link), resourceData);
 }
 
+function filteredUser(user) {
+    var u = Object.assign({}, user);
+    delete u.hash;
+    delete u.salt;
+    delete u.token;
+    return u;
+}
+
 function singleData(db, id) {
-    return Object.assign({"resourceName": resourceName}, db[resourceName][id]);
+    return Object.assign({"resourceName": resourceName}, filteredUser(db[resourceName][id]));
 }
 
 function listData(db) {
-    return main.objToArray(db[resourceName]).sort(main.sortByDateDesc);
+    return main.objToArray(db[resourceName]).sort(main.sortByDateDesc).map(u => filteredUser(u));
 }
 
 function checkEmailExists(email, users) {
