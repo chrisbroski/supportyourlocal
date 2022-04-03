@@ -40,11 +40,25 @@
 <p><label>Release Date</label>*<br>
     <input type="date" name="date" required="required" value="{{formData.date}}">
 
-<p><label>Front Cover</label><br>
-    <input type="text" name="cover-front">
+<h3>Front Cover</h3>
+<div class="photos">
+<input type="radio" name="cover-front" value="" id="cover-front-none"{{{no-photo}}}>
+<label for="cover-front-none"><img src="{{API_DIR}}/nophoto.png" alt="No photo"></label>
+{{#photos}}
+    <input type="radio" name="cover-front" value="{{.}}" id="cover-front-{{.}}">
+    <label for="cover-front-{{.}}"><img src="/photos/{{.}}"></label>
+{{/photos}}
+</div>
 
-<p><label>Back Cover</label><br>
-    <input type="text" name="cover-back">
+<h3>Back Cover</h3>
+<div class="photos">
+<input type="radio" name="cover-back" value="" id="cover-back-none"{{{no-photo}}}>
+<label for="cover-back-none"><img src="{{API_DIR}}/nophoto.png" alt="No photo"></label>
+{{#photos}}
+<input type="radio" name="cover-back" value="{{.}}" id="cover-back-{{.}}">
+<label for="cover-back-{{.}}"><img src="/photos/{{.}}"></label>
+{{/photos}}
+</div>
 
 <p><label>Description<br><textarea name="desc">{{formData.desc}}</textarea></p>
 <p><label>Credits<br><textarea name="credits">{{formData.credits}}</textarea></p>

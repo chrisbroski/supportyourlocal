@@ -49,10 +49,23 @@
     <input type="text" name="name" value="{{name}}" autofocus="autofocus">
 <p><label>Release Date</label>*<br>
     <input type="date" name="date" value="{{date}}">
-<p><label>Front Cover</label><br>
-    <input type="text" name="cover-front" value="{{cover-front}}">
-<p><label>Back Cover</label><br>
-    <input type="text" name="cover-back" value="{{cover-back}}">
+
+<h3>Front Cover</h3>
+<div class="photos">
+<input type="radio" name="cover-front" value="" id="cover-front-none"{{{no-photo}}}><label for="cover-front-none"><img src="{{API_DIR}}/nophoto.png" alt="No photo"></label>
+{{#front-cover-photos}}
+<input type="radio" name="cover-front" value="{{file}}" id="cover-front-{{file}}"{{{selected}}}><label for="cover-front-{{file}}"><img src="/photos/{{file}}"></label>
+{{/front-cover-photos}}
+</div>
+
+<h3>Back Cover</h3>
+<div class="photos">
+<input type="radio" name="cover-back" value="" id="cover-back-none"{{{no-photo}}}><label for="cover-back-none"><img src="{{API_DIR}}/nophoto.png" alt="No photo"></label>
+{{#back-cover-photos}}
+<input type="radio" name="cover-back" value="{{file}}" id="cover-back-{{file}}"{{{selected}}}><label for="cover-back-{{file}}"><img src="/photos/{{file}}"></label>
+{{/back-cover-photos}}
+</div>
+
 <p><label>Description<br><textarea name="desc">{{desc}}</textarea></p>
 <p><label>Credits<br><textarea name="credits">{{credits}}</textarea></p>
 

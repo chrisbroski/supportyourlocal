@@ -40,7 +40,10 @@ function single(db, id, msg, error) {
         "resourceName": resourceName,
         "pageName": pageName(db, id),
         "songlist": songList(main.objToArray(db.song)),
-        "albumList": albumList(db[resourceName][id].songs, db)
+        "albumList": albumList(db[resourceName][id].songs, db),
+        "front-cover-photos": main.displayPhotos(db.photos, db[resourceName][id]["cover-front"]),
+        "back-cover-photos": main.displayPhotos(db.photos, db[resourceName][id]["cover-back"]),
+        "no-photo": main.noPhotoSelected(db[resourceName][id].photo)
     }, db[resourceName][id]);
 
     return Object.assign(main.addMessages(msg, error), resourceData);
@@ -57,6 +60,8 @@ function list(db, msg, error, link) {
         // "today": main.dateFormat(new Date()),
         "resourceName": resourceName,
         "songlist": songList(main.objToArray(db.song)),
+        "photos": db.photos,
+        "no-photo": main.noPhotoSelected(),
         "pageName": `${main.toTitleCase(resourceName)}s`
     };
 

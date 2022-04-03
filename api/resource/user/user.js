@@ -103,7 +103,7 @@ function updateResource(id, formData, db, save) {
     db[resourceName][id].state = formData.state;
     db[resourceName][id].country = formData.country;
     db[resourceName][id].photo = formData.photo;
-    db[resourceName][id].role = formData.role;
+    db[resourceName][id].position = formData.position;
 
     save();
 }
