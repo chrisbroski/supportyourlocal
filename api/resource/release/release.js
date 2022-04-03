@@ -28,7 +28,10 @@ function pageName(db, id) {
     if (db.release[id].songs.length === 1) {
         return db.song[db.release[id].songs[0]].name;
     }
-    return db.release[id].desc.substring(0, 32);
+    if (db.release[id].desc) {
+        return db.release[id].desc.substring(0, 32);
+    }
+    return `Release ${db.release[id].date}`;
 }
 
 function single(db, id, msg, error) {

@@ -56,6 +56,7 @@ h1, h2, h4 {
     color: rgb(var(--color2));
     font-weight: var(--header-font-weight);
     text-transform: capitalize;
+    line-height: 1.2;
 }
 h1 {
     margin: 0.2em 12px; padding: 8px;
