@@ -21,11 +21,21 @@ function albumList(songs, db) {
     });
 }
 
+function pageName(db, id) {
+    if (db.release[id].name) {
+        return db.release[id].name;
+    }
+    if (db.release[id].songs.length === 1) {
+        return db.song[db.release[id].songs[0]].name;
+    }
+    return db.release[id].desc.substring(0, 32);
+}
+
 function single(db, id, msg, error) {
     var resourceData = Object.assign({
         "id": id,
         "resourceName": resourceName,
-        "pageName": db[resourceName][id].name,
+        "pageName": pageName(db, id),
         "songlist": songList(main.objToArray(db.song)),
         "albumList": albumList(db[resourceName][id].songs, db)
     }, db[resourceName][id]);
@@ -34,8 +44,13 @@ function single(db, id, msg, error) {
 }
 
 function list(db, msg, error, link) {
+    var releases = main.objToArray(db[resourceName]).sort(main.sortByDateDesc);
+    releases = releases.map(r => {
+        r.pageName = pageName(db, r.id);
+        return r;
+    });
     var resourceData = {
-        [resourceName]: main.objToArray(db[resourceName]).sort(main.sortByDateDesc),
+        [resourceName]: releases,
         // "today": main.dateFormat(new Date()),
         "resourceName": resourceName,
         "songlist": songList(main.objToArray(db.song)),
@@ -54,14 +69,19 @@ function listData(db) {
 }
 
 // Form validation
-function isUpdateInvalid(formData) {
+function isUpdateInvalid(formData, db, id) {
     var msg = [];
-
-    // There should probably more stuff here
-    // Name and/or copy required maybe?
+    var hasSong = !!formData["initial-song"];
+    if (id && db.release[id].songs.length > 0) {
+        hasSong = true;
+    }
 
     if (!formData.date) {
         msg.push('Date is required.');
+    }
+
+    if (!formData.name && !formData.desc && !hasSong) {
+        msg.push('You must give your release a name, description, or one song.');
     }
 
     return msg;
@@ -98,7 +118,7 @@ function updateResource(id, formData, db, save) {
     db[resourceName][id].name = formData.name;
     db[resourceName][id].date = formData.date;
     db[resourceName][id].desc = formData.desc;
-    db[resourceName][id].lyrics = formData.lyrics;
+    db[resourceName][id].credits = formData.credits;
 
     db[resourceName][id]["cover-front"] = formData["cover-front"];
     db[resourceName][id]["cover-back"] = formData["cover-back"];
@@ -195,7 +215,7 @@ this.reorderSong = function(req, rsp, id, formData, db, save, API_DIR) {
 };
 
 this.create = function (req, rsp, formData, db, save, API_DIR) {
-    var error = isUpdateInvalid(formData);
+    var error = isUpdateInvalid(formData, db, id);
     if (error.length) {
         rsp.writeHead(400, {'Content-Type': 'text/html'});
         rsp.end(main.renderPage(req, template.list, Object.assign({
@@ -226,7 +246,7 @@ this.update = function (req, rsp, id, formData, db, save, API_DIR) {
     if (!db[resourceName][id]) {
         return main.notFound(rsp, req.url, 'PUT', req, db);
     }
-    var error = isUpdateInvalid(formData);
+    var error = isUpdateInvalid(formData, db, id);
     if (error.length) {
         rsp.writeHead(400, {'Content-Type': 'text/html'});
         rsp.end(main.renderPage(req, template.single, single(db, id, "", error), db, API_DIR));

@@ -47,6 +47,7 @@
     <input type="text" name="cover-back">
 
 <p><label>Description<br><textarea name="desc">{{formData.desc}}</textarea></p>
+<p><label>Credits<br><textarea name="credits">{{formData.credits}}</textarea></p>
 
 <h2>Songs</h2>
 <p><select name="initial-song">
@@ -75,7 +76,7 @@
 
 <section class="list">
 {{#release}}
-<p><a href="{{API_DIR}}/{{resourceName}}/{{id}}">{{name}}</a></p>
+<p><a href="{{API_DIR}}/{{resourceName}}/{{id}}">{{pageName}}</a></p>
 {{/release}}
 </section>
 
