@@ -35,10 +35,10 @@
 <form method="POST" action="{{API_DIR}}/{{resourceName}}/">
 
 <p><label>Name</label><br>
-    <input type="text" name="name" autofocus="autofocus">
+    <input type="text" name="name" autofocus="autofocus" value="{{formData.name}}">
 
 <p><label>Release Date</label>*<br>
-    <input type="date" name="date" value="{{today}}" required="required">
+    <input type="date" name="date" required="required" value="{{formData.date}}">
 
 <p><label>Front Cover</label><br>
     <input type="text" name="cover-front">
@@ -46,7 +46,7 @@
 <p><label>Back Cover</label><br>
     <input type="text" name="cover-back">
 
-<p><label>Description<br><textarea name="desc"></textarea></p>
+<p><label>Description<br><textarea name="desc">{{formData.desc}}</textarea></p>
 
 <h2>Songs</h2>
 <p><select name="initial-song">
@@ -56,17 +56,17 @@
 {{/songlist}}
 </select>
 
-<h2>Album Links (if appropriate)</h2>
+<h2>Album Links <span>(if needed)</span></h2>
 <p><label>Spotify</label><br>
-    <input type="text" name="spotify">
+    <input type="text" name="spotify" value="{{formData.spotify}}">
 <p><label>Apple Music</label><br>
-    <input type="text" name="apple">
+    <input type="text" name="apple" value="{{formData.apple}}">
 <p><label>Amazon Music</label><br>
-    <input type="text" name="amazon">
+    <input type="text" name="amazon" value="{{formData.amazon}}">
 <p><label>YouTube</label><br>
-    <input type="text" name="youtube">
+    <input type="text" name="youtube" value="{{formData.youtube}}">
 <p><label>CD Baby</label><br>
-    <input type="text" name="cdbaby">
+    <input type="text" name="cdbaby" value="{{formData.cdbaby}}">
 
 <p><button>Create {{resourceName}}</button>
 </form>

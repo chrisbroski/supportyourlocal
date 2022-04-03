@@ -69,6 +69,12 @@ h5 {color: rgb(var(--color2)); }
 h1 + h5 {margin-left: 20px; color: black; }
 h1 + h5 a {text-transform: capitalize; }
 h6 {margin: 0.5em 0; color: rgb(var(--color2)); }
+h1 span, h2 span, h3 span, h4 span, h5 span, h6 span {
+    color: black;
+    font-family: var(--body-font);
+    font-weight: normal;
+    font-size: smaller;
+}
 input, select {font-size: 17px; }
 input[type="text"], input[type="email"], input[type="password"], input[type="url"], select {
     width: 400px;

@@ -44,7 +44,7 @@ function list(db, msg, error, link) {
 
     var returnData = {
         [resourceName]: resourceData,
-        "today": main.dateFormat(new Date()),
+        // "formData": {"date": main.dateFormat(new Date())},
         "resourceName": resourceName,
         "songs": songList(db, ""),
         "pageName": `${main.toTitleCase(resourceName)}s`
@@ -87,6 +87,8 @@ function isUpdateInvalid(formData) {
     if (!formData.copy) {
         msg.push('Copy text is required.');
     }
+
+    // msg.push('test 400 error');
 
     // return main.invalidMsg(rsp, msg, req, db, API_DIR);
     return msg;

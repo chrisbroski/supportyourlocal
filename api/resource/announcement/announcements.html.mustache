@@ -35,10 +35,10 @@
 <form method="POST" action="{{API_DIR}}/{{resourceName}}/">
 
 <p><label>Date</label>*<br>
-    <input type="date" name="date" value="{{today}}" autofocus="autofocus" required="required">
+    <input type="date" name="date" value="{{formData.date}}" autofocus="autofocus" required="required">
 
 <p><label>Announcement</label>*<br>
-    <textarea name="copy" required="required"></textarea></p>
+    <textarea name="copy" required="required">{{formData.copy}}</textarea></p>
 <p>The announcement content must be plain text, but may also use <a href="https://www.markdownguide.org/" target="_blank">markdown syntax</a>.</p>
 
 <p><label>Include Song</label><br>

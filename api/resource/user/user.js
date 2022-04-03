@@ -4,9 +4,12 @@ const template = {};
 
 function single(db, id, req, msg, error) {
     var authUserData = main.getAuthUserData(req, db.user);
-    var pageName = `${db[resourceName][id].givenName} ${db[resourceName][id].surname}`;
-    if (pageName === " ") {
-        pageName = db[resourceName][id].email;
+    var pageName = db[resourceName][id].email;
+    // var pageName = `${db[resourceName][id].givenName} ${db[resourceName][id].surname}`;
+    var givenName = db[resourceName][id].givenName;
+    var surname = db[resourceName][id].surname;
+    if (givenName || surname) {
+        pageName = pageName = `${db[resourceName][id].givenName} ${db[resourceName][id].surname}`;
     }
 
     var resourceData = Object.assign({
@@ -100,14 +103,12 @@ function updateResource(id, formData, db, save) {
     db[resourceName][id].state = formData.state;
     db[resourceName][id].country = formData.country;
     db[resourceName][id].photo = formData.photo;
+    db[resourceName][id].role = formData.role;
 
     save();
 }
 
 this.create = function (req, rsp, formData, db, save, API_DIR) {
-    // var salt;
-    // var hash;
-
     var error = isCreateInvalid(req, rsp, formData, db);
     if (error.length) {
         rsp.writeHead(400, {'Content-Type': 'text/html'});
@@ -121,16 +122,7 @@ this.create = function (req, rsp, formData, db, save, API_DIR) {
     }
 
     var id = main.createResource(formData, db, save, resourceName, updateResource);
-    // db[resourceName][id].password = formData.password;
-
-    // salt = main.makeId(12);
-    // if (formData.password) {
-    //     hash = main.hash(formData.password, salt);
-    // }
-
     db[resourceName][id].token = main.makeId(12);
-    // db[resourceName][id].salt = !formData.password ? '' : salt;
-    // db[resourceName][id].hash = !formData.password ? '' : hash;
 
     var returnData = main.responseData(id, resourceName, db, "Created", API_DIR);
 
@@ -139,9 +131,7 @@ this.create = function (req, rsp, formData, db, save, API_DIR) {
         return main.returnJson(rsp, returnData, 201);
     }
 
-    // returnData.back = req.headers.referer;
     rsp.writeHead(201, {'Content-Type': 'text/html'});
-    // rsp.end(main.renderPage(req, null, returnData, db, API_DIR));
     rsp.end(main.renderPage(req, template.list, Object.assign({
         "hasMsg": true,
         "link": {"text": `Created ${resourceName} id ${id}`, "href": `${API_DIR}/${resourceName}/${id}`}
