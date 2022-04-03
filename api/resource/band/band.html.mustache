@@ -54,6 +54,14 @@
 <input type="hidden" name="method" value="PUT">
 <p><label>Band Name</label>*<br>
     <input type="text" name="name" value="{{name}}" autofocus="autofocus" required="required">
+<p><label>City</label><br><input type="text" name="city" value="{{city}}">
+<p><label>State</label><br><input type="text" name="state" value="{{state}}">
+<p><label>Home Country</label><br>
+    <select name="country">
+        <option value="">Select Country</option>
+        {{#countries}}
+        <option value="{{code}}"{{{selected}}}>{{name}}</option>{{/countries}}
+    </select>
 
 <p><label>Genre</label><br><input type="text" name="genre1" value="{{genre1}}">
 <p><label>Genre</label><br><input type="text" name="genre2" value="{{genre2}}">

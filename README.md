@@ -81,15 +81,35 @@ Put sites in /srv/bandname/supportyourlocal /srv/bandname/kandy
 
 ### Tests
 
-Songs
+Songs partially done. The rest, not at all
 
 ### Known Bugs
 
 * Select boxes not persisting after 400
 * Deletion can cause invalid state
+* Updates don't persist after 400
 
-## Features for next next version
+## Features for next next versions
 
 Add list to side of update (single) edit pages too, if width sufficient (otherwise hide)
 
-I think it's time to add notifications to gigs and releases.
+I think it's time to add browser notifications to gigs and releases.
+
+Force vertical (with manifest file)
+
+All https
+
+Bought yourlocal.band! Switch to this.
+
+Get local features working with member cities. "Check in" on mobile when at open mics, etc.
+
+Add venmo/etc. pay information.
+
+Central Site
+
+Hometown for members?
+
+#### Setup Agreement:
+
+1. Do not libel or harrass other bands or their fandom.
+2. Make your city locations accurate and non-spammy.

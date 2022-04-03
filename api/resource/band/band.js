@@ -6,7 +6,8 @@ const template = {};
 function single(db, msg, error) {
     var resourceData = Object.assign({
         "resourceName": resourceName,
-        "pageName": 'Band Facts'
+        "pageName": 'Band Facts',
+        "countries": main.country(db[resourceName].country),
     }, db[resourceName]);
 // console.lof(resourceData);
     return Object.assign(main.addMessages(msg, error), resourceData);
@@ -26,8 +27,13 @@ function isUpdateInvalid(body) {
 function updateResource(body, db, save) {
     db[resourceName].name = body.name;
     db[resourceName].desc = body.desc;
+
     db[resourceName].bio = body.bio;
     db[resourceName].contact = body.contact;
+
+    db[resourceName].city = body.city;
+    db[resourceName].state = body.state;
+    db[resourceName].country = body.country;
 
     db[resourceName].genre1 = body.genre1;
     db[resourceName].genre2 = body.genre2;
