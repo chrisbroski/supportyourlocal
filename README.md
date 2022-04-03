@@ -71,17 +71,6 @@ Deploy separate font and back ends to prod.
 
 Put sites in /srv/bandname/supportyourlocal /srv/bandname/kandy
 
-### Releases (include albums) (Needed for B&B to fully adopt back end)
-
-* Name (if album)
-* Select an original recording song or songs.
-* Release date
-* Description
-* Front and back covers
-* Song list
-* Album links (Spotify, etc.)
-* Add alert
-
 #### Front End
 
 * Front-end nav build from JSON
@@ -98,3 +87,9 @@ Songs
 
 * Select boxes not persisting after 400
 * Deletion can cause invalid state
+
+## Features for next next version
+
+Add list to side of update (single) edit pages too, if width sufficient (otherwise hide)
+
+I think it's time to add notifications to gigs and releases.
