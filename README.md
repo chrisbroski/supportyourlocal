@@ -71,6 +71,8 @@ Deploy separate font and back ends to prod.
 
 Put sites in /srv/bandname/supportyourlocal /srv/bandname/kandy
 
+I don't think duration should be required on songs.
+
 #### Front End
 
 * Front-end nav build from JSON

@@ -72,8 +72,17 @@ function singleData(db, id) {
     return Object.assign({"resourceName": resourceName}, db[resourceName][id]);
 }
 
+function addSongData(release, db) {
+    release.songs = release.songs.map(s => {
+        return Object.assign({"id": s}, db.song[s]);
+    });
+    return release;
+}
+
 function listData(db) {
-    return main.objToArray(db[resourceName]).sort(main.sortByDateDesc);
+    return main.objToArray(db[resourceName]).sort(main.sortByDateDesc).map(r => {
+        return addSongData(r, db);
+    });
 }
 
 // Form validation
