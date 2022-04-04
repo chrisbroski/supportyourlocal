@@ -18,7 +18,6 @@
 {{/error}}
 </ul>
 {{/hasError}}
-
 {{#hasMsg}}
 <ul class="msg">
 {{#msg}}
@@ -50,40 +49,45 @@
     <select name="genre1">
         <option value="">Select Main Genre</option>
         {{#genres}}
-        <option value="{{name}}"{{{selected}}}>{{name}}</option>{{/genres}}
+        <option value="{{name}}"{{{selected}}}>{{name}}</option>
+        {{/genres}}
     </select>
 
-<p><label>Sub-genre</label><br><input type="text" name="genre2" value="{{formData.genre2}}">
-<p><label>Sub-genre</label><br><input type="text" name="genre3" value="{{formData.genre3}}">
+<p><label>Sub-genre</label><br>
+    <input type="text" name="genre2" value="{{formData.genre2}}">
+<p><label>Sub-genre</label><br>
+    <input type="text" name="genre3" value="{{formData.genre3}}">
 
-<p><label>Story<br><textarea name="story">{{formData.story}}</textarea></p>
+<p><label>Story<br>
+    <textarea name="story">{{formData.story}}</textarea></p>
 
 <h3>Audio</h3>
 
 <p><label>Spotify</label><br>
     <input type="url" name="spotify" value="{{formData.spotify}}">
 
-<p><label>Apple Music</label><br>
+<!--<p><label>Apple Music</label><br>
     <input type="url" name="apple" value="{{formData.apple}}">
 
 <p><label>Amazon Music</label><br>
     <input type="url" name="amazon" value="{{formData.amazon}}">
 
 <p><label>CD Baby</label><br>
-    <input type="url" name="cdbaby" value="{{formData.cdbaby}}">
+    <input type="url" name="cdbaby" value="{{formData.cdbaby}}">-->
 
-<p><label>YouTube</label><br>
+<p><label>YouTube Music</label><br>
     <input type="url" name="youtube" value="{{formData.youtube}}">
 
 <h3>Video</h3>
 
 <p><label>YouTube</label><br>
-<input type="url" name="video-youtube" value="{{formData.video-youtube}}">
+    <input type="url" name="video-youtube" value="{{formData.video-youtube}}">
 
 <p><label>Facebook</label><br>
-<input type="url" name="video-fb" value="{{formData.video-fb}}">
+    <input type="url" name="video-fb" value="{{formData.video-fb}}">
 
-<p><label>Lyrics<br><textarea name="lyrics">{{formData.lyrics}}</textarea></p>
+<p><label>Lyrics<br>
+    <textarea name="lyrics">{{formData.lyrics}}</textarea></p>
 
 <p><button>Create {{resourceName}}</button>
 </form>

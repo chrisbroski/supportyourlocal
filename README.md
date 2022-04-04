@@ -65,6 +65,10 @@ Is there a way to use a checkbox and sibling selector to manage pop-out mobile m
 
 Auto login after password change or set
 
+Abstract out error/msg section in all templates
+
+Triple-bracket API_DIR in templates
+
 ## Features for next version
 
 Deploy separate font and back ends to prod.
