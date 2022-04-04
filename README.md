@@ -67,7 +67,11 @@ Auto login after password change or set
 
 Abstract out error/msg section in all templates
 
-Triple-bracket API_DIR in templates
+Triple-bracket API_DIR in templates (and other HTML source formatting improvements)
+
+Song media should be an array that includes media type (Spotify, mp3, etc.) a URL, description, and credits.
+
+Photos should be in a directory outside of `www` so I can use aggressive caching rules (and better admin)
 
 ## Features for next version
 
@@ -75,15 +79,11 @@ Deploy separate font and back ends to prod.
 
 Put sites in /srv/bandname/supportyourlocal /srv/bandname/kandy
 
-I don't think duration should be required on songs.
-
 #### Front End
 
 * Front-end nav build from JSON
 * video embed (FB and YouTube)
 * Songs page. If no releases, then list.
-* If releases, then show with top button to "All Songs"
-* Include upcoming releases somehow?
 
 ### Tests
 
@@ -93,9 +93,9 @@ Songs partially done. The rest, not at all
 
 * Select boxes not persisting after 400
 * Deletion can cause invalid state
-* Updates don't persist after 400
+* Updates don't persist new form data after 400
 
-## Features for next next versions
+## Features for next next version
 
 Add list to side of update (single) edit pages too, if width sufficient (otherwise hide)
 
@@ -113,9 +113,9 @@ Add venmo/etc. pay information.
 
 Central Site
 
-Hometown for members?
-
 #### Setup Agreement:
+
+On setup, read and agree to rules:
 
 1. Do not libel or harrass other bands or their fandom.
 2. Make your city locations accurate and non-spammy.

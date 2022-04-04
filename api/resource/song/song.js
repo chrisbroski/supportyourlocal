@@ -16,7 +16,7 @@ function single(db, id, msg, error) {
 
 function list(db, msg, error, link) {
     var resourceData = {
-        [resourceName]: main.objToArray(db[resourceName]).sort(main.sortByDateDesc),
+        [resourceName]: main.objToArray(db[resourceName]).sort(main.sortByName),
         "today": main.dateFormat(new Date()),
         "resourceName": resourceName,
         "genres": main.genre(),
@@ -46,24 +46,24 @@ function singleData(db, id) {
 }
 
 function listData(db) {
-    return main.objToArray(db[resourceName]).sort(main.sortByDateDesc);
+    return main.objToArray(db[resourceName]).sort(main.sortByName);
 }
 
 // Form validation
 function isUpdateInvalid(req, rsp, formData) {
     var msg = [];
-    var durationM = formData.durationM || 0;
-    durationM = parseInt(durationM);
-    var durationS = formData.durationS || 0;
-    durationS = parseInt(durationS);
+    // var durationM = formData.durationM || 0;
+    // durationM = parseInt(durationM);
+    // var durationS = formData.durationS || 0;
+    // durationS = parseInt(durationS);
 
     if (!formData.name) {
         msg.push('Name is required.');
     }
 
-    if (durationM + durationS < 1) {
-        msg.push('Duration is required.');
-    }
+    // if (durationM + durationS < 1) {
+    //     msg.push('Duration is required.');
+    // }
 
     return msg;
 }
