@@ -27,7 +27,22 @@ function list(db, msg, error, link) {
 }
 
 function singleData(db, id) {
-    return Object.assign({"resourceName": resourceName}, db[resourceName][id]);
+    var releases = [];
+
+    Object.keys(db.release).forEach(rid => {
+        if (db.release[rid].songs.some(s => s === id)) {
+            releases.push({
+                "id": rid,
+                "date": db.release[rid].date,
+                "name": db.release[rid].name
+            });
+        }
+    });
+    // add release info
+    return Object.assign({
+        "resourceName": resourceName,
+        "releases": releases
+    }, db[resourceName][id]);
 }
 
 function listData(db) {
