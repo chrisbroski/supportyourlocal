@@ -69,7 +69,11 @@ function list(db, msg, error, link) {
 }
 
 function singleData(db, id) {
-    return Object.assign({"resourceName": resourceName}, db[resourceName][id]);
+    var release = Object.assign({"resourceName": resourceName}, db[resourceName][id]);
+    release.songs = release.songs.map(s => {
+        return Object.assign({"id": s}, db.song[s]);
+    });
+    return release;
 }
 
 function addSongData(release, db) {
@@ -144,10 +148,10 @@ function updateResource(id, formData, db, save) {
         db[resourceName][id].audio = {};
     }
     db[resourceName][id].audio.spotify = formData.spotify;
-    db[resourceName][id].audio.apple = formData.apple;
-    db[resourceName][id].audio.amazon = formData.amazon;
+    // db[resourceName][id].audio.apple = formData.apple;
+    // db[resourceName][id].audio.amazon = formData.amazon;
     db[resourceName][id].audio.youtube = formData.youtube;
-    db[resourceName][id].audio.cdbaby = formData.cdbaby;
+    // db[resourceName][id].audio.cdbaby = formData.cdbaby;
 
     if (!db[resourceName][id].songs) {
         db[resourceName][id].songs = [];
