@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Music</title>
+<meta name="format-detection" content="telephone=no">
+<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+<link rel="icon" href="favicon.ico">
+<meta property="og:image" content="http://kandyfredrick.supportyourlocal.band/photos/ab6761670000ecd44440e04613026131c7dc3f6e.jpeg" />
+<meta property="og:url" content="http://kandyfredrick.supportyourlocal.band/" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Kandy Fredrick Music" />
+<meta property="og:description" content="I enjoy playing and singing folk, country (old and new), and classic rock. My greatest music passion is as a singer/songwriter. I love telling stories with my music and having the listener get all the "feels". I enjoy sharing my music with others and learning from my music family! Music makes the world go round! Hope you enjoy!." />
+<link rel="stylesheet" type="text/css" href="/inc/main.css">
+
+<body>
+
+<!--#include file="/api/header.pht" -->
+
+<main>
+<article id="songs">
+    <section class="col2">
+        <div>
+            <h1>Music</h1>
+        </div>
+        <div>
+            <img src="/photos/ab6761670000ecd44440e04613026131c7dc3f6e.jpeg">
+        </div>
+    </section>
+</article>
+</main>
+
+<script type="text/javascript" src="/inc/Aerophane.js"></script>
+<script type="text/javascript" src="/inc/main.js"></script>
+<script>
+
+function showGigs(gigData) {
+    var shows = document.querySelector("#past-shows");
+    var section;
+    var year;
+    var h2;
+
+    gigData.gigs.forEach(function (gig) {
+        var h3;
+        var p;
+        var date = new Date(gig.date + "T00:00:01");
+        var mapLink;
+        var thisYear = (new Date()).getFullYear();
+
+        if (year !== date.getFullYear()) {
+            if (!!section) {
+                shows.appendChild(section);
+            }
+            section = document.createElement("section");
+            if (!year) {
+                if (date.getFullYear() !== thisYear) {
+                    year = date.getFullYear();
+                    h2 = document.createElement("h2");
+                    h2.textContent = year;
+                    section.appendChild(h2);
+                } else {
+                    year = date.getFullYear();
+                }
+            } else {
+                year = date.getFullYear();
+                h2 = document.createElement("h2");
+                h2.textContent = year;
+                section.appendChild(h2);
+            }
+        }
+
+        h3 = document.createElement("h3");
+        if (gig.title) {
+            h3.textContent = gig.title + " - ";
+        }
+
+        h3.appendChild(document.createTextNode(`${months[date.getMonth()]} ${date.getDate()}`));
+        h3.appendChild(ord(date.getDate()));
+        h3.appendChild(document.createTextNode(`, ${date.getFullYear()} - `));
+        h3.appendChild(document.createTextNode(gig.venueData.name));
+
+        p = document.createElement("span");
+        p.textContent = " " + daysOfTheWeek[date.getDay()] + ", " + gigTimes(gig.date, gig.startTime, gig.durationH, gig.durationM) + " ";
+
+        if (gig.venueData.map) {
+            mapLink = document.createElement("a");
+            mapLink.href = gig.venueData.map;
+            mapLink.textContent = `${gig.venueData.city}, ${gig.venueData.state}`;
+            p.appendChild(mapLink);
+        } else {
+            p.appendChild(document.createTextNode(`${gig.venueData.city}, ${gig.venueData.state}`));
+        }
+        h3.appendChild(p);
+        section.appendChild(h3);
+    });
+
+    shows.appendChild(section);
+}
+
+setTitle();
+getJsonData("/api/gig/?range=past", showGigs);
+</script>
