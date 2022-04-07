@@ -1,7 +1,6 @@
 // Standard libs
 const http = require('http');
 const fs = require("fs");
-// const qs = require('querystring');
 const util = require('util');
 const url = require('url');
 
@@ -121,10 +120,8 @@ function getPath(pathname, API_DIR) {
 async function photos(path) {
     var photos = await readDir(path);
     var fileTypes = [".jpg", ".jpeg", ".png"];
-    // console.log(photos);
     return photos.filter(p => {
         var extension = p.slice(p.lastIndexOf(".")).toLowerCase();
-        // console.log(p.slice(p.lastIndexOf(".")));
         return (fileTypes.indexOf(extension) > -1);
     });
 }
@@ -377,7 +374,6 @@ function rspGet(req, rsp, path) {
         return;
     }
     if (path.resource === 'gig') {
-        // rsp.setHeader('Cache-Control', 'max-age=0,no-cache,no-store,post-check=0,pre-check=0');
         return gig.get(req, rsp, path.id, db, API_DIR, MAP_KEY);
     }
     if (path.resource === 'venue') {
