@@ -54,7 +54,7 @@ function list(db, msg, error, link) {
         g.gigName = (g.title) ? g.title : db.venue[g.venue].name;
         g.formattedDate = main.dateFormat(g.date + "T00:00:01");
     });
-    gigs.sort(main.sortByDate);
+    gigs.sort(main.sortByDateDesc);
 
     var resourceData = {
         "gig": gigs,
