@@ -46,7 +46,7 @@
 <label for="cover-front-none"><img src="{{API_DIR}}/nophoto.png" alt="No photo"></label>
 {{#photos}}
     <input type="radio" name="cover-front" value="{{.}}" id="cover-front-{{.}}">
-    <label for="cover-front-{{.}}"><img src="/photos/{{.}}"></label>
+    <label for="cover-front-{{.}}"><img src="/photo/{{.}}"></label>
 {{/photos}}
 </div>
 
@@ -56,7 +56,7 @@
 <label for="cover-back-none"><img src="{{API_DIR}}/nophoto.png" alt="No photo"></label>
 {{#photos}}
 <input type="radio" name="cover-back" value="{{.}}" id="cover-back-{{.}}">
-<label for="cover-back-{{.}}"><img src="/photos/{{.}}"></label>
+<label for="cover-back-{{.}}"><img src="/photo/{{.}}"></label>
 {{/photos}}
 </div>
 
