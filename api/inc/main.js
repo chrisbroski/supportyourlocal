@@ -134,6 +134,9 @@ function dateFormat(d) {
 this.dateFormat = dateFormat;
 
 function objToArray(obj) {
+    if (!obj) {
+        return [];
+    }
     return Object.keys(obj).map(function (key) {
         return Object.assign({"id": key}, obj[key]);
     });
@@ -229,6 +232,9 @@ this.addMessages = addMessages;
 
 function createResource(formData, db, save, resourceName, updateResource) {
     var id = makeId();
+    if (!db[resourceName]) {
+        db[resourceName] = {};
+    }
     db[resourceName][id] = {};
     updateResource(id, formData, db, save);
     return id;
