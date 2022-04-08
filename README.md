@@ -83,7 +83,6 @@ Put sites in /srv/bandname/supportyourlocal /srv/bandname/kandy
 
 * Front-end nav build from JSON
 * video embed (FB and YouTube)
-* Songs page. If no releases, then list.
 
 ### Tests
 

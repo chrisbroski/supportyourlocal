@@ -89,7 +89,7 @@ function updateResource(id, formData, db, save) {
     db[resourceName][id].audio.spotify = formData.spotify;
     // db[resourceName][id].audio.apple = formData.apple;
     // db[resourceName][id].audio.amazon = formData.amazon;
-    db[resourceName][id].audio.youtube = formData.youtube;
+    // db[resourceName][id].audio.youtube = formData.youtube;
     // db[resourceName][id].audio.cdbaby = formData.cdbaby;
 
     if (!db[resourceName][id].video) {

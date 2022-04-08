@@ -150,8 +150,14 @@ function updateResource(id, formData, db, save) {
     db[resourceName][id].audio.spotify = formData.spotify;
     // db[resourceName][id].audio.apple = formData.apple;
     // db[resourceName][id].audio.amazon = formData.amazon;
-    db[resourceName][id].audio.youtube = formData.youtube;
+    // db[resourceName][id].audio.youtube = formData.youtube;
     // db[resourceName][id].audio.cdbaby = formData.cdbaby;
+
+    if (!db[resourceName][id].video) {
+        db[resourceName][id].video = {};
+    }
+    db[resourceName][id].video.youtube = formData.youtube;
+    db[resourceName][id].video.fb = formData.fb;
 
     if (!db[resourceName][id].songs) {
         db[resourceName][id].songs = [];
