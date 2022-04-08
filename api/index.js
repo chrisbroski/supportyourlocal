@@ -317,7 +317,7 @@ function rspGet(req, rsp, path) {
         rsp.end(ASSET.favicon);
         return;
     }
-    if (path.path === '/nophoto.png') {
+    if (path.path === '/nophoto') {
         rsp.setHeader('Cache-Control', 'max-age=31536000,public');
         rsp.writeHead(200, {'Content-Type': 'image/png'});
         rsp.end(ASSET.noPhoto);

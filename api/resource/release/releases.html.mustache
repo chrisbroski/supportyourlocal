@@ -43,7 +43,7 @@
 <h3>Front Cover</h3>
 <div class="photos">
 <input type="radio" name="cover-front" value="" id="cover-front-none"{{{no-photo}}}>
-<label for="cover-front-none"><img src="{{API_DIR}}/nophoto.png" alt="No photo"></label>
+<label for="cover-front-none"><img src="{{API_DIR}}/nophoto" alt="No photo"></label>
 {{#photos}}
     <input type="radio" name="cover-front" value="{{.}}" id="cover-front-{{.}}">
     <label for="cover-front-{{.}}"><img src="/photo/{{.}}"></label>
@@ -53,7 +53,7 @@
 <h3>Back Cover</h3>
 <div class="photos">
 <input type="radio" name="cover-back" value="" id="cover-back-none"{{{no-photo}}}>
-<label for="cover-back-none"><img src="{{API_DIR}}/nophoto.png" alt="No photo"></label>
+<label for="cover-back-none"><img src="{{API_DIR}}/nophoto" alt="No photo"></label>
 {{#photos}}
 <input type="radio" name="cover-back" value="{{.}}" id="cover-back-{{.}}">
 <label for="cover-back-{{.}}"><img src="/photo/{{.}}"></label>
