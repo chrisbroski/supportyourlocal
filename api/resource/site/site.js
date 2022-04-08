@@ -235,6 +235,7 @@ this.getHeader = function (req, rsp, db) {
     var nav = `<nav id="main">
     <p><a href="/"><span class="material-icons">home</span> Home</a></p>
     <p><a href="/shows"><span class="material-icons">event</span> Shows</a></p>
+    <p><a href="/music"><span class="material-icons">library_music</span> Music</a></p>
     <p><a href="/about"><span class="material-icons">menu_book</span> About</a></p>
     <!--<p><a href="/songs"><span class="material-icons">music_note</span> Music</a></p>-->
     <p id="social">
