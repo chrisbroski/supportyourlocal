@@ -1,24 +1,44 @@
 <!doctype html>
 <html lang="en">
-<title>{{resourceNameCap}}s - {{homeName}}</title>
+<title>{{pageName}} - API - {{homeName}}</title>
 {{{head}}}
 
 <body>
 {{{header}}}
 
 <article>
-<h1>{{resourceName}}s</h1>
+<h1>{{pageName}}</h1>
+
+<h5><a href="{{API_DIR}}/">Home</a> &gt; {{pageName}}</h5>
+
+{{#hasError}}
+<ul class="msg error">
+{{#error}}
+<li>{{.}}</li>
+{{/error}}
+</ul>
+{{/hasError}}
+
+{{#hasMsg}}
+<ul class="msg">
+{{#msg}}
+<li>{{.}}</li>
+{{/msg}}
+{{#link}}
+<li><a href="{{href}}">{{text}}</a></li>
+{{/link}}
+</ul>
+{{/hasMsg}}
 
 {{#loggedIn}}
 <section>
-<h2>Create New {{resourceName}}</h2>
 <form method="POST" action="{{API_DIR}}/{{resourceName}}/">
 
 <p><label>Date</label>*<br>
-    <input type="date" name="date" value="{{today}}" autofocus="autofocus" required="required">
+    <input type="date" name="date" value="{{formData.date}}" autofocus="autofocus" required="required">
 
 <p><label>Announcement</label>*<br>
-    <textarea name="copy" required="required"></textarea></p>
+    <textarea name="copy" required="required">{{formData.copy}}</textarea></p>
 <p>The announcement content must be plain text, but may also use <a href="https://www.markdownguide.org/" target="_blank">markdown syntax</a>.</p>
 
 <p><label>Include Song</label><br>
@@ -36,11 +56,11 @@
 </section>
 {{/loggedIn}}
 
-<section>
+<section class="list">
 {{#announcement}}
-<h4><a href="{{API_DIR}}/{{resourceName}}/{{id}}">{{formattedDate}}{{#pinned}}*{{/pinned}}
+<p><a href="{{API_DIR}}/{{resourceName}}/{{id}}">{{formattedDate}}{{#pinned}}*{{/pinned}}
     {{shortCopy}}</a>
-</h4>
+</p>
 {{/announcement}}
 </section>
 

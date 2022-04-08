@@ -48,22 +48,73 @@ Advertise for local venues and bands.
 
 # Architecture
 
-Separate api and font-end into different repos.
+Separate api and front-end into different repos.
 
 Make all sites https
 
+Admin key in .env (for backups and troubleshooting)
+
+### env
+
+* Site URL
+* admin token
+
+## API Style
+
+Is there a way to use a checkbox and sibling selector to manage pop-out mobile menu without JS?
+
+Auto login after password change or set
+
+Abstract out error/msg section in all templates
+
+Triple-bracket API_DIR in templates (and other HTML source formatting improvements)
+
+Song media should be an array that includes media type (Spotify, mp3, etc.) a URL, description, and credits.
+
+Photos should be in a directory outside of `www` so I can use aggressive caching rules (and better admin)
+
 ## Features for next version
 
-Initial setup (create user and password with a token, direct to band data)
+Deploy separate font and back ends to prod.
 
-Choose fonts
+Put sites in /srv/bandname/supportyourlocal /srv/bandname/kandy
 
-Image upload and selection
+#### Front End
 
-Albums (Need for B&B to adopt framework)
-
-Songs (Add duration)
-
-* Song duration
+* Front-end nav build from JSON
 * video embed (FB and YouTube)
-* Manage cover vs original recordings
+
+### Tests
+
+Songs partially done. The rest, not at all
+
+### Known Bugs
+
+* Select boxes not persisting after 400
+* Deletion can cause invalid state
+* Updates don't persist new form data after 400
+
+## Features for next next version
+
+Add list to side of update (single) edit pages too, if width sufficient (otherwise hide)
+
+I think it's time to add browser notifications to gigs and releases.
+
+Force vertical (with manifest file)
+
+All https
+
+Bought yourlocal.band! Switch to this.
+
+Get local features working with member cities. "Check in" on mobile when at open mics, etc.
+
+Add venmo/etc. pay information.
+
+Central Site
+
+#### Setup Agreement:
+
+On setup, read and agree to rules:
+
+1. Do not libel or harrass other bands or their fandom.
+2. Make your city locations accurate and non-spammy.

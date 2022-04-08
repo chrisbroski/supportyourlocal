@@ -1,11 +1,7 @@
 {
     "undef": true,
     "unused": true,
-    "esversion": 6,
-    "globals": {
-        "Aerophane": false,
-        "document": false,
-        "XMLHttpRequest": false,
-        "window": false
-    }
+    "node": true,
+    "esversion": 8,
+    "globals": { "URLSearchParams": true }
 }

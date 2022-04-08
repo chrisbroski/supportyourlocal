@@ -1,25 +1,66 @@
 <!doctype html>
 <html lang="en">
-<title>{{pageName}} - {{resourceNameCap}} - {{homeName}}</title>
+<title>{{pageName}} - {{resourceDisplayName}} - API - {{homeName}}</title>
 {{{head}}}
 
 <body>
 {{{header}}}
 
 <article>
-<h1>{{givenName}} {{surname}}</h1>
+<h1>{{pageName}}</h1>
+
+<h5><a href="{{API_DIR}}/">Home</a> &gt; <a href="{{API_DIR}}/{{resourceName}}">{{resourceDisplayName}}</a> &gt; {{pageName}}</h5>
+
+{{#hasError}}
+<ul class="msg error">
+{{#error}}
+<li>{{.}}</li>
+{{/error}}
+</ul>
+{{/hasError}}
+
+{{#hasMsg}}
+<ul class="msg">
+{{#msg}}
+<li>{{.}}</li>
+{{/msg}}
+{{#link}}
+<li><a href="{{href}}">{{text}}</a></li>
+{{/link}}
+</ul>
+{{/hasMsg}}
 
 {{#loggedIn}}
 <section>
 <form method="POST" action="{{API_DIR}}/user/{{id}}" enctype="application/x-www-form-urlencoded">
 <input type="hidden" name="method" value="PUT">
 
+<p><label>Email</label>*<br>
+<input type="text" name="email" value="{{email}}" required="required" autofocus="autofocus">
 <p><label>First Name</label><br>
-    <input type="text" name="givenName" value="{{givenName}}" autofocus="autofocus">
+    <input type="text" name="givenName" value="{{givenName}}">
 <p><label>Last Name</label><br>
     <input type="text" name="surname" value="{{surname}}">
-<p><label>Email</label>*<br>
-    <input type="text" name="email" value="{{email}}" required="required">
+<p><label>Position</label> (Singer, guitarist, lyricist, etc.)<br>
+    <input type="text" name="position" value="{{position}}">
+<p><label>Home City</label><br>
+    <input type="text" name="city" value="{{city}}">
+<p><label>Home State</label><br>
+    <input type="text" name="state" value="{{state}}">
+<p><label>Home Country</label><br>
+    <select name="country">
+        <option value="">Select Country</option>
+        {{#countries}}
+        <option value="{{code}}"{{{selected}}}>{{name}}</option>{{/countries}}
+    </select>
+
+<h2>Photo</h2>
+<div class="photos">
+<input type="radio" name="photo" value="" id="photo-none"{{{no-photo}}}><label for="photo-none"><img src="{{API_DIR}}/nophoto.png" alt="No photo"></label>
+{{#photos}}
+<input type="radio" name="photo" value="{{file}}" id="photo-{{file}}"{{{selected}}}><label for="photo-{{file}}"><img src="/photo/{{file}}"></label>
+{{/photos}}
+</div>
 
 <p>
     <label><input type="checkbox" value="Y"{{{adminChecked}}} name="admin"> Admin</label>
@@ -43,7 +84,7 @@
 <p><label>Current Password</label><br>
     <input type="password" id="password" name="password" required="required">
 <p><label>New Password</label><br>
-    <input type="password" id="password" name="passwordNew" required="required">
+    <input type="password" id="passwordNew" name="passwordNew" required="required">
 <p><label>Confirm New Password</label><br>
     <input type="password" name="passwordConfirm" id="passwordConfirm" required="required">
 <p><button>Change Password</button></p>
@@ -53,7 +94,7 @@
 
 {{^isOwnUser}}
 <section>
-{{#admin}}
+{{#isMod}}
 {{^token}}
 <form method="POST" action="{{API_DIR}}/password/{{id}}" enctype="application/x-www-form-urlencoded">
 <input type="hidden" name="method" value="DELETE">
@@ -63,7 +104,7 @@
 {{#token}}
 <p><a href="{{API_DIR}}/password/{{id}}?token={{token}}">Password reset URL</a>
 {{/token}}
-{{/admin}}
+{{/isMod}}
 </section>
 {{/isOwnUser}}
 
@@ -74,9 +115,12 @@
 
 {{^loggedIn}}
 <section>
+<h2>{{givenName}} {{surname}}</h2>
+<p>{{city}}, {{state}}, {{country}}</p>
 <p>Band Member {{bandMember}}</p>
 <p>Admin {{admin}}</p>
-<pre>{{bio}}</pre>
+<p><pre>{{desc}}</pre></p>
+<p><pre>{{bio}}</pre></p>
 </section>
 {{/loggedIn}}
 </article>

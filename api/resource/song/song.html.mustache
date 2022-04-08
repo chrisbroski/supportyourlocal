@@ -1,67 +1,109 @@
 <!doctype html>
 <html lang="en">
-<title>{{pageName}} - {{resourceNameCap}} - {{homeName}}</title>
+<title>{{pageName}} - {{resourceNameCap}} - API - {{homeName}}</title>
 {{{head}}}
 
 <body>
 {{{header}}}
 
 <article>
-<h1>{{resourceName}}</h1>
+<h1>{{pageName}}</h1>
+
+<h5><a href="{{{API_DIR}}}/">Home</a> &gt; <a href="{{{API_DIR}}}/{{resourceName}}">{{resourceName}}s</a> &gt; {{pageName}}</h5>
+
+{{#hasError}}
+<ul class="msg error">
+{{#error}}
+<li>{{.}}</li>
+{{/error}}
+</ul>
+{{/hasError}}
+{{#hasMsg}}
+<ul class="msg">
+{{#msg}}
+<li>{{.}}</li>
+{{/msg}}
+{{#link}}
+<li><a href="{{href}}">{{text}}</a></li>
+{{/link}}
+</ul>
+{{/hasMsg}}
 
 {{^loggedIn}}
 <section>
 <h3>{{name}}</h3>
-<p>Released on {{date}}</p>
 <p><img src="{{cover-front}}"></p>
 <p><img src="{{cover-back}}"></p>
 <pre>{{desc}}</pre>
-<h4>Audio</h4>
+<h2>Audio</h2>
 <p><a href="{{audio.spotify}}">{{audio.spotify}}</a></p>
-<p><a href="{{audio.apple}}">{{audio.apple}}</a></p>
-<p><a href="{{audio.amazon}}">{{audio.amazon}}</a></p>
-<p><a href="{{audio.cdbaby}}">{{audio.cdbaby}}</a></p>
-<h4>Video</h4>
+<!-- <p><a href="{{audio.apple}}">{{audio.apple}}</a></p> -->
+<!-- <p><a href="{{audio.amazon}}">{{audio.amazon}}</a></p> -->
+<!-- <p><a href="{{audio.cdbaby}}">{{audio.cdbaby}}</a></p> -->
 <p><a href="{{audio.youtube}}">{{audio.youtube}}</a></p>
+<h2>Video</h2>
+<p><a href="{{video.youtube}}">{{video.youtube}}</a></p>
+<p><a href="{{video.fb}}">{{video.fb}}</a></p>
 </section>
 {{/loggedIn}}
-
 {{#loggedIn}}
 <section>
-<form method="POST" action="{{API_DIR}}/{{resourceName}}/{{id}}">
+<form method="POST" action="{{{API_DIR}}}/{{resourceName}}/{{id}}">
 <input type="hidden" name="method" value="PUT">
 
 <p><label>Name</label>*<br>
     <input type="text" name="name" value="{{name}}" autofocus="autofocus" required="required">
-<p><label>Release Date</label><br>
-    <input type="date" name="date" value="{{date}}">
-<p><label>Front Cover</label><br>
-    <input type="text" name="cover-front" value="{{cover-front}}">
-<p><label>Back Cover</label><br>
-    <input type="text" name="cover-back" value="{{cover-back}}">
+
+<p><label>Original Artist</label> (If not you)<br>
+    <input type="text" name="artist" value="{{artist}}">
+
+<p><label>Duration</label><br>
+    <input type="number" name="durationM" min="0" max="120" step="1" value="{{durationM}}"> minutes
+    <input type="number" name="durationS" min="0" max="60" step="1" value="{{durationS}}"> seconds
 <p><label>Description<br><textarea name="desc">{{desc}}</textarea></p>
 
+<p><label>Genre</label><br>
+    <select name="genre1">
+        <option value="">Select Main Genre</option>
+        {{#genres}}
+        <option value="{{name}}"{{{selected}}}>{{name}}</option>
+        {{/genres}}
+    </select>
+<p><label>Sub-genre</label><br>
+    <input type="text" name="genre2" value="{{genre2}}">
+<p><label>Sub-genre</label><br>
+    <input type="text" name="genre3" value="{{genre3}}">
+
+<p><label>Story<br>
+    <textarea name="desc">{{story}}</textarea></p>
+
 <h3>Audio</h3>
-
 <p><label>Spotify</label><br>
-    <input type="text" name="spotify" value="{{audio.spotify}}">
-<p><label>Apple Music</label><br>
-    <input type="text" name="apple" value="{{audio.apple}}">
+    <input type="url" name="spotify" value="{{audio.spotify}}">
+<!--<p><label>Apple Music</label><br>
+    <input type="url" name="apple" value="{{audio.apple}}">
 <p><label>Amazon Music</label><br>
-    <input type="text" name="amazon" value="{{audio.amazon}}">
-<p><label>YouTube</label><br>
-    <input type="text" name="youtube" value="{{audio.youtube}}">
-<p><label>CD Baby</label><br>
-    <input type="text" name="cdbaby" value="{{audio.cdbaby}}">
+    <input type="url" name="amazon" value="{{audio.amazon}}">-->
+<!-- <p><label>YouTube Music</label><br>
+    <input type="url" name="youtube" value="{{audio.youtube}}"> -->
+<!--<p><label>CD Baby</label><br>
+    <input type="url" name="cdbaby" value="{{audio.cdbaby}}">-->
 
-<p><label>Lyrics<br><textarea name="lyrics">{{lyrics}}</textarea></p>
+<h3>Video</h3>
+<p><label>YouTube</label><br>
+    <input type="url" name="video-youtube" value="{{video.youtube}}">
+<p><label>Facebook</label><br>
+    <input type="url" name="video-fb" value="{{video.fb}}">
+
+<p><label>Lyrics<br>
+    <textarea name="lyrics">{{lyrics}}</textarea></p>
 
 <p><button>Update {{resourceName}}</button>
 </form>
 </section>
 
 <section>
-<p><a class="button" href="{{API_DIR}}/delete?resource={{resourceName}}&id={{id}}">Delete {{resourceName}}</a></p>
+<p><a class="button" href="{{{API_DIR}}}/delete?resource={{resourceName}}&id={{id}}">Delete {{resourceName}}</a></p>
 </section>
 {{/loggedIn}}
 </article>

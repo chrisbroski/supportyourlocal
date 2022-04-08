@@ -1,55 +1,79 @@
 <!doctype html>
 <html lang="en">
-<title>{{resourceNameCap}}s - {{homeName}}</title>
+<title>{{pageName}} - API - {{homeName}}</title>
 {{{head}}}
 
 <body>
 {{{header}}}
 
 <article>
-<h1>{{resourceName}}s</h1>
+<h1>{{pageName}}</h1>
+
+<h5><a href="{{API_DIR}}/">Home</a> &gt; {{pageName}}</h5>
+
+{{#hasError}}
+<ul class="msg error">
+{{#error}}
+<li>{{.}}</li>
+{{/error}}
+</ul>
+{{/hasError}}
+
+{{#hasMsg}}
+<ul class="msg">
+{{#msg}}
+<li>{{.}}</li>
+{{/msg}}
+{{#link}}
+<li><a href="{{href}}">{{text}}</a></li>
+{{/link}}
+</ul>
+{{/hasMsg}}
 
 {{#loggedIn}}
 <section>
-<h2>Create New {{resourceName}}</h2>
 <form method="POST" action="{{API_DIR}}/{{resourceName}}/">
 <p><label>Name</label>*<br>
-    <input type="text" name="name" value="" autofocus="autofocus" required="required">
+    <input type="text" name="name" value="{{formData.name}}" autofocus="autofocus" required="required">
 
 <p><label>Venue Link</label><br>
-    <input type="text" name="link" value="">
+    <input type="url" name="link" value="{{formData.link}}">
 
 <p><label>Address 1</label><br>
-    <input type="text" name="add1" value="">
+    <input type="text" name="add1" value="{{formData.add1}}">
 
 <p><label>Address 2</label><br>
-    <input type="text" name="add2" value="">
+    <input type="text" name="add2" value="{{formData.add2}}">
 
 <p><label>City</label>*<br>
-    <input type="text" name="city" value="" required="required">
+    <input type="text" name="city" value="{{formData.city}}" required="required">
 
 <p><label>State</label>*<br>
-    <input type="text" name="state" value="" required="required">
+    <input type="text" name="state" value="{{formData.state}}" required="required">
 
 <p><label>ZIP</label><br>
-    <input type="text" name="zip" value="">
+    <input type="text" name="zip" value="{{formData.zip}}">
 
 <p><label>Country</label><br>
-    <input type="text" name="country" value="US">
+    <select name="country">
+        <option value="">Select Country</option>
+        {{#countries}}
+        <option value="{{code}}"{{{selected}}}>{{name}}</option>{{/countries}}
+    </select>
 
 <p><label>Phone</label><br>
-    <input type="text" name="phone" value="">
+    <input type="text" name="phone" value="{{formData.phone}}">
 
-<p><label>Description<br><textarea name="desc"></textarea></p>
+<p><label>Description<br><textarea name="desc">{{formData.desc}}</textarea></p>
 
 <p><button>Create {{resourceName}}</button>
 </form>
 </section>
 {{/loggedIn}}
 
-<section>
+<section class="list">
 {{#venue}}
-<h4><a href="{{API_DIR}}/{{resourceName}}/{{id}}">{{name}}</a></h4>
+<p><a href="{{API_DIR}}/{{resourceName}}/{{id}}">{{name}}</a></p>
 {{/venue}}
 </section>
 

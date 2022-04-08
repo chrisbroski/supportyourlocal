@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<title>{{pageName}} - API - {{homeName}}</title>
+{{{head}}}
+
+<body>
+{{{header}}}
+
+<article>
+<h1>{{pageName}}</h1>
+
+<h5><a href="{{API_DIR}}/">Home</a> &gt; {{pageName}}</h5>
+
+{{#hasError}}
+<ul class="msg error">
+{{#error}}
+<li>{{.}}</li>
+{{/error}}
+</ul>
+{{/hasError}}
+
+{{#hasMsg}}
+<ul class="msg">
+{{#msg}}
+<li>{{.}}</li>
+{{/msg}}
+{{#link}}
+<li><a href="{{href}}">{{text}}</a></li>
+{{/link}}
+</ul>
+{{/hasMsg}}
+
+{{#loggedIn}}
+<section>
+<form method="POST" action="{{API_DIR}}/{{resourceName}}/">
+
+<p><label>Name</label> (Optional for single release)<br>
+    <input type="text" name="name" autofocus="autofocus" value="{{formData.name}}">
+
+<p><label>Release Date</label>*<br>
+    <input type="date" name="date" required="required" value="{{formData.date}}">
+
+<h3>Front Cover</h3>
+<div class="photos">
+<input type="radio" name="cover-front" value="" id="cover-front-none"{{{no-photo}}}>
+<label for="cover-front-none"><img src="{{API_DIR}}/nophoto.png" alt="No photo"></label>
+{{#photos}}
+    <input type="radio" name="cover-front" value="{{.}}" id="cover-front-{{.}}">
+    <label for="cover-front-{{.}}"><img src="/photo/{{.}}"></label>
+{{/photos}}
+</div>
+
+<h3>Back Cover</h3>
+<div class="photos">
+<input type="radio" name="cover-back" value="" id="cover-back-none"{{{no-photo}}}>
+<label for="cover-back-none"><img src="{{API_DIR}}/nophoto.png" alt="No photo"></label>
+{{#photos}}
+<input type="radio" name="cover-back" value="{{.}}" id="cover-back-{{.}}">
+<label for="cover-back-{{.}}"><img src="/photo/{{.}}"></label>
+{{/photos}}
+</div>
+
+<p><label>Description<br><textarea name="desc">{{formData.desc}}</textarea></p>
+<p><label>Credits<br><textarea name="credits">{{formData.credits}}</textarea></p>
+
+<h2>Songs</h2>
+<p><select name="initial-song">
+<option value="">Select Song</option>
+{{#songlist}}
+<option value="{{song-id}}">{{song-name}}</option>
+{{/songlist}}
+</select>
+
+<h2>Album Links <span>(if not a single)</span></h2>
+<h3>Audio</h3>
+<p><label>Spotify</label><br>
+    <input type="text" name="spotify" value="{{formData.spotify}}">
+
+<h3>Video</h3>
+<p><label>YouTube</label><br>
+    <input type="text" name="youtube" value="{{formData.youtube}}">
+<p><label>Facebook</label><br>
+    <input type="text" name="fb" value="{{formData.fb}}">
+
+<p><button>Create {{resourceName}}</button>
+</form>
+</section>
+{{/loggedIn}}
+
+<section class="list">
+{{#release}}
+<p><a href="{{API_DIR}}/{{resourceName}}/{{id}}">{{pageName}}</a></p>
+{{/release}}
+</section>
+
+</article>

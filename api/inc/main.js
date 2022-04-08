@@ -2,73 +2,93 @@ const fs = require("fs");
 const util = require('util');
 const crypto = require("crypto");
 const readFile = util.promisify(fs.readFile);
+const fileStat = util.promisify(fs.stat);
 this.readFile = readFile;
 
 const mustache = require("mustache");
 require('dotenv').config({path: `${__dirname}/.env`});
 
+const countries = require('./countries.json');
+const genres = require('./genres.json');
+
 const TEMPLATE = {};
 
-function removeQs(fullUrl) {
-    if (!fullUrl) {
-        return '';
+function parseQs(qs, requireQuestion) {
+    var questionIndex = qs.indexOf("?");
+    if (questionIndex > -1) {
+        qs = qs.slice(questionIndex + 1);
+    } else if (requireQuestion) {
+        return {};
     }
-    if (fullUrl.indexOf('?') === -1) {
-        return fullUrl;
-    }
-    return fullUrl.slice(0, fullUrl.indexOf('?'));
+    return Object.fromEntries(new URLSearchParams(qs));
 }
+this.parseQs = parseQs;
 
-function extractResource(pathname) {
-    var resource = "";
-    var reResource;
-    var val;
-
-    if (pathname.slice(-1) !== "/") {
-        pathname = pathname + "/";
-    }
-    reResource = new RegExp("^\/([^\/]+)[\/]", "i");
-    val = reResource.exec(pathname);
-    if (val) {
-        resource = val[1];
-    }
-    return decodeURIComponent(resource);
+function genre(selected) {
+    var displayGenres = [];
+    genres.forEach(g => {
+        var sel = "";
+        if (selected === g) {
+            sel = ' selected="selected"';
+        }
+        displayGenres.push({
+            "name": g,
+            "selected": sel
+        });
+    });
+    return displayGenres;
 }
+this.genre = genre;
 
-function extractId(pathname, resource) {
-    var id = "";
-    var reId;
-    var val;
-
-    if (pathname.slice(-1) !== "/") {
-        pathname = pathname + "/";
-    }
-
-    reId = new RegExp('^\/' + resource + '\/([^\/]+)', "i");
-    val = reId.exec(pathname);
-    if (val) {
-        id = val[1];
-    }
-    return decodeURIComponent(id);
+function country(selected) {
+    var displayCountries = [];
+    selected = selected || "US";
+    Object.keys(countries).forEach(c => {
+        var sel = "";
+        if (selected === c) {
+            sel = ' selected="selected"';
+        }
+        displayCountries.push({
+            "code": c,
+            "name": countries[c],
+            "selected": sel
+        });
+    });
+    return displayCountries;
 }
+this.country = country;
 
-function getPath(pathname, API_DIR) {
-    var path;
-
-    pathname = removeQs(pathname);
-    path = pathname.slice(API_DIR.length);
-    if (!path) {
-        return {"pathname": pathname, id: "", resource: ""};
+function displayPhotos(photos, selected) {
+    var photoData = [];
+    var selectedIdx;
+    var selectedPhoto;
+    photos.forEach((p, idx) => {
+        var sel = '';
+        if (selected === p) {
+            sel = ' checked="checked"';
+            selectedIdx = idx;
+        }
+        photoData.push({
+            "file": p,
+            "selected": sel
+        });
+    });
+    if (selectedIdx) {
+        selectedPhoto = photoData.splice(selectedIdx, 1);
+        photoData.unshift(selectedPhoto[0]);
     }
-
-    var resource = extractResource(path);
-    return {
-        "id": extractId(path, resource),
-        "pathname": decodeURI(pathname),
-        "resource": resource
-    };
+    return photoData;
 }
-this.getPath = getPath;
+this.displayPhotos = displayPhotos;
+
+function noPhotoSelected(photoValue) {
+    var sel = '';
+    if (!photoValue) {
+        sel = ' checked="checked"';
+    }
+    return sel;
+}
+this.noPhotoSelected = noPhotoSelected;
 
 const timeZones = {
     "EST": "-0500",
@@ -114,6 +134,9 @@ function dateFormat(d) {
 this.dateFormat = dateFormat;
 
 function objToArray(obj) {
+    if (!obj) {
+        return [];
+    }
     return Object.keys(obj).map(function (key) {
         return Object.assign({"id": key}, obj[key]);
     });
@@ -187,8 +210,31 @@ function extractSpotifyTrackId(shareLink) {
 }
 this.extractSpotifyTrackId = extractSpotifyTrackId;
 
+function addMessages(msg, error, link) {
+    var returnData = {};
+    if (msg) {
+        returnData.hasMsg = true;
+        returnData.msg = msg;
+    }
+
+    if (error) {
+        returnData.hasError = true;
+        returnData.error = error;
+    }
+
+    if (link) {
+        returnData.hasMsg = true;
+        returnData.link = link;
+    }
+    return returnData;
+}
+this.addMessages = addMessages;
+
 function createResource(formData, db, save, resourceName, updateResource) {
     var id = makeId();
+    if (!db[resourceName]) {
+        db[resourceName] = {};
+    }
     db[resourceName][id] = {};
     updateResource(id, formData, db, save);
     return id;
@@ -287,8 +333,7 @@ this.getUserIdByEmail = getUserIdByEmail;
 function renderPage(req, pageTemplate, d, db, API_DIR) {
     var userData = getAuthUserData(req, db.user);
     var loggedIn = true;
-    var hideLogin = false;//(req.pathname);
-    var cssVer = "22"; // maybe get hash or date of file?
+
     pageTemplate = pageTemplate || TEMPLATE.generic;
 
     if (!userData || !userData.userid || userData.userid === 'logout') {
@@ -301,8 +346,7 @@ function renderPage(req, pageTemplate, d, db, API_DIR) {
         "site": db.site,
         "server": req.headers.host,
         "loggedIn": loggedIn,
-        "API_DIR": API_DIR,
-        "hideLogin": hideLogin
+        "API_DIR": API_DIR
     });
 
     var head = mustache.render(TEMPLATE.head, {
@@ -314,9 +358,9 @@ function renderPage(req, pageTemplate, d, db, API_DIR) {
         "loggedIn": loggedIn,
         "header": header,
         "head": head,
-        "isMod": (userData.userType === "administrator"),
+        "isMod": !!userData.admin,
         "userid": userData.userid,
-        "homeName": db.home.name,
+        "homeName": db.band.name,
         "resourceNameCap": toTitleCase(d.resourceName),
         "API_DIR": API_DIR
     }, d));
@@ -344,45 +388,32 @@ function parseCookie(cookie) {
 }
 this.parseCookie = parseCookie;
 
-function getAuthData(req, users) {
-    var b64auth = (req.headers.authorization || '').split(' ')[1] || '',
-        auth = Buffer.from(b64auth, 'base64').toString().split(':'),
-        email = auth[0].toLowerCase(),
-        userIdFromEmail;
-
-    if (email === 'logout' || email === '') {
-        userIdFromEmail = email;
-    } else {
-        userIdFromEmail = getUserIdByEmail(email, users);
-    }
-
-    if (userIdFromEmail) {
-        return {"userid": userIdFromEmail, "password": auth[1], "email": email};
-    }
-
-    return {"userid": "", "password": "", "email": email};
-}
-this.getAuthData = getAuthData;
-
 function getAuthUserData(req, users) {
-    var userId = getAuthData(req, users).userid;
-    var cookies;
+    var cookies = parseCookie(req.headers.cookie);
+    var userId = cookies.user;
 
     if (!userId) {
-        cookies = parseCookie(req.headers.cookie);
-        userId = cookies.user;
-        if (!userId) {
-            return false;
-        }
+        return false;
+    }
+    if (!users[userId]) {
+        return false;
+    }
+    // Check auth token
+    if (hash(users[userId].password + userId, users[userId].salt) !== cookies.token) {
+        return false;
     }
     return Object.assign({"userid": userId}, users[userId]);
 }
 this.getAuthUserData = getAuthUserData;
 
+var cssVer;
 async function loadData() {
     TEMPLATE.head = await readFile(`${__dirname}/head.pht.mustache`, 'utf8');
     TEMPLATE.header = await readFile(`${__dirname}/header.pht.mustache`, 'utf8');
     TEMPLATE.generic = await readFile(`${__dirname}/generic.html.mustache`, 'utf8');
+
+    const fileStats = await fileStat(`${__dirname}/main.css`);
+    cssVer = +fileStats.mtime;
 }
 
 loadData();
