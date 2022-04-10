@@ -38,6 +38,23 @@ const release = require('./resource/release/release.js');
 // Application state
 const ASSET = {};
 const TEMPLATE = {};
+const MANIFEST = {
+    "$schema": "https://json.schemastore.org/web-manifest-combined.json",
+    "name": "Your Local Band",
+    "short_name": "YourLocal",
+    "start_url": "/api/",
+    "display": "standalone",
+    "background_color": "#fff",
+    "description": "Band information system",
+    "icons": [
+        {
+        "src": "images/touch/homescreen48.png",
+        "sizes": "32x32",
+        "type": "image/png"
+        }
+    ],
+    "orientation": "portrait"
+};
 var db;
 
 function removeQs(fullUrl) {
@@ -346,6 +363,11 @@ function rspGet(req, rsp, path) {
         rsp.end(main.renderPage(req, TEMPLATE.tests, {}, db, API_DIR));
         return;
     }
+    if (path.path === '/manifest.json') {
+        rsp.writeHead(200, {'Content-Type': 'application/json'});
+        rsp.end(JSON.stringify(MANIFEST));
+        return;
+    }
     if (path.path === '/login') {
         return auth.get(req, rsp, db, API_DIR);
     }
@@ -538,6 +560,11 @@ async function loadData() {
     TEMPLATE.home = await readFile(`${__dirname}/index.html.mustache`, 'utf8');
     TEMPLATE.tests = await readFile(`${__dirname}/tests.html.mustache`, 'utf8');
     TEMPLATE.delete = await readFile(`${__dirname}/inc/delete.html.mustache`, 'utf8');
+
+    MANIFEST.start_url = `${API_DIR}/`;
+    MANIFEST.name = `Admin - ${db.band.name} - Your Local Band`;
+    MANIFEST.short_name = `Admin ${db.band.name}`;
+    MANIFEST.background_color = db.site.color1;
 }
 
 function startHTTP() {

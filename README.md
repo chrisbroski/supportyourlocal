@@ -71,18 +71,7 @@ Triple-bracket API_DIR in templates (and other HTML source formatting improvemen
 
 Song media should be an array that includes media type (Spotify, mp3, etc.) a URL, description, and credits.
 
-Photos should be in a directory outside of `www` so I can use aggressive caching rules (and better admin)
-
 ## Features for next version
-
-Deploy separate font and back ends to prod.
-
-Put sites in /srv/bandname/supportyourlocal /srv/bandname/kandy
-
-#### Front End
-
-* Front-end nav build from JSON
-* video embed (FB and YouTube)
 
 ### Tests
 
@@ -98,13 +87,9 @@ Songs partially done. The rest, not at all
 
 Add list to side of update (single) edit pages too, if width sufficient (otherwise hide)
 
-I think it's time to add browser notifications to gigs and releases.
-
 Force vertical (with manifest file)
 
 All https
-
-Bought yourlocal.band! Switch to this.
 
 Get local features working with member cities. "Check in" on mobile when at open mics, etc.
 
@@ -112,9 +97,20 @@ Add venmo/etc. pay information.
 
 Central Site
 
+Single releases should be allowed 2 songs
+
+Add 0 to infinite media - audio, video to songs and releases. Add 0 to infinte album art to a release.
+
+Rename repo to yourlocalband
+
+Manage which pages are displayed: their page names and open graph data
+
 #### Setup Agreement:
 
 On setup, read and agree to rules:
 
 1. Do not libel or harrass other bands or their fandom.
 2. Make your city locations accurate and non-spammy.
+
+Also, setup need more work:
+* When you hit the front-end site it is weird
