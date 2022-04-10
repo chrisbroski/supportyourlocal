@@ -184,16 +184,9 @@ ul.msg {
         height: 64px;
         overflow: hidden;
     }
-
-    body#home-page {
-        padding-top: 0;
+    h1 {
+        font-size: 48px;
     }
-    body#home-page > header {
-        height: auto;
-        bottom: 0;
-        overflow: auto;
-    }
-
     input[type="text"], input[type="email"], input[type="password"], input[type="url"], select {
         width: 100%;
     }
