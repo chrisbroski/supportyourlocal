@@ -184,6 +184,10 @@ function isFileForm(req) {
 }*/
 
 function homePage(req, rsp) {
+    if (req.headers.accept === 'application/json') {
+        rsp.writeHead(200, {'Content-Type': 'application/json'});
+        return rsp.end("{}");
+    }
     rsp.writeHead(200, {'Content-Type': 'text/html'});
     rsp.end(main.renderPage(req, TEMPLATE.home, db.band, db, API_DIR));
     return;
@@ -371,7 +375,7 @@ function rspGet(req, rsp, path) {
     if (path.path === '/login') {
         return auth.get(req, rsp, db, API_DIR);
     }
-    if (path.path === '/') {
+    if (path.path === '/' || path.resource === '') {
         return homePage(req, rsp);
     }
     if (path.resource === 'band') {
@@ -402,7 +406,7 @@ function rspGet(req, rsp, path) {
         return venue.get(req, rsp, path.id, db, API_DIR);
     }
     if (path.resource === 'song') {
-        return song.get(req, rsp, path.id, db, API_DIR);
+        return song.get(req, rsp, path.id, path.qs, db, API_DIR);
     }
     if (path.resource === 'announcement') {
         return announcement.get(req, rsp, path.id, db, API_DIR);

@@ -45,8 +45,20 @@ function singleData(db, id) {
     }, db[resourceName][id]);
 }
 
-function listData(db) {
-    return main.objToArray(db[resourceName]).sort(main.sortByName);
+function listData(db, qs) {
+    var songData = main.objToArray(db[resourceName]).sort(main.sortByName);
+    if (qs.type === "cover") {
+        songData = songData.filter(song => {
+            return song.artist && song.artist !== db.band.name;
+        });
+    }
+    if (qs.type === "original") {
+        songData = songData.filter(song => {
+            return !song.artist || song.artist === db.band.name;
+        });
+    }
+
+    return songData;
 }
 
 // Form validation
@@ -174,7 +186,7 @@ this.remove = function (req, rsp, id, db, save, API_DIR) {
     rsp.end(main.renderPage(req, null, returnData, db, API_DIR));
 };
 
-this.get = function (req, rsp, id, db, API_DIR) {
+this.get = function (req, rsp, id, qs, db, API_DIR) {
     rsp.setHeader('Cache-Control', 'max-age=0,no-cache,no-store,post-check=0,pre-check=0');
     if (id) {
         if (!db[resourceName][id]) {
@@ -187,7 +199,7 @@ this.get = function (req, rsp, id, db, API_DIR) {
         rsp.end(main.renderPage(req, template.single, single(db, id), db, API_DIR));
     } else {
         if (req.headers.accept === 'application/json') {
-            return main.returnJson(rsp, listData(db, req));
+            return main.returnJson(rsp, listData(db, qs));
         }
         rsp.writeHead(200, {'Content-Type': 'text/html'});
         rsp.end(main.renderPage(req, template.list, list(db), db, API_DIR));
