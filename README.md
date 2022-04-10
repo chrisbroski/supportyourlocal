@@ -85,9 +85,9 @@ Songs partially done. The rest, not at all
 
 ## Features for next next version
 
-Add list to side of update (single) edit pages too, if width sufficient (otherwise hide)
+Style guide page
 
-Force vertical (with manifest file)
+Add list to side of update (single) edit pages too, if width sufficient (otherwise hide)
 
 All https
 
@@ -104,6 +104,10 @@ Add 0 to infinite media - audio, video to songs and releases. Add 0 to infinte a
 Rename repo to yourlocalband
 
 Manage which pages are displayed: their page names and open graph data
+
+Floating update button?
+
+Image upload
 
 #### Setup Agreement:
 
