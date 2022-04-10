@@ -14,6 +14,7 @@ function updateResource(id, formData, db, save) {
     db[resourceName][id].country = formData.country;
     db[resourceName][id].phone = formData.phone;
     db[resourceName][id].desc = formData.desc;
+    db[resourceName][id].booking = formData.booking;
     save();
 }
 
@@ -40,12 +41,19 @@ function list(db, msg, error, link) {
     return Object.assign(main.addMessages(msg, error, link), returnData);
 }
 
+// remove booking info
+function filteredVenue(venue) {
+    var v = Object.assign({}, venue);
+    delete v.booking;
+    return v;
+}
+
 function singleData(db, id) {
-    return Object.assign({"resourceName": resourceName}, db[resourceName][id]);
+    return Object.assign({"resourceName": resourceName}, filteredVenue(db[resourceName][id]));
 }
 
 function listData(db) {
-    return main.objToArray(db[resourceName]).sort(main.sortByName);
+    return main.objToArray(db[resourceName]).sort(main.sortByName).map(v => filteredVenue(v));
 }
 
 // Form validation
