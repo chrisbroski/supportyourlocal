@@ -6,7 +6,7 @@ const template = {};
 function single(db, msg, error) {
     var resourceData = Object.assign({
         "resourceName": resourceName,
-        "pageName": 'Band Facts',
+        "pageName": 'Band Info',
         "countries": main.country(db[resourceName].country),
     }, db[resourceName]);
 // console.lof(resourceData);
