@@ -36,8 +36,6 @@ It will make style guides easy and fun! Home pages and emails will use templates
 
 ### The Rest
 
-I think we need a way to post gigs. This should be easy and be an alternative to Facebook events. Maybe for ease we can integrate with Facebook events to automatically pull stuff in. Or not. This should include venue information.
-
 Fan accounts. Like/follow bands. Write "reviews"
 
 ## Monitization
@@ -46,30 +44,17 @@ Custom domain, more storage space (for photos.)
 
 Advertise for local venues and bands.
 
-# Architecture
-
-Separate api and front-end into different repos.
-
-Make all sites https
+## API Style
 
 Admin key in .env (for backups and troubleshooting)
-
-### env
-
-* Site URL
-* admin token
-
-## API Style
 
 Is there a way to use a checkbox and sibling selector to manage pop-out mobile menu without JS?
 
 Auto login after password change or set
 
-Abstract out error/msg section in all templates
-
-Triple-bracket API_DIR in templates (and other HTML source formatting improvements)
-
 Song media should be an array that includes media type (Spotify, mp3, etc.) a URL, description, and credits.
+
+Get rid of the "header" include crap, but add a "head" include crap with Title and other meta-data.
 
 ## Features for next version
 
@@ -85,13 +70,17 @@ Songs partially done. The rest, not at all
 
 ## Features for next next version
 
-Style guide page
+Style guide page. Populate drop-down from guide colors.
 
 Add list to side of update (single) edit pages too, if width sufficient (otherwise hide)
 
 All https
 
-Get local features working with member cities. "Check in" on mobile when at open mics, etc.
+Manage which pages are displayed: their page names and open graph data
+
+Floating update button?
+
+Image upload
 
 Add venmo/etc. pay information.
 
@@ -101,13 +90,7 @@ Single releases should be allowed 2 songs
 
 Add 0 to infinite media - audio, video to songs and releases. Add 0 to infinte album art to a release.
 
-Rename repo to yourlocalband
-
-Manage which pages are displayed: their page names and open graph data
-
-Floating update button?
-
-Image upload
+Get local features working with member cities. "Check in" on mobile when at open mics, etc.
 
 #### Setup Agreement:
 

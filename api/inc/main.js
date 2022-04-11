@@ -354,6 +354,14 @@ function renderPage(req, pageTemplate, d, db, API_DIR) {
         "API_DIR": API_DIR
     });
 
+    var messageDisplay = mustache.render(TEMPLATE.msg, {
+        "hasError": d.hasError,
+        "error": d.error,
+        "hasMsg": d.hasMsg,
+        "msg": d.msg,
+        "link": d.link
+    });
+
     return mustache.render(pageTemplate, Object.assign({
         "loggedIn": loggedIn,
         "header": header,
@@ -361,6 +369,7 @@ function renderPage(req, pageTemplate, d, db, API_DIR) {
         "isMod": !!userData.admin,
         "userid": userData.userid,
         "homeName": db.band.name,
+        "message-display": messageDisplay,
         "resourceNameCap": toTitleCase(d.resourceName),
         "API_DIR": API_DIR
     }, d));
@@ -411,6 +420,24 @@ async function loadData() {
     TEMPLATE.head = await readFile(`${__dirname}/head.pht.mustache`, 'utf8');
     TEMPLATE.header = await readFile(`${__dirname}/header.pht.mustache`, 'utf8');
     TEMPLATE.generic = await readFile(`${__dirname}/generic.html.mustache`, 'utf8');
+    TEMPLATE.msg = `{{#hasError}}
+<ul class="msg error">
+{{#error}}
+<li>{{.}}</li>
+{{/error}}
+</ul>
+{{/hasError}}
+
+{{#hasMsg}}
+<ul class="msg">
+{{#msg}}
+<li>{{.}}</li>
+{{/msg}}
+{{#link}}
+<li><a href="{{href}}">{{text}}</a></li>
+{{/link}}
+</ul>
+{{/hasMsg}}`;
 
     const fileStats = await fileStat(`${__dirname}/main.css`);
     cssVer = +fileStats.mtime;
