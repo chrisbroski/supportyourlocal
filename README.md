@@ -46,9 +46,9 @@ Advertise for local venues and bands.
 
 ## API Style
 
-Admin key in .env (for backups and troubleshooting)
+Endure backup and parse test. (In case of catastrophic failure.)
 
-Is there a way to use a checkbox and sibling selector to manage pop-out mobile menu without JS?
+Admin key in .env (for backups and troubleshooting)
 
 Auto login after password change or set
 
@@ -57,6 +57,31 @@ Song media should be an array that includes media type (Spotify, mp3, etc.) a UR
 Get rid of the "header" include crap, but add a "head" include crap with Title and other meta-data.
 
 ## Features for next version
+
+Style guide page. Populate drop-down from guide colors.
+
+Add list to side of update (single) edit pages too, if width sufficient (otherwise hide)
+
+All https
+
+Floating update button?
+
+Image upload
+* optimization
+* resize: thumbnail, medium, large, and original
+* Monitor max storage
+
+Add venmo/etc. pay information.
+
+Single releases should be allowed 2 songs
+
+Add 0 to infinite media - audio, video to songs and releases. Add 0 to infinte album art to a release.
+
+Chrome needs name="username" and name="password" to trigger browser auto-save
+
+Copy text is not required for an announcement if there is a featured song.
+
+I don't think *Site* is the proper resource name. It should probably be *Style* and be displayed as a proper style guide. Have up to 6 colors (or inifinite?) and make the top 2 the web site ones. Should there be shades of color? Maybe.
 
 ### Tests
 
@@ -70,27 +95,19 @@ Songs partially done. The rest, not at all
 
 ## Features for next next version
 
-Style guide page. Populate drop-down from guide colors.
-
-Add list to side of update (single) edit pages too, if width sufficient (otherwise hide)
-
-All https
-
-Manage which pages are displayed: their page names and open graph data
-
-Floating update button?
-
-Image upload
-
-Add venmo/etc. pay information.
-
 Central Site
 
-Single releases should be allowed 2 songs
-
-Add 0 to infinite media - audio, video to songs and releases. Add 0 to infinte album art to a release.
-
 Get local features working with member cities. "Check in" on mobile when at open mics, etc.
+
+Email list
+
+EPK
+
+Link to /api from front end somewhere not obvious to the casual browser, but findable to someone aware.
+
+Make un-logged in site more useful.
+
+Password recovery using email.
 
 #### Setup Agreement:
 

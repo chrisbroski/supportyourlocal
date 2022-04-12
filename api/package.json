@@ -12,6 +12,7 @@
   "dependencies": {
     "dotenv": "^16.0.0",
     "multiparty": "^4.2.3",
-    "mustache": "^4.2.0"
+    "mustache": "^4.2.0",
+    "showdown": "^2.0.3"
   }
 }

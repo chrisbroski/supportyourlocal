@@ -47,21 +47,41 @@ function single(db, id, msg, error) {
     return Object.assign(main.addMessages(msg, error), resourceData);
 }
 
-function list(db, msg, error, link) {
+function list(req, db, msg, error, link) {
+    var qs = url.parse(req.url, true).query;
+    var now = new Date();
     var gigs = main.objToArray(db[resourceName]);
+    var pageName = "Gigs";
+
+    if (qs.range === "upcoming") {
+        gigs.sort(main.sortByDate);
+        gigs = gigs.filter(g => {
+            return Date.parse(g.date + "T23:59:59") >= +now;
+        });
+        pageName = "Upcoming Gigs";
+    } else if (qs.range === "past") {
+        gigs.sort(main.sortByDateDesc);
+        gigs = gigs.filter(g => {
+            return Date.parse(g.date + "T23:59:59") < +now;
+        });
+        pageName = "Past Gigs";
+    } else {
+        gigs.sort(main.sortByDate);
+    }
+
     gigs.forEach(g => {
         g.venueName = db.venue[g.venue].name;
         g.gigName = (g.title) ? g.title : db.venue[g.venue].name;
         g.formattedDate = main.dateFormat(g.date + "T00:00:01");
     });
-    gigs.sort(main.sortByDateDesc);
+    // gigs.sort(main.sortByDateDesc);
 
     var resourceData = {
         "gig": gigs,
         "resourceName": resourceName,
         "today": main.dateFormat(new Date()),
         "venues": venueList(db, ""),
-        "pageName": `${main.toTitleCase(resourceName)}s`
+        "pageName": pageName
     };
     return Object.assign(main.addMessages(msg, error, link), resourceData);
 }
@@ -128,7 +148,7 @@ this.create = function (req, rsp, formData, db, save, API_DIR) {
             "hasError": true,
             "error": error,
             "formData": formData
-        }, list(db)), db, API_DIR));
+        }, list(req, db)), db, API_DIR));
         // ^ this needs selected values too
         return;
     }
@@ -147,7 +167,7 @@ this.create = function (req, rsp, formData, db, save, API_DIR) {
     rsp.end(main.renderPage(req, template.list, Object.assign({
         "hasMsg": true,
         "link": {"text": `Created ${resourceName} id ${id}`, "href": `${API_DIR}/${resourceName}/${id}`}
-    }, list(db)), db, API_DIR));
+    }, list(req, db)), db, API_DIR));
 };
 
 this.update = function (req, rsp, id, formData, db, save, API_DIR) {
@@ -211,7 +231,7 @@ this.get = function (req, rsp, id, db, API_DIR, mapKey) {
             return main.returnJson(rsp, listData(db, req, mapKey));
         }
         rsp.writeHead(200, {'Content-Type': 'text/html'});
-        rsp.end(main.renderPage(req, template.list, list(db), db, API_DIR));
+        rsp.end(main.renderPage(req, template.list, list(req, db), db, API_DIR));
     }
 };
 

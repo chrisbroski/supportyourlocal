@@ -25,6 +25,9 @@ body > header a {
     text-decoration: none;
     color: white;
 }
+body > header > p:first-child {
+    display: none;
+}
 body > header p {
     margin-bottom: 1em;
     font-size: 20px;
@@ -150,11 +153,25 @@ div.photos input:checked + label img {
     border: 2px solid rgb(var(--color2));
 }
 
+section p img {
+    width: 480px;
+    max-width: 100%;
+}
 ul.error {color: red; }
 ul.msg {
     animation: fadeOutAfterLoad 8.0s ease-out;
     animation-fill-mode: forwards;
 }
+footer {
+    margin-bottom: -200px;
+    padding: 20px 20px 200px;
+    background: rgb(var(--color1));
+    color: white;
+}
+footer a {
+    color: white;
+}
+
 @keyframes fadeOutAfterLoad {
     0% {
         opacity: 1;
@@ -183,6 +200,11 @@ ul.msg {
         width: 100%;
         height: 64px;
         overflow: hidden;
+    }
+    body > header > p:first-child {
+        margin: 0;
+        display: block;
+        float: right;
     }
     h1 {
         font-size: 48px;

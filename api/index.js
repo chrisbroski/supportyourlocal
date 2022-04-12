@@ -183,16 +183,6 @@ function isFileForm(req) {
     return false;
 }*/
 
-function homePage(req, rsp) {
-    if (req.headers.accept === 'application/json') {
-        rsp.writeHead(200, {'Content-Type': 'application/json'});
-        return rsp.end("{}");
-    }
-    rsp.writeHead(200, {'Content-Type': 'text/html'});
-    rsp.end(main.renderPage(req, TEMPLATE.home, db.band, db, API_DIR));
-    return;
-}
-
 function getDelete(req, rsp) {
     var searchParams = url.parse(req.url, true).query;
 
@@ -376,7 +366,7 @@ function rspGet(req, rsp, path) {
         return auth.get(req, rsp, db, API_DIR);
     }
     if (path.path === '/' || path.resource === '') {
-        return homePage(req, rsp);
+        return site.home(req, rsp, db, API_DIR);
     }
     if (path.resource === 'band') {
         return band.get(req, rsp, db, API_DIR);
@@ -561,7 +551,8 @@ async function loadData() {
     ASSET.noPhoto = await readFile(`${__dirname}/inc/nophoto.png`);
     ASSET.ajaxTool = await readFile(`${__dirname}/ajax-tool.html`, 'utf8');
 
-    TEMPLATE.home = await readFile(`${__dirname}/index.html.mustache`, 'utf8');
+    // TEMPLATE.home = await readFile(`${__dirname}/index.html.mustache`, 'utf8');
+    // TEMPLATE.homeNoAuth = await readFile(`${__dirname}/index-noauth.html.mustache`, 'utf8');
     TEMPLATE.tests = await readFile(`${__dirname}/tests.html.mustache`, 'utf8');
     TEMPLATE.delete = await readFile(`${__dirname}/inc/delete.html.mustache`, 'utf8');
 

@@ -1,4 +1,6 @@
 <header>
+    {{#loggedIn}}<p><a href="{{{API_DIR}}}/logout">Logout</a></p>{{/loggedIn}}
+    {{^loggedIn}}<p><a href="{{{API_DIR}}}/login">Login</a></p>{{/loggedIn}}
     <h2><a href="{{{API_DIR}}}/">Home</a></h2>
     <p>
         <a href="{{{API_DIR}}}/site">Site</a>

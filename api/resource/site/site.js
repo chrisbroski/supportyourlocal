@@ -1,3 +1,8 @@
+const showdown  = require('showdown');
+const converter = new showdown.Converter({"noHeaderId": true, "simpleLineBreaks": true});
+    // text      = '# hello, markdown!',
+    // html      = converter.makeHtml(text);
+
 // Custom libs
 const main = require('../../inc/main.js');
 
@@ -275,9 +280,127 @@ this.get = function (req, rsp, db, API_DIR) {
     rsp.end(main.renderPage(req, template.site, single(db), db, API_DIR));
 };
 
+this.home = function (req, rsp, db, API_DIR) {
+    var userData = main.getAuthUserData(req, db.user);
+    var loggedIn = (userData && userData.userid && userData.userid !== 'logout');
+
+    if (req.headers.accept === 'application/json') {
+        rsp.writeHead(200, {'Content-Type': 'application/json'});
+        return rsp.end("{}");
+    }
+    if (loggedIn) {
+        rsp.writeHead(200, {'Content-Type': 'text/html'});
+        rsp.end(main.renderPage(req, template.home, db.band, db, API_DIR));
+    } else {
+        rsp.writeHead(200, {'Content-Type': 'text/html'});
+        rsp.end(main.renderPage(req, template.homeNoAuth, homeNoAuth(db), db, API_DIR));
+    }
+    return;
+};
+
+function homeNoAuth(db) {
+    var now = new Date();
+    var homeData = {
+        "announcements": []
+    };
+    //announcements
+    var hasAnnouncements = false;
+    var data = Object.keys(db.announcement);
+    data.forEach(id => {
+        var announcement;
+        if (db.announcement[id].pinned === "Y") {
+            announcement = Object.assign({}, db.announcement[id]);
+            hasAnnouncements = true;
+            announcement.announcement = converter.makeHtml(db.announcement[id].copy);
+            if (db.announcement[id].song) {
+                announcement.songLink = {};
+                announcement.songLink.url = db.song[db.announcement[id].song].audio.spotify;
+                announcement.songLink.text = db.song[db.announcement[id].song].name;
+            }
+            homeData.announcements.push(announcement);
+        }
+    });
+    homeData.announcements = homeData.announcements.sort(main.sortByDateDesc);
+    homeData.hasAnnouncements = hasAnnouncements;
+
+    // gigs: get gigs >= today. there there are any, mark hasUpcomingShows true and get the next one
+    // var hasUpcomingShows = false;
+    data = main.objToArray(db.gig).sort(main.sortByDate);
+    var totalGigs = data.length;
+    // gigData.gigs.sort(main.sortByDate);
+    data = data.filter(gig => {
+        return Date.parse(gig.date + "T23:59:59") >= +now;
+    });
+    if (data.length > 0) {
+        // hasUpcomingShows = true;
+        homeData.nextGig = {};
+        homeData.nextGig.title = data[0].title;
+        homeData.nextGig.date = data[0].date;
+        homeData.nextGig.startTime = data[0].startTime;
+        homeData.nextGig.desc = converter.makeHtml(data[0].desc);
+        homeData.nextGig.venue = db.venue[data[0].venue];
+    }
+    if (data.length > 1) {
+        homeData.moreGigs = {};
+        homeData.moreGigs.text = "More Upcoming Shows";
+        homeData.moreGigs.url = "/gig?range=upcoming";
+    }
+    if (data.length < totalGigs) {
+        homeData.pastGigs = {};
+        homeData.pastGigs.text = "Previous Shows";
+        homeData.pastGigs.url = "/gig?range=past";
+    }
+
+    // releases
+    data = main.objToArray(db.release).sort(main.sortByDateDesc);
+    if (data.length > 0) {
+        homeData.latestRelease = {};
+        homeData.latestRelease.name = data[0].name || db.song[data[0].songs[0]].name;
+        homeData.latestRelease.date = data[0].date;
+        homeData.latestRelease.frontCover = data[0]["cover-front"];
+        homeData.latestRelease.desc = converter.makeHtml(data[0].desc);
+        homeData.latestRelease.spotifyUrl = data[0].audio.spotify || db.song[data[0].songs[0]].audio.spotify;
+    }
+    if (data.length > 1) {
+        homeData.moreReleases = true;
+    }
+
+    if (main.objToArray(db.song).length > 0) {
+        homeData.hasSongs = true;
+    }
+
+    // about
+    if (db.band.desc) {
+        homeData.bandDesc = converter.makeHtml(db.band.desc);
+    }
+    if (db.band.bio || db.band.contact) {
+        homeData.hasAbout = true;
+    }
+
+    // social links
+    // data = main.objToArray(db.band.social);
+    var socialNames = {
+        "fb": "Facebook",
+        "spotify": "Spotify",
+        "instagram": "Instagram",
+        "youtube": "YouTube",
+        "podcast": "Podcast"
+    };
+    homeData.social = [];
+    Object.keys(db.band.social).forEach(s => {
+        if (db.band.social[s]) {
+            homeData.social.push({"text": socialNames[s], "url": db.band.social[s]});
+        }
+    });
+    return homeData;
+}
+
 async function loadData() {
     template.site = await main.readFile(`${__dirname}/${resourceName}.html.mustache`, 'utf8');
     template.start = await main.readFile(`${__dirname}/start.html.mustache`, 'utf8');
+
+    template.home = await main.readFile(`${__dirname}/index.html.mustache`, 'utf8');
+    template.homeNoAuth = await main.readFile(`${__dirname}/index-noauth.html.mustache`, 'utf8');
 }
 
 loadData();
