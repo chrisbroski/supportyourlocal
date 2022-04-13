@@ -84,8 +84,8 @@ function listData(db, req) {
 function isUpdateInvalid(formData) {
     var msg = [];
 
-    if (!formData.copy) {
-        msg.push('Copy text is required.');
+    if (!formData.copy && !formData.song) {
+        msg.push('Either copy text or a song is required.');
     }
 
     // msg.push('test 400 error');

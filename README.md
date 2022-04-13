@@ -64,8 +64,6 @@ Add list to side of update (single) edit pages too, if width sufficient (otherwi
 
 All https
 
-Floating update button?
-
 Image upload
 * optimization
 * resize: thumbnail, medium, large, and original
@@ -76,8 +74,6 @@ Add venmo/etc. pay information.
 Single releases should be allowed 2 songs
 
 Add 0 to infinite media - audio, video to songs and releases. Add 0 to infinte album art to a release.
-
-Chrome needs name="username" and name="password" to trigger browser auto-save
 
 Copy text is not required for an announcement if there is a featured song.
 
