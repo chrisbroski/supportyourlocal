@@ -162,14 +162,22 @@ ul.msg {
     animation: fadeOutAfterLoad 8.0s ease-out;
     animation-fill-mode: forwards;
 }
-footer {
+body > footer {
     margin-bottom: -200px;
     padding: 20px 20px 200px;
     background: rgb(var(--color1));
     color: white;
 }
-footer a {
+body > footer a {
     color: white;
+}
+
+section > form > footer {
+    padding-left: 12px;
+    background: white;
+    position: fixed;
+    left: 240px; bottom: 0; right: 0;
+    border-top: 1px solid #888;
 }
 
 @keyframes fadeOutAfterLoad {
@@ -211,6 +219,10 @@ footer a {
     }
     input[type="text"], input[type="email"], input[type="password"], input[type="url"], select {
         width: 100%;
+    }
+
+    section > form > footer {
+        left: 0;
     }
 }
 

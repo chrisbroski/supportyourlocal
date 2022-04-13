@@ -18,8 +18,13 @@
 {{^loggedIn}}
 <h3>{{name}}</h3>
 <p>Released on {{date}}</p>
-<p><img src="{{cover-front}}"></p>
-<p><img src="{{cover-back}}"></p>
+{{#cover-front}}
+<p><img src="/photo/{{.}}"></p>
+{{/cover-front}}
+{{#cover-back}}
+<p><img src="/photo/{{.}}"></p>
+{{/cover-back}}
+
 <pre>{{desc}}</pre>
 </section>
 {{/loggedIn}}
@@ -63,7 +68,7 @@
 <p><label>Facebook</label><br>
     <input type="text" name="fb" value="{{video.fb}}">
 
-<p><button>Update {{resourceName}}</button>
+<footer><p><button>Update {{resourceName}}</button></footer>
 </form>
 </section>
 
