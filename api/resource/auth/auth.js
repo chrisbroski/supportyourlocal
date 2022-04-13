@@ -139,29 +139,29 @@ function login(req, rsp, body, db, API_DIR) {
     var secure = " Secure";
     secure = ""; // at least until I get https on everything
 
-    if (!body.email) {
+    if (!body.username) {
         return fail(req, rsp, `User email required.`, db, API_DIR);
     }
 
     if (!body.password) {
-        return fail(req, rsp, `Password required.`, db, API_DIR, body.email);
+        return fail(req, rsp, `Password required.`, db, API_DIR, body.username);
     }
 
-    userId = main.getUserIdByEmail(body.email, db.user);
+    userId = main.getUserIdByEmail(body.username, db.user);
     userData = db.user[userId];
     if (!userId) {
         addFailedLogin(userId);
-        return fail(req, rsp, `Bad username and/or password`, db, API_DIR, body.email);
+        return fail(req, rsp, `Bad username and/or password`, db, API_DIR, body.username);
     }
 
     if (!userData.hash) {
-        return fail(req, rsp, 'User not able to log in. Please contact your moderator.', db, API_DIR, body.email);
+        return fail(req, rsp, 'User not able to log in. Please contact your moderator.', db, API_DIR, body.username);
     }
 
     if (isUserLockedOut(userId)) {
         lockoutDuration = Math.round(LOCKOUT_DURATION_SECONDS / 60000);
         return fail(req, rsp, `User locked out from too many failed attempts.
-        Try again in ${lockoutDuration} minutes.`, db, API_DIR, body.email);
+        Try again in ${lockoutDuration} minutes.`, db, API_DIR, body.username);
     }
 
     if (userData.hash === main.hash(body.password, userData.salt)) {
@@ -182,7 +182,7 @@ function login(req, rsp, body, db, API_DIR) {
 
     // Failed login
     addFailedLogin(userId);
-    fail(req, rsp, 'Bad username and/or password', db, API_DIR, body.email);
+    fail(req, rsp, 'Bad username and/or password', db, API_DIR, body.username);
     return false;
 }
 this.login = login;
