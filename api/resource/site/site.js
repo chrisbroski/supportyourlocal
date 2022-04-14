@@ -254,50 +254,6 @@ ${nav}
 `);
 };
 
-this.getCss = function (req, rsp, data, isCss) {
-    rsp.setHeader('Cache-Control', 'max-age=0,no-cache,no-store,post-check=0,pre-check=0');
-    if (req.headers.accept === 'text/css' || isCss) {
-        rsp.writeHead(200, {'Content-Type': 'text/css'});
-        rsp.end(getCustomCSS(data.site));
-        return;
-    }
-    return main.returnJson(rsp, data[resourceName]);
-};
-
-this.start = function (req, rsp, db, API_DIR, qs) {
-    var setupToken = qs["setup-token"] || "";
-    // rsp.setHeader('Cache-Control', 'max-age=0,no-cache,no-store,post-check=0,pre-check=0');
-    rsp.writeHead(200, {'Content-Type': 'text/html'});
-    rsp.end(main.renderPage(req, template.start, {"setup-token": setupToken}, db, API_DIR));
-};
-
-this.get = function (req, rsp, db, API_DIR) {
-    rsp.setHeader('Cache-Control', 'max-age=0,no-cache,no-store,post-check=0,pre-check=0');
-    if (req.headers.accept === 'application/json') {
-        return siteData(rsp, db);
-    }
-    rsp.writeHead(200, {'Content-Type': 'text/html'});
-    rsp.end(main.renderPage(req, template.site, single(db), db, API_DIR));
-};
-
-this.home = function (req, rsp, db, API_DIR) {
-    var userData = main.getAuthUserData(req, db.user);
-    var loggedIn = (userData && userData.userid && userData.userid !== 'logout');
-
-    if (req.headers.accept === 'application/json') {
-        rsp.writeHead(200, {'Content-Type': 'application/json'});
-        return rsp.end("{}");
-    }
-    if (loggedIn) {
-        rsp.writeHead(200, {'Content-Type': 'text/html'});
-        rsp.end(main.renderPage(req, template.home, db.band, db, API_DIR));
-    } else {
-        rsp.writeHead(200, {'Content-Type': 'text/html'});
-        rsp.end(main.renderPage(req, template.homeNoAuth, homeNoAuth(db), db, API_DIR));
-    }
-    return;
-};
-
 function homeNoAuth(db) {
     var now = new Date();
     var homeData = {
@@ -394,6 +350,47 @@ function homeNoAuth(db) {
     });
     return homeData;
 }
+
+this.getCss = function (req, rsp, data, isCss) {
+    rsp.setHeader('Cache-Control', 'max-age=0,no-cache,no-store,post-check=0,pre-check=0');
+    if (req.headers.accept === 'text/css' || isCss) {
+        rsp.writeHead(200, {'Content-Type': 'text/css'});
+        rsp.end(getCustomCSS(data.site));
+        return;
+    }
+    return main.returnJson(rsp, data[resourceName]);
+};
+
+this.start = function (req, rsp, db, API_DIR, qs) {
+    var setupToken = qs["setup-token"] || "";
+    // rsp.setHeader('Cache-Control', 'max-age=0,no-cache,no-store,post-check=0,pre-check=0');
+    rsp.writeHead(200, {'Content-Type': 'text/html'});
+    rsp.end(main.renderPage(req, template.start, {"setup-token": setupToken}, db, API_DIR));
+};
+
+this.get = function (req, rsp, db, API_DIR) {
+    rsp.setHeader('Cache-Control', 'max-age=0,no-cache,no-store,post-check=0,pre-check=0');
+    if (req.headers.accept === 'application/json') {
+        return siteData(rsp, db);
+    }
+    rsp.writeHead(200, {'Content-Type': 'text/html'});
+    rsp.end(main.renderPage(req, template.site, single(db), db, API_DIR));
+};
+
+this.home = function (req, rsp, db, API_DIR) {
+    if (req.headers.accept === 'application/json') {
+        rsp.writeHead(200, {'Content-Type': 'application/json'});
+        return rsp.end("{}");
+    }
+    if (main.isLoggedIn(req, db.user)) {
+        rsp.writeHead(200, {'Content-Type': 'text/html'});
+        rsp.end(main.renderPage(req, template.home, db.band, db, API_DIR));
+    } else {
+        rsp.writeHead(200, {'Content-Type': 'text/html'});
+        rsp.end(main.renderPage(req, template.homeNoAuth, homeNoAuth(db), db, API_DIR));
+    }
+    return;
+};
 
 async function loadData() {
     template.site = await main.readFile(`${__dirname}/${resourceName}.html.mustache`, 'utf8');

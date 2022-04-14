@@ -1,3 +1,6 @@
+const showdown  = require('showdown');
+const converter = new showdown.Converter({"noHeaderId": true, "simpleLineBreaks": true});
+
 // Custom libs
 const main = require('../../inc/main.js');
 const resourceName = 'band';
@@ -9,7 +12,19 @@ function single(db, msg, error) {
         "pageName": 'Band Info',
         "countries": main.country(db[resourceName].country),
     }, db[resourceName]);
-// console.lof(resourceData);
+
+    return Object.assign(main.addMessages(msg, error), resourceData);
+}
+
+function singleNoAuth(db, msg, error) {
+    var resourceData = Object.assign({
+        "resourceName": resourceName,
+        "pageName": 'About',
+        "descHtml": converter.makeHtml(db.band.desc),
+        "bioHtml": converter.makeHtml(db.band.bio),
+        "contactHtml": converter.makeHtml(db.band.contact)
+    }, db[resourceName]);
+
     return Object.assign(main.addMessages(msg, error), resourceData);
 }
 
@@ -80,11 +95,16 @@ this.get = function (req, rsp, db, API_DIR) {
         return main.returnJson(rsp, db.band);
     }
     rsp.writeHead(200, {'Content-Type': 'text/html'});
-    rsp.end(main.renderPage(req, template.band, single(db), db, API_DIR));
+    if (main.isLoggedIn(req, db.user)) {
+        rsp.end(main.renderPage(req, template.band, single(db), db, API_DIR));
+    } else {
+        rsp.end(main.renderPage(req, template.bandNoAuth, singleNoAuth(db), db, API_DIR));
+    }
 };
 
 async function loadData() {
     template.band = await main.readFile(`${__dirname}/${resourceName}.html.mustache`, 'utf8');
+    template.bandNoAuth = await main.readFile(`${__dirname}/${resourceName}-noauth.html.mustache`, 'utf8');
 }
 
 loadData();

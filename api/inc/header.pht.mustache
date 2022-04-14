@@ -1,6 +1,6 @@
 <header>
-    {{#loggedIn}}<p><a href="{{{API_DIR}}}/logout">Logout</a></p>{{/loggedIn}}
-    {{^loggedIn}}<p><a href="{{{API_DIR}}}/login">Login</a></p>{{/loggedIn}}
+    {{#loggedIn}}
+    <p><a href="{{{API_DIR}}}/logout">Logout</a></p>
     <h2><a href="{{{API_DIR}}}/">Home</a></h2>
     <p>
         <a href="{{{API_DIR}}}/site">Site</a>
@@ -12,18 +12,26 @@
         <a href="{{{API_DIR}}}/announcement/">Announcements</a>
         <a href="{{{API_DIR}}}/user/">Members</a>
     </p>
-    <p>
-    {{#loggedIn}}
-        <a href="{{{API_DIR}}}/logout">Logout</a>
+    <p><a href="{{{API_DIR}}}/logout">Logout</a></p>
     {{/loggedIn}}
+
     {{^loggedIn}}
-        <form method="POST" action="{{{API_DIR}}}/login">
-        <p><label>Email</label><br>
-            <input type="email" name="username" type="email" id="username">
-        <p><label>Password</label><br>
-            <input type="password" id="password" name="password">
-        <p><button>Log In</button>
-        </form>
-    {{/loggedIn}}
+    <p><a href="{{{API_DIR}}}/login">Login</a></p>
+    <h2><a href="{{{API_DIR}}}/">Home</a></h2>
+    <p>
+        <a href="{{{API_DIR}}}/band">About</a>
+        <a href="{{{API_DIR}}}/gig/">Upcoming Shows</a>
+        <a href="{{{API_DIR}}}/release/">New Releases</a>
+        <a href="{{{API_DIR}}}/song/">All Songs</a>
+        <a href="{{{API_DIR}}}/announcement/">Announcements</a>
+        <a href="{{{API_DIR}}}/user/">Members</a>
     </p>
+    <form method="POST" action="{{{API_DIR}}}/login">
+    <p><label>Email</label><br>
+        <input type="email" name="username" type="email" id="username">
+    <p><label>Password</label><br>
+        <input type="password" id="password" name="password">
+    <p><button>Log In</button>
+    </form>
+    {{/loggedIn}}
 </header>

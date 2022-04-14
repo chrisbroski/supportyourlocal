@@ -415,6 +415,12 @@ function getAuthUserData(req, users) {
 }
 this.getAuthUserData = getAuthUserData;
 
+function isLoggedIn(req, users) {
+    var userData = getAuthUserData(req, users);
+    return (userData && userData.userid && userData.userid !== 'logout');
+}
+this.isLoggedIn = isLoggedIn;
+
 var cssVer;
 async function loadData() {
     TEMPLATE.head = await readFile(`${__dirname}/head.pht.mustache`, 'utf8');

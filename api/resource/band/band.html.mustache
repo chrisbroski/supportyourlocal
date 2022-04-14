@@ -14,25 +14,6 @@
 {{{message-display}}}
 
 <section>
-{{^loggedIn}}
-<p>Genres {{genres}}
-<h5>Description</h5>
-<pre>{{desc}}</pre>
-<h5>Bio</h5>
-<pre>{{bio}}</pre>
-<h5>Contact Info</h5>
-<pre>{{contact}}</pre>
-
-<h3>Social Media Links</h3>
-<p>Facebook: <a href="{{social.fb}}">{{social.fb}}</a></p>
-<p>Spotify: <a href="{{social.spotify}}">{{social.spotify}}</a></p>
-<p>Instagram: <a href="{{social.instagram}}">{{social.instagram}}</a></p>
-<p>YouTube: <a href="{{social.youtube}}">{{social.youtube}}</a></p>
-<p>Podcast: <a href="{{social.podcast}}">{{social.podcast}}</a></p>
-</section>
-{{/loggedIn}}
-
-{{#loggedIn}}
 <form method="POST" action="{{API_DIR}}/band" enctype="application/x-www-form-urlencoded">
 <input type="hidden" name="method" value="PUT">
 <p><label>Band Name</label>*<br>
@@ -72,7 +53,6 @@
 
 <footer><p><button>Update Band Information</button></footer>
 </form>
-{{/loggedIn}}
 </section>
 
 </article>

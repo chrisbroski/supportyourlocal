@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<title>{{pageName}} - API - {{homeName}}</title>
+{{{head}}}
+
+<body id="site-page">
+{{{header}}}
+
+<article>
+<h1>{{pageName}}</h1>
+
+<h5><a href="{{API_DIR}}/">Home</a> &gt; {{pageName}}</h5>
+
+<section>
+{{{descHtml}}}
+
+{{{bioHtml}}}
+
+{{#contactHtml}}
+<h5>Contact Info</h5>
+{{{.}}}
+{{/contactHtml}}
+
+<h3>Social Media</h3>
+{{#social.fb}}
+<p>Facebook: <a href="{{.}}">{{.}}</a></p>
+{{/social.fb}}
+{{#social.spotify}}
+<p>Spotify: <a href="{{.}}">{{.}}</a></p>
+{{/social.spotify}}
+{{#social.instagram}}
+<p>Instagram: <a href="{{.}}">{{.}}</a></p>
+{{/social.instagram}}
+{{#social.youtube}}
+<p>YouTube: <a href="{{.}}">{{.}}</a></p>
+{{/social.youtube}}
+{{#social.podcast}}
+<p>Podcast: <a href="{{.}}">{{.}}</a></p>
+{{/social.podcast}}
+</section>
+
+</article>
