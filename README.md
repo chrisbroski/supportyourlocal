@@ -75,9 +75,7 @@ Single releases should be allowed 2 songs
 
 Add 0 to infinite media - audio, video to songs and releases. Add 0 to infinte album art to a release.
 
-Copy text is not required for an announcement if there is a featured song.
-
-I don't think *Site* is the proper resource name. It should probably be *Style* and be displayed as a proper style guide. Have up to 6 colors (or inifinite?) and make the top 2 the web site ones. Should there be shades of color? Maybe.
+I don't think *Site* is the proper resource name. It should probably be *Style* and be displayed as a proper style guide. Have up to 6 colors (or infinite?) and make the top 2 the web site ones. Should there be shades of color? Maybe.
 
 ### Tests
 
@@ -88,6 +86,7 @@ Songs partially done. The rest, not at all
 * Select boxes not persisting after 400
 * Deletion can cause invalid state
 * Updates don't persist new form data after 400
+* Default date not working
 
 ## Features for next next version
 
@@ -104,6 +103,8 @@ Link to /api from front end somewhere not obvious to the casual browser, but fin
 Make un-logged in site more useful.
 
 Password recovery using email.
+
+Detect if port is in use with node-netstat
 
 #### Setup Agreement:
 
