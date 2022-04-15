@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<title>{{pageName}} - API - {{homeName}}</title>
+{{{head}}}
+
+<body>
+{{{header}}}
+
+<article>
+<h1>{{pageName}}</h1>
+
+<h5><a href="{{API_DIR}}/">Home</a> &gt; {{pageName}}</h5>
+
+<h3><a href="{{otherPage.url}}">{{otherPage.name}}</a></h3>
+
+{{#gig}}
+<section>
+{{#title}}<h2>{{.}}</h2>{{/title}}
+<h2>{{venueName}}</h2>
+<h3>{{formattedDate}} {{startTimes}}</h3>
+{{{descHtml}}}
+</section>
+{{/gig}}
+
+</article>

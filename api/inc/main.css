@@ -62,15 +62,15 @@ h1, h2, h4 {
     line-height: 1.2;
 }
 h1 {
-    margin: 0.2em 12px; padding: 8px;
     font-size: 64px;
 }
 h2 {margin: 0.5em 0; font-size: 36px; color: rgb(var(--color2)); }
-h3 {margin: 0.5em 0; font-size: 28px; color: rgb(var(--color2)); }
+h3 {margin: 0.5em 0; font-size: 24px; color: rgb(var(--color2)); }
 h4 {margin: 0.5em 0; font-size: 24px; color: rgb(var(--color2)); }
 p, h5 {margin: 0.5em 0; font-size: 17px; line-height: 1.4em; max-width: 580px; }
 h5 {color: rgb(var(--color2)); }
-h1 + h5 {margin-left: 20px; color: black; }
+article > h1, article > h2, article > h3, article > h4, article > h5 {margin: 12px 20px; }
+h1 + h5 {color: black; }
 h1 + h5 a {text-transform: capitalize; }
 h6 {margin: 0.5em 0; color: rgb(var(--color2)); }
 h1 span, h2 span, h3 span, h4 span, h5 span, h6 span {

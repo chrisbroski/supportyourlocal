@@ -16,7 +16,7 @@ function single(db, msg, error) {
     return Object.assign(main.addMessages(msg, error), resourceData);
 }
 
-function singleNoAuth(db, msg, error) {
+function singleNoAuth(db) {
     var resourceData = Object.assign({
         "resourceName": resourceName,
         "pageName": 'About',
@@ -25,7 +25,7 @@ function singleNoAuth(db, msg, error) {
         "contactHtml": converter.makeHtml(db.band.contact)
     }, db[resourceName]);
 
-    return Object.assign(main.addMessages(msg, error), resourceData);
+    return resourceData;
 }
 
 function isUpdateInvalid(body) {

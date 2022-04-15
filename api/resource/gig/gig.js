@@ -1,8 +1,62 @@
+const showdown  = require('showdown');
+const converter = new showdown.Converter({"noHeaderId": true, "simpleLineBreaks": true});
+
 const main = require('../../inc/main.js');
 var url = require('url');
 
 const resourceName = 'gig';
 const template = {};
+
+function gigTimes(date, startTime, durationH, durationM) {
+    var gigStart = new Date(date + "T" + startTime + ":00");
+    var hourStart = gigStart.getHours();
+    var minuteStart = gigStart.getMinutes();
+    var durationHms = parseInt(durationH, 10) * 60 * 60 * 1000;
+    var durationMms = parseInt(durationM, 10) * 60 * 1000;
+
+    var gigEnd = new Date(+gigStart + durationHms + durationMms);
+    var hourEnd = gigEnd.getHours();
+    var minuteEnd = gigEnd.getMinutes();
+
+    var amPmStart = "AM";
+    if (hourStart >= 12) {
+        amPmStart = "PM";
+    }
+    if (hourStart > 12) {
+        hourStart = hourStart - 12;
+    }
+
+    if (minuteStart) {
+        if (minuteStart < 10) {
+            minuteStart = ":0" + minuteStart;
+        } else {
+            minuteStart = ":" + minuteStart;
+        }
+    } else {
+        minuteStart = "";
+    }
+
+    var amPmEnd = "AM";
+    if (hourEnd >= 12) {
+        amPmEnd = "PM";
+    }
+    if (hourEnd > 12) {
+        hourEnd = hourEnd - 12;
+    }
+    if (minuteStart) {
+        if (minuteEnd < 10) {
+            minuteEnd = ":0" + minuteEnd;
+        } else {
+            minuteEnd = ":" + minuteEnd;
+        }
+    } else {
+        minuteEnd = "";
+    }
+    if (amPmStart === amPmEnd) {
+        return `${hourStart}${minuteStart} - ${hourEnd}${minuteEnd} ${amPmEnd}`;
+    }
+    return `${hourStart}${minuteStart} ${amPmStart} - ${hourEnd}${minuteEnd} ${amPmEnd}`;
+}
 
 function updateResource(id, formData, db, save) {
     db[resourceName][id].title = formData.title;
@@ -47,6 +101,23 @@ function single(db, id, msg, error) {
     return Object.assign(main.addMessages(msg, error), resourceData);
 }
 
+function singleNoAuth(db, id) {
+    var pageName = db[resourceName][id].title;
+    if (!pageName) {
+        pageName = `${db[resourceName][id].date} ${db.venue[db[resourceName][id].venue].name}`;
+    }
+    var resourceData = Object.assign({
+        "id": id,
+        "resourceName": resourceName,
+        "pageName": pageName,
+        "venueName": db.venue[db[resourceName][id].venue].name,
+        "descHtml": converter.makeHtml(db[resourceName][id].desc),
+        "startTimes": gigTimes(db[resourceName][id].date, db[resourceName][id].startTime, db[resourceName][id].durationH, db[resourceName][id].durationM)
+    }, db[resourceName][id]);
+
+    return resourceData;
+}
+
 function list(req, db, msg, error, link) {
     var qs = url.parse(req.url, true).query;
     var now = new Date();
@@ -74,16 +145,61 @@ function list(req, db, msg, error, link) {
         g.gigName = (g.title) ? g.title : db.venue[g.venue].name;
         g.formattedDate = main.dateFormat(g.date + "T00:00:01");
     });
-    // gigs.sort(main.sortByDateDesc);
 
     var resourceData = {
         "gig": gigs,
         "resourceName": resourceName,
-        "today": main.dateFormat(new Date()),
         "venues": venueList(db, ""),
         "pageName": pageName
     };
     return Object.assign(main.addMessages(msg, error, link), resourceData);
+}
+
+function listNoAuth(req, db) {
+    var qs = url.parse(req.url, true).query;
+    var now = new Date();
+    var gigs = main.objToArray(db[resourceName]);
+    var pageName = "Shows";
+    var otherPage = {
+        "name": "See Upcoming Shows",
+        "url": "?range=upcoming"
+    };
+
+    if (qs.range === "upcoming") {
+        gigs.sort(main.sortByDate);
+        gigs = gigs.filter(g => {
+            return Date.parse(g.date + "T23:59:59") >= +now;
+        });
+        pageName = "Upcoming Shows";
+        otherPage = {
+            "name": "See Previous Shows",
+            "url": "?range=past"
+        };
+    } else if (qs.range === "past") {
+        gigs.sort(main.sortByDateDesc);
+        gigs = gigs.filter(g => {
+            return Date.parse(g.date + "T23:59:59") < +now;
+        });
+        pageName = "Previous Shows";
+    } else {
+        gigs.sort(main.sortByDate);
+    }
+
+    gigs.forEach(g => {
+        g.venueName = db.venue[g.venue].name;
+        g.gigName = (g.title) ? g.title : db.venue[g.venue].name;
+        g.formattedDate = main.dateFormat(g.date + "T00:00:01");
+        g.descHtml = converter.makeHtml(g.desc);
+        g.startTimes = gigTimes(g.date, g.startTime, g.durationH, g.durationM);
+    });
+
+    return {
+        "gig": gigs,
+        "resourceName": resourceName,
+        "today": main.dateFormat(new Date()),
+        "pageName": pageName,
+        "otherPage": otherPage
+    };
 }
 
 function singleData(db, id, mapKey) {
@@ -225,19 +341,30 @@ this.get = function (req, rsp, id, db, API_DIR, mapKey) {
             return main.returnJson(rsp, singleData(db, id, mapKey));
         }
         rsp.writeHead(200, {'Content-Type': 'text/html'});
-        rsp.end(main.renderPage(req, template.single, single(db, id), db, API_DIR));
+        if (main.isLoggedIn(req, db.user)) {
+            rsp.end(main.renderPage(req, template.single, single(db, id), db, API_DIR));
+        } else {
+            rsp.end(main.renderPage(req, template.singleNoAuth, singleNoAuth(db, id), db, API_DIR));
+        }
     } else {
         if (req.headers.accept === 'application/json') {
             return main.returnJson(rsp, listData(db, req, mapKey));
         }
         rsp.writeHead(200, {'Content-Type': 'text/html'});
-        rsp.end(main.renderPage(req, template.list, list(req, db), db, API_DIR));
+        if (main.isLoggedIn(req, db.user)) {
+            rsp.end(main.renderPage(req, template.list, list(req, db), db, API_DIR));
+        } else {
+            rsp.end(main.renderPage(req, template.listNoAuth, listNoAuth(req, db), db, API_DIR));
+        }
     }
 };
 
 async function loadData() {
     template.single = await main.readFile(`${__dirname}/${resourceName}.html.mustache`, 'utf8');
+    template.singleNoAuth = await main.readFile(`${__dirname}/${resourceName}-noauth.html.mustache`, 'utf8');
+
     template.list = await main.readFile(`${__dirname}/${resourceName}s.html.mustache`, 'utf8');
+    template.listNoAuth = await main.readFile(`${__dirname}/${resourceName}s-noauth.html.mustache`, 'utf8');
 }
 
 loadData();
