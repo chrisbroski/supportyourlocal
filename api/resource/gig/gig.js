@@ -7,6 +7,10 @@ var url = require('url');
 const resourceName = 'gig';
 const template = {};
 
+var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+var daysOfTheWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
 function gigTimes(date, startTime, durationH, durationM) {
     var gigStart = new Date(date + "T" + startTime + ":00");
     var hourStart = gigStart.getHours();
@@ -102,18 +106,24 @@ function single(db, id, msg, error) {
 }
 
 function singleNoAuth(db, id) {
-    var pageName = db[resourceName][id].title;
+    var sourceData = db[resourceName][id];
+    var pageName = sourceData.title;
     if (!pageName) {
-        pageName = `${db[resourceName][id].date} ${db.venue[db[resourceName][id].venue].name}`;
+        pageName = `${sourceData.date} ${db.venue[sourceData.venue].name}`;
     }
+    var date = new Date(sourceData.date + "T" + sourceData.startTime + ":01");
+    // g.formattedDate = `${daysOfTheWeek[date.getDay()]}, ${months[date.getMonth()]}
     var resourceData = Object.assign({
         "id": id,
         "resourceName": resourceName,
         "pageName": pageName,
-        "venueName": db.venue[db[resourceName][id].venue].name,
-        "descHtml": converter.makeHtml(db[resourceName][id].desc),
-        "startTimes": gigTimes(db[resourceName][id].date, db[resourceName][id].startTime, db[resourceName][id].durationH, db[resourceName][id].durationM)
-    }, db[resourceName][id]);
+        "venueName": db.venue[sourceData.venue].name,
+        "venueCity": db.venue[sourceData.venue].city,
+        "venueState": db.venue[sourceData.venue].state,
+        "descHtml": converter.makeHtml(sourceData.desc),
+        "formattedDate": `${daysOfTheWeek[date.getDay()]}, ${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`,
+        "startTimes": gigTimes(sourceData.date, sourceData.startTime, sourceData.durationH, sourceData.durationM)
+    }, sourceData);
 
     return resourceData;
 }
@@ -185,12 +195,17 @@ function listNoAuth(req, db) {
         gigs.sort(main.sortByDate);
     }
 
+    var date;
     gigs.forEach(g => {
         g.venueName = db.venue[g.venue].name;
         g.gigName = (g.title) ? g.title : db.venue[g.venue].name;
-        g.formattedDate = main.dateFormat(g.date + "T00:00:01");
+        // BAD! Use gig start time and timezone (hard code EDT for now)
+        date = new Date(g.date + "T" + g.startTime + ":01-0400");
+        g.formattedDate = `${daysOfTheWeek[date.getDay()]}, ${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
         g.descHtml = converter.makeHtml(g.desc);
         g.startTimes = gigTimes(g.date, g.startTime, g.durationH, g.durationM);
+        g.venueCity = db.venue[g.venue].city;
+        g.venueState = db.venue[g.venue].state;
     });
 
     return {
