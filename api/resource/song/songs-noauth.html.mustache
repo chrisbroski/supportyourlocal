@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<title>All Songs - API - {{homeName}}</title>
+{{{head}}}
+
+<body>
+{{{header}}}
+
+<article>
+<h1>All Songs</h1>
+
+<h5><a href="{{API_DIR}}/">Home</a> &gt; All Songs</h5>
+
+<section>
+{{#song}}
+<p><a href="{{API_DIR}}/{{resourceName}}/{{id}}">{{name}}</a></p>
+{{/song}}
+</section>
+
+</article>

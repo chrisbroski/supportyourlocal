@@ -52,7 +52,7 @@ function single(db, id, msg, error) {
     return Object.assign(main.addMessages(msg, error), resourceData);
 }
 
-function singleNoAuth(db, id, msg, error) {
+function singleNoAuth(db, id) {
     var resourceData = Object.assign({
         "id": id,
         "resourceName": resourceName,
@@ -67,7 +67,7 @@ function singleNoAuth(db, id, msg, error) {
         "hasVideo": (db[resourceName][id].video && (db[resourceName][id].video.fb || db[resourceName][id].video.youtube))
     }, db[resourceName][id]);
 
-    return Object.assign(main.addMessages(msg, error), resourceData);
+    return resourceData;
 }
 
 function list(db, msg, error, link) {
@@ -89,7 +89,7 @@ function list(db, msg, error, link) {
     return Object.assign(main.addMessages(msg, error, link), resourceData);
 }
 
-function listNoAuth(db, msg, error, link) {
+function listNoAuth(db) {
     var releases = main.objToArray(db[resourceName]).sort(main.sortByDateDesc);
     releases = releases.map(r => {
         r.pageName = pageName(db, r.id);
@@ -110,7 +110,7 @@ function listNoAuth(db, msg, error, link) {
         "pageName": `${main.toTitleCase(resourceName)}s`
     };
 
-    return Object.assign(main.addMessages(msg, error, link), resourceData);
+    return resourceData;
 }
 
 function singleData(db, id) {

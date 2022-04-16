@@ -13,24 +13,6 @@
 
 {{{message-display}}}
 
-{{^loggedIn}}
-<section>
-<h3>{{name}}</h3>
-<p><img src="{{cover-front}}"></p>
-<p><img src="{{cover-back}}"></p>
-<pre>{{desc}}</pre>
-<h2>Audio</h2>
-<p><a href="{{audio.spotify}}">{{audio.spotify}}</a></p>
-<!-- <p><a href="{{audio.apple}}">{{audio.apple}}</a></p> -->
-<!-- <p><a href="{{audio.amazon}}">{{audio.amazon}}</a></p> -->
-<!-- <p><a href="{{audio.cdbaby}}">{{audio.cdbaby}}</a></p> -->
-<p><a href="{{audio.youtube}}">{{audio.youtube}}</a></p>
-<h2>Video</h2>
-<p><a href="{{video.youtube}}">{{video.youtube}}</a></p>
-<p><a href="{{video.fb}}">{{video.fb}}</a></p>
-</section>
-{{/loggedIn}}
-{{#loggedIn}}
 <section>
 <form method="POST" action="{{{API_DIR}}}/{{resourceName}}/{{id}}">
 <input type="hidden" name="method" value="PUT">
@@ -89,5 +71,5 @@
 <section>
 <p><a class="button" href="{{{API_DIR}}}/delete?resource={{resourceName}}&id={{id}}">Delete {{resourceName}}</a></p>
 </section>
-{{/loggedIn}}
+
 </article>

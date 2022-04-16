@@ -1,3 +1,6 @@
+const showdown  = require('showdown');
+const converter = new showdown.Converter({"noHeaderId": true, "simpleLineBreaks": true});
+
 const main = require('../../inc/main.js');
 
 const resourceName = 'song';
@@ -14,6 +17,20 @@ function single(db, id, msg, error) {
     return Object.assign(main.addMessages(msg, error), resourceData);
 }
 
+function singleNoAuth(db, id, msg, error) {
+    var resourceData = Object.assign({
+        "id": id,
+        "resourceName": resourceName,
+        "pageName": db[resourceName][id].name,
+        "genres": main.genre(db[resourceName][id].genre1),
+        "descHtml": converter.makeHtml(db[resourceName][id].desc),
+        "hasAudio": (db[resourceName][id].audio && (db[resourceName][id].audio.spotify || db[resourceName][id].audio.youtube)),
+        "hasVideo": (db[resourceName][id].video && (db[resourceName][id].video.fb || db[resourceName][id].video.youtube))
+    }, db[resourceName][id]);
+
+    return Object.assign(main.addMessages(msg, error), resourceData);
+}
+
 function list(db, msg, error, link) {
     var resourceData = {
         [resourceName]: main.objToArray(db[resourceName]).sort(main.sortByName),
@@ -24,6 +41,18 @@ function list(db, msg, error, link) {
     };
 
     return Object.assign(main.addMessages(msg, error, link), resourceData);
+}
+
+function listNoAuth(db) {
+    var resourceData = {
+        [resourceName]: main.objToArray(db[resourceName]).sort(main.sortByName),
+        "today": main.dateFormat(new Date()),
+        "resourceName": resourceName,
+        "genres": main.genre(),
+        "pageName": `${main.toTitleCase(resourceName)}s`
+    };
+
+    return resourceData;
 }
 
 function singleData(db, id) {
@@ -196,19 +225,29 @@ this.get = function (req, rsp, id, qs, db, API_DIR) {
             return main.returnJson(rsp, singleData(db, id));
         }
         rsp.writeHead(200, {'Content-Type': 'text/html'});
-        rsp.end(main.renderPage(req, template.single, single(db, id), db, API_DIR));
+        if (main.isLoggedIn(req, db.user)) {
+            rsp.end(main.renderPage(req, template.single, single(db, id), db, API_DIR));
+        } else {
+            rsp.end(main.renderPage(req, template.singleNoAuth, singleNoAuth(db, id), db, API_DIR));
+        }
     } else {
         if (req.headers.accept === 'application/json') {
             return main.returnJson(rsp, listData(db, qs));
         }
         rsp.writeHead(200, {'Content-Type': 'text/html'});
-        rsp.end(main.renderPage(req, template.list, list(db), db, API_DIR));
+        if (main.isLoggedIn(req, db.user)) {
+            rsp.end(main.renderPage(req, template.list, list(db), db, API_DIR));
+        } else {
+            rsp.end(main.renderPage(req, template.listNoAuth, listNoAuth(db), db, API_DIR));
+        }
     }
 };
 
 async function loadData() {
     template.single = await main.readFile(`${__dirname}/${resourceName}.html.mustache`, 'utf8');
+    template.singleNoAuth = await main.readFile(`${__dirname}/${resourceName}-noauth.html.mustache`, 'utf8');
     template.list = await main.readFile(`${__dirname}/${resourceName}s.html.mustache`, 'utf8');
+    template.listNoAuth = await main.readFile(`${__dirname}/${resourceName}s-noauth.html.mustache`, 'utf8');
 }
 
 loadData();
