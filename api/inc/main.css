@@ -179,7 +179,14 @@ section > form > footer {
     left: 240px; bottom: 0; right: 0;
     border-top: 1px solid #888;
 }
-
+section.release {
+    overflow: auto;
+}
+section.release > img {
+    margin: 4px 0 4px 12px;
+    width: 50%;
+    float: right;
+}
 @keyframes fadeOutAfterLoad {
     0% {
         opacity: 1;
@@ -223,6 +230,12 @@ section > form > footer {
 
     section > form > footer {
         left: 0;
+    }
+
+    section.release > img {
+        margin: 0;
+        width: 100%;
+        float: none;
     }
 }
 

@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<title>New Releases - API - {{homeName}}</title>
+{{{head}}}
+
+<body>
+{{{header}}}
+
+<article>
+<h1>New Releases</h1>
+
+<h5><a href="{{API_DIR}}/">Home</a> &gt; New Releases</h5>
+
+{{#release}}
+<section class="release">
+<h2><a href="{{API_DIR}}/{{resourceName}}/{{id}}">{{pageName}}</a></h2>
+{{#cover-front}}
+<img src="/photo/{{cover-front}}" alt="Front cover">
+{{/cover-front}}
+<h3>{{date}}</h3>
+{{{descHtml}}}
+<p><a href="{{releaseLink}}" target="_music">Listen</a></p>
+</section>
+{{/release}}
+
+</article>

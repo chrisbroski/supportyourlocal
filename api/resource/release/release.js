@@ -1,3 +1,6 @@
+const showdown  = require('showdown');
+const converter = new showdown.Converter({"noHeaderId": true, "simpleLineBreaks": true});
+
 const main = require('../../inc/main.js');
 
 const resourceName = 'release';
@@ -49,10 +52,52 @@ function single(db, id, msg, error) {
     return Object.assign(main.addMessages(msg, error), resourceData);
 }
 
+function singleNoAuth(db, id, msg, error) {
+    var resourceData = Object.assign({
+        "id": id,
+        "resourceName": resourceName,
+        "pageName": pageName(db, id),
+        "songlist": songList(main.objToArray(db.song)),
+        "hasAlbumList": db[resourceName][id].songs > 1,
+        "albumList": albumList(db[resourceName][id].songs, db),
+        "front-cover-photos": main.displayPhotos(db.photos, db[resourceName][id]["cover-front"]),
+        "back-cover-photos": main.displayPhotos(db.photos, db[resourceName][id]["cover-back"]),
+        "releaseLink": db[resourceName][id].audio.spotify || db.song[db[resourceName][id].songs[0]].audio.spotify,
+        "descHtml": converter.makeHtml(db[resourceName][id].desc),
+        "hasVideo": (db[resourceName][id].video && (db[resourceName][id].video.fb || db[resourceName][id].video.youtube))
+    }, db[resourceName][id]);
+
+    return Object.assign(main.addMessages(msg, error), resourceData);
+}
+
 function list(db, msg, error, link) {
     var releases = main.objToArray(db[resourceName]).sort(main.sortByDateDesc);
     releases = releases.map(r => {
         r.pageName = pageName(db, r.id);
+        return r;
+    });
+    var resourceData = {
+        [resourceName]: releases,
+        // "today": main.dateFormat(new Date()),
+        "resourceName": resourceName,
+        "songlist": songList(main.objToArray(db.song)),
+        "photos": db.photos,
+        "no-photo": main.noPhotoSelected(),
+        "pageName": `${main.toTitleCase(resourceName)}s`
+    };
+
+    return Object.assign(main.addMessages(msg, error, link), resourceData);
+}
+
+function listNoAuth(db, msg, error, link) {
+    var releases = main.objToArray(db[resourceName]).sort(main.sortByDateDesc);
+    releases = releases.map(r => {
+        r.pageName = pageName(db, r.id);
+        r.descHtml = converter.makeHtml(r.desc);
+        r.releaseLink = r.audio.spotify;
+        if (!r.audio.spotify) {
+            r.releaseLink = db.song[r.songs[0]].audio.spotify;
+        }
         return r;
     });
     var resourceData = {
@@ -322,19 +367,29 @@ this.get = function (req, rsp, id, db, API_DIR) {
             return main.returnJson(rsp, singleData(db, id));
         }
         rsp.writeHead(200, {'Content-Type': 'text/html'});
-        rsp.end(main.renderPage(req, template.single, single(db, id), db, API_DIR));
+        if (main.isLoggedIn(req, db.user)) {
+            rsp.end(main.renderPage(req, template.single, single(db, id), db, API_DIR));
+        } else {
+            rsp.end(main.renderPage(req, template.singleNoAuth, singleNoAuth(db, id), db, API_DIR));
+        }
     } else {
         if (req.headers.accept === 'application/json') {
             return main.returnJson(rsp, listData(db, req));
         }
         rsp.writeHead(200, {'Content-Type': 'text/html'});
-        rsp.end(main.renderPage(req, template.list, list(db), db, API_DIR));
+        if (main.isLoggedIn(req, db.user)) {
+            rsp.end(main.renderPage(req, template.list, list(db), db, API_DIR));
+        } else {
+            rsp.end(main.renderPage(req, template.listNoAuth, listNoAuth(db), db, API_DIR));
+        }
     }
 };
 
 async function loadData() {
     template.single = await main.readFile(`${__dirname}/${resourceName}.html.mustache`, 'utf8');
+    template.singleNoAuth = await main.readFile(`${__dirname}/${resourceName}-noauth.html.mustache`, 'utf8');
     template.list = await main.readFile(`${__dirname}/${resourceName}s.html.mustache`, 'utf8');
+    template.listNoAuth = await main.readFile(`${__dirname}/${resourceName}s-noauth.html.mustache`, 'utf8');
 }
 
 loadData();
