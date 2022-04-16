@@ -120,6 +120,7 @@ function singleNoAuth(db, id) {
         "venueName": db.venue[sourceData.venue].name,
         "venueCity": db.venue[sourceData.venue].city,
         "venueState": db.venue[sourceData.venue].state,
+        "venueMap": `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${db.venue[sourceData.venue].name}, ${db.venue[sourceData.venue].city}, ${db.venue[sourceData.venue].state}`)}`,
         "descHtml": converter.makeHtml(sourceData.desc),
         "formattedDate": `${daysOfTheWeek[date.getDay()]}, ${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`,
         "startTimes": gigTimes(sourceData.date, sourceData.startTime, sourceData.durationH, sourceData.durationM)
@@ -202,6 +203,7 @@ function listNoAuth(req, db) {
         // BAD! Use gig start time and timezone (hard code EDT for now)
         date = new Date(g.date + "T" + g.startTime + ":01-0400");
         g.formattedDate = `${daysOfTheWeek[date.getDay()]}, ${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+        g.venueMap = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${db.venue[g.venue].name}, ${db.venue[g.venue].city}, ${db.venue[g.venue].state}`)}`;
         g.descHtml = converter.makeHtml(g.desc);
         g.startTimes = gigTimes(g.date, g.startTime, g.durationH, g.durationM);
         g.venueCity = db.venue[g.venue].city;
