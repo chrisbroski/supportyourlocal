@@ -182,7 +182,7 @@ section > form > footer {
 section.release {
     overflow: auto;
 }
-section.release > img {
+section > img, section > p > img {
     margin: 4px 0 4px 12px;
     width: 50%;
     float: right;
@@ -232,7 +232,7 @@ section.release > img {
         left: 0;
     }
 
-    section.release > img {
+    section > img, section > p > img {
         margin: 0;
         width: 100%;
         float: none;

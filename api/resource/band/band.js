@@ -17,12 +17,29 @@ function single(db, msg, error) {
 }
 
 function singleNoAuth(db) {
+    const members = [];
+    Object.keys(db.user).forEach(u => {
+        var memberData = {};
+        var nameSeparator;
+        var locSeparator;
+        if (db.user[u].bandMember === "Y" && db.user[u].bio) {
+            nameSeparator = (db.user[u].givenName && db.user[u].surname) ? " " : "";
+            memberData.name = `${db.user[u].givenName}${nameSeparator}${db.user[u].surname}`;
+            locSeparator = (db.user[u].city && db.user[u].state) ? ", " : "";
+            memberData.location = `${db.user[u].city}${locSeparator}${db.user[u].state}`;
+            memberData.bioHtml = converter.makeHtml(db.user[u].bio);
+            memberData.photo = db.user[u].photo;
+            members.push(memberData);
+        }
+    });
+
     var resourceData = Object.assign({
         "resourceName": resourceName,
         "pageName": 'About',
         "descHtml": converter.makeHtml(db.band.desc),
         "bioHtml": converter.makeHtml(db.band.bio),
-        "contactHtml": converter.makeHtml(db.band.contact)
+        "contactHtml": converter.makeHtml(db.band.contact),
+        "members": members
     }, db[resourceName]);
 
     return resourceData;

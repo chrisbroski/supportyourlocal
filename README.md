@@ -98,10 +98,6 @@ Email list
 
 EPK
 
-Link to /api from front end somewhere not obvious to the casual browser, but findable to someone aware.
-
-Make un-logged in site more useful.
-
 Password recovery using email.
 
 Detect if port is in use with node-netstat
