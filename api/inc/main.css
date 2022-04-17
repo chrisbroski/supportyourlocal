@@ -113,6 +113,7 @@ input:invalid, select:invalid {
 section {
     margin: 12px; padding: 8px;
     background: white;
+    overflow: auto;
 }
 section + section {
     border-top: 1px #888 solid;
@@ -124,7 +125,6 @@ section.list {
     position: fixed;
     top: 0; right: 0; bottom: 0;
     width: 360px;
-    overflow: auto;
     border-top: 0 none;
     border-left: 1px solid #888;
 }
@@ -179,10 +179,7 @@ section > form > footer {
     left: 240px; bottom: 0; right: 0;
     border-top: 1px solid #888;
 }
-section.release {
-    overflow: auto;
-}
-section > img, section > p > img {
+section > img, section > p > img, section > p > a > img {
     margin: 4px 0 4px 12px;
     width: 50%;
     float: right;
@@ -232,7 +229,7 @@ section > img, section > p > img {
         left: 0;
     }
 
-    section > img, section > p > img {
+    section > img, section > p > img, section > p > a > img {
         margin: 0;
         width: 100%;
         float: none;

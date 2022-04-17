@@ -25,7 +25,6 @@ function singleNoAuth(db, id, msg, error) {
         "pageName": db[resourceName][id].name,
         "genres": main.genre(db[resourceName][id].genre1),
         "descHtml": converter.makeHtml(db[resourceName][id].desc),
-        "hasAudio": (db[resourceName][id].audio && (db[resourceName][id].audio.spotify || db[resourceName][id].audio.youtube)),
         "hasVideo": (db[resourceName][id].video && (db[resourceName][id].video.fb || db[resourceName][id].video.youtube))
     }, db[resourceName][id]);
 

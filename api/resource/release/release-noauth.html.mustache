@@ -9,7 +9,7 @@
 <article>
 <h1>{{pageName}}</h1>
 
-<h5><a href="{{API_DIR}}/">Home</a> &gt; <a href="{{API_DIR}}/{{resourceName}}">{{resourceName}}s</a> &gt; {{pageName}}</h5>
+<h5><a href="{{API_DIR}}/">Home</a> &gt; <a href="{{{API_DIR}}}/{{resourceName}}">{{resourceName}}s</a> &gt; {{pageName}}</h5>
 
 <section class="release">
 <h2>{{name}}</h2>
@@ -17,12 +17,21 @@
 <img src="/photo/{{cover-front}}" alt="Front cover">
 {{/cover-front}}
 {{#cover-back}}
-<img src="/photo/{{cover-front}}" alt="Front cover">
+<img src="/photo/{{cover-back}}" alt="Back cover">
 {{/cover-back}}
 <h3>{{date}}</h3>
 {{{descHtml}}}
 <p><a href="{{releaseLink}}" target="_music">Listen</a></p>
 </section>
+
+{{#hasAlbumList}}
+<section>
+<h2>Album Tracks</h2>
+{{#albumList}}
+<p><a href="{{{API_DIR}}}/song/{{song-id}}">{{song-name}}</a></p>
+{{/albumList}}
+</section>
+{{/hasAlbumList}}
 
 {{#hasVideo}}
 <section>
@@ -34,14 +43,6 @@
 {{/video.youtube}}
 </section>
 {{/hasVideo}}
-
-{{#hasAlbumList}}
-<section>
-{{#albumList}}
-<p><a href="{{API_DIR}}/song/{{song-id}}">{{song-name}}</a></p>
-{{/albumList}}
-</section>
-{{/hasAlbumList}}
 
 {{#credits}}
 <section>

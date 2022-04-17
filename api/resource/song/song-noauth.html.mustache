@@ -12,19 +12,7 @@
 <h5><a href="{{{API_DIR}}}/">Home</a> &gt; <a href="{{{API_DIR}}}/{{resourceName}}">{{resourceName}}s</a> &gt; {{pageName}}</h5>
 
 <section>
-<h3>{{name}}</h3>
-{{#cover-front}}
-<img src="/photo/{{.}}" alt="Front cover">
-{{/cover-front}}
-{{#cover-back}}
-<img src="/photo/{{.}}" alt="Back cover">
-{{/cover-back}}
 {{descHtml}}
-</section>
-
-{{#hasAudio}}
-<section>
-<h2>Audio</h2>
 {{#audio.spotify}}
 <p><a href="{{.}}">Listen on Spotify</a></p>
 {{/audio.spotify}}
@@ -32,7 +20,6 @@
 <p><a href="{{.}}">Listen on YouTube Music</a></p>
 {{/audio.youtube}}
 </section>
-{{/hasAudio}}
 
 {{#hasVideo}}
 <section>

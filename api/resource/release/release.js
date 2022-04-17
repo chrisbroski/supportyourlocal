@@ -56,7 +56,7 @@ function singleNoAuth(db, id) {
         "resourceName": resourceName,
         "pageName": pageName(db, id),
         "songlist": songList(main.objToArray(db.song)),
-        "hasAlbumList": db[resourceName][id].songs > 1,
+        "hasAlbumList": db[resourceName][id].songs.length > 1,
         "albumList": albumList(db[resourceName][id].songs, db),
         "front-cover-photos": main.displayPhotos(db.photos, db[resourceName][id]["cover-front"]),
         "back-cover-photos": main.displayPhotos(db.photos, db[resourceName][id]["cover-back"]),
