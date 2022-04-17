@@ -40,7 +40,11 @@ function single(db, id, msg, error) {
         "albumList": albumList(db[resourceName][id].songs, db),
         "front-cover-photos": main.displayPhotos(db.photos, db[resourceName][id]["cover-front"]),
         "back-cover-photos": main.displayPhotos(db.photos, db[resourceName][id]["cover-back"]),
-        "no-photo": main.noPhotoSelected(db[resourceName][id].photo)
+        "no-photo": main.noPhotoSelected(db[resourceName][id].photo),
+        "releases": main.objToArray(db[resourceName]).sort(main.sortByDateDesc).map(r => {
+            r.releaseName = r.name || db.song[r.songs[0]].name;
+            return r;
+        })
     }, db[resourceName][id]);
 
     return Object.assign(main.addMessages(msg, error), resourceData);

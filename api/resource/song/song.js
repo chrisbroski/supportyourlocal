@@ -11,7 +11,8 @@ function single(db, id, msg, error) {
         "id": id,
         "resourceName": resourceName,
         "pageName": db[resourceName][id].name,
-        "genres": main.genre(db[resourceName][id].genre1)
+        "genres": main.genre(db[resourceName][id].genre1),
+        "songs": main.objToArray(db[resourceName]).sort(main.sortByName)
     }, db[resourceName][id]);
 
     return Object.assign(main.addMessages(msg, error), resourceData);

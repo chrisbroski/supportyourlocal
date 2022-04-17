@@ -9,12 +9,12 @@
 <article>
 <h1>{{pageName}}</h1>
 
-<h5><a href="{{API_DIR}}/">Home</a> &gt; <a href="{{API_DIR}}/{{resourceName}}">{{resourceName}}s</a> &gt; {{pageName}}</h5>
+<h5><a href="{{{API_DIR}}}/">Home</a> &gt; <a href="{{{API_DIR}}}/{{resourceName}}">{{resourceName}}s</a> &gt; {{pageName}}</h5>
 
 {{{message-display}}}
 
 <section>
-<form method="POST" action="{{API_DIR}}/{{resourceName}}/{{id}}">
+<form method="POST" action="{{{API_DIR}}}/{{resourceName}}/{{id}}">
 <input type="hidden" name="method" value="PUT">
 
 <p><label>Name</label> (Optional for single release)<br>
@@ -24,7 +24,7 @@
 
 <h3>Front Cover</h3>
 <div class="photos">
-<input type="radio" name="cover-front" value="" id="cover-front-none"{{{no-photo}}}><label for="cover-front-none"><img src="{{API_DIR}}/nophoto" alt="No photo"></label>
+<input type="radio" name="cover-front" value="" id="cover-front-none"{{{no-photo}}}><label for="cover-front-none"><img src="{{{API_DIR}}}/nophoto" alt="No photo"></label>
 {{#front-cover-photos}}
 <input type="radio" name="cover-front" value="{{file}}" id="cover-front-{{file}}"{{{selected}}}><label for="cover-front-{{file}}"><img src="/photo/{{file}}"></label>
 {{/front-cover-photos}}
@@ -32,7 +32,7 @@
 
 <h3>Back Cover</h3>
 <div class="photos">
-<input type="radio" name="cover-back" value="" id="cover-back-none"{{{no-photo}}}><label for="cover-back-none"><img src="{{API_DIR}}/nophoto" alt="No photo"></label>
+<input type="radio" name="cover-back" value="" id="cover-back-none"{{{no-photo}}}><label for="cover-back-none"><img src="{{{API_DIR}}}/nophoto" alt="No photo"></label>
 {{#back-cover-photos}}
 <input type="radio" name="cover-back" value="{{file}}" id="cover-back-{{file}}"{{{selected}}}><label for="cover-back-{{file}}"><img src="/photo/{{file}}"></label>
 {{/back-cover-photos}}
@@ -57,12 +57,12 @@
 </section>
 
 <section>
-<p><a class="button" href="{{API_DIR}}/delete?resource={{resourceName}}&id={{id}}">Delete {{resourceName}}</a></p>
+<p><a class="button" href="{{{API_DIR}}}/delete?resource={{resourceName}}&id={{id}}">Delete {{resourceName}}</a></p>
 </section>
 
 <section>
 <h2>Tracks</h2>
-<form method="POST" action="{{API_DIR}}/{{resourceName}}/{{id}}">
+<form method="POST" action="{{{API_DIR}}}/{{resourceName}}/{{id}}">
     <p><select name="song-id">
         <option value="">Select Song</option>
         {{#songlist}}
@@ -76,14 +76,14 @@
 {{#albumList}}
 <div class="songlist">
 <p>
-<form method="POST" action="{{API_DIR}}/{{resourceName}}/{{id}}">
+<form method="POST" action="{{{API_DIR}}}/{{resourceName}}/{{id}}">
     <input type="hidden" name="method" value="PATCH">
     <input type="hidden" name="index" value="0">
     <input type="hidden" name="song-id" value="{{song-id}}">
     <button>↑</button>
 </form>
 {{song-name}}
-<form method="POST" action="{{API_DIR}}/{{resourceName}}/{{id}}">
+<form method="POST" action="{{{API_DIR}}}/{{resourceName}}/{{id}}">
     <input type="hidden" name="method" value="PATCH">
     <input type="hidden" name="index" value="-1">
     <input type="hidden" name="song-id" value="{{song-id}}">
@@ -93,4 +93,12 @@
 </div>
 {{/albumList}}
 </section>
+
+<section class="list">
+<h4>Releases</h4>
+{{#releases}}
+<p><a href="{{{API_DIR}}}/{{resourceName}}/{{id}}">{{releaseName}}</a></p>
+{{/releases}}
+</section>
+
 </article>

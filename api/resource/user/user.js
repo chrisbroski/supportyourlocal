@@ -2,6 +2,19 @@ const main = require('../../inc/main.js');
 const resourceName = 'user';
 const template = {};
 
+function createUserName(user) {
+    if (user.givenName && user.surname) {
+        return `${user.givenName} ${user.surname}`;
+    }
+    if (user.givenName) {
+        return user.givenName;
+    }
+    if (user.surname) {
+        return user.surname;
+    }
+    return user.email;
+}
+
 function single(db, id, req, msg, error) {
     var authUserData = main.getAuthUserData(req, db.user);
     var pageName = db[resourceName][id].email;
@@ -11,6 +24,10 @@ function single(db, id, req, msg, error) {
     if (givenName || surname) {
         pageName = pageName = `${db[resourceName][id].givenName} ${db[resourceName][id].surname}`;
     }
+    var users = main.objToArray(db[resourceName]).sort(main.sortByDateDesc);
+    users.forEach(u => {
+        u.userName = createUserName(u);
+    });
 
     var resourceData = Object.assign({
         "id": id,
@@ -22,7 +39,8 @@ function single(db, id, req, msg, error) {
         "isOwnUser": (authUserData.userid === id),
         "countries": main.country(db[resourceName][id].country),
         "photos": main.displayPhotos(db.photos, db[resourceName][id].photo),
-        "no-photo": main.noPhotoSelected(db[resourceName][id].photo)
+        "no-photo": main.noPhotoSelected(db[resourceName][id].photo),
+        "users": users
     }, db[resourceName][id]);
 
     // return resourceData;
@@ -40,12 +58,8 @@ function list(db, msg, error, link) {
         "pageName": "Members"
     };
 
-    resourceData[resourceName] = resourceData[resourceName].map(u => {
-        u.userName = u.email;
-        if (u.givenName || u.surname) {
-            u.userName = `${u.givenName} ${u.surname}`;
-        }
-        return u;
+    resourceData[resourceName].forEach(u => {
+        u.userName = createUserName(u);
     });
 
     return Object.assign(main.addMessages(msg, error, link), resourceData);

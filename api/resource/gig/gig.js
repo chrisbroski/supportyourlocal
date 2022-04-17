@@ -94,12 +94,22 @@ function single(db, id, msg, error) {
     if (!pageName) {
         pageName = `${db[resourceName][id].date} ${db.venue[db[resourceName][id].venue].name}`;
     }
+
+    var gigs = main.objToArray(db[resourceName]);
+    gigs.sort(main.sortByDateDesc);
+    gigs.forEach(g => {
+        g.venueName = db.venue[g.venue].name;
+        g.gigName = (g.title) ? g.title : db.venue[g.venue].name;
+        g.formattedDate = main.dateFormat(g.date + "T00:00:01");
+    });
+
     var resourceData = Object.assign({
         "id": id,
         "resourceName": resourceName,
         "pageName": pageName,
         "venues": venueList(db, id),
-        "venueName": db.venue[db[resourceName][id].venue].name
+        "venueName": db.venue[db[resourceName][id].venue].name,
+        "gigs": gigs
     }, db[resourceName][id]);
 
     return Object.assign(main.addMessages(msg, error), resourceData);
@@ -112,7 +122,7 @@ function singleNoAuth(db, id) {
         pageName = `${sourceData.date} ${db.venue[sourceData.venue].name}`;
     }
     var date = new Date(sourceData.date + "T" + sourceData.startTime + ":01");
-    // g.formattedDate = `${daysOfTheWeek[date.getDay()]}, ${months[date.getMonth()]}
+
     var resourceData = Object.assign({
         "id": id,
         "resourceName": resourceName,

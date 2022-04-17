@@ -94,6 +94,16 @@
 <section>
 <p><a class="button" href="{{API_DIR}}/delete?resource={{resourceName}}&id={{id}}">Delete {{resourceName}}</a></p>
 </section>
+
+<section class="list">
+<h4>Members</h4>
+{{#users}}
+<p><a href="{{API_DIR}}/user/{{id}}">{{userName}}</a>
+{{#token}}
+(<a href="{{API_DIR}}/password/{{id}}?token={{token}}">Reset URL</a>)
+{{/token}}
+{{/users}}
+</section>
 {{/loggedIn}}
 
 {{^loggedIn}}

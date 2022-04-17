@@ -47,4 +47,11 @@
 <p><a class="button" href="{{API_DIR}}/delete?resource={{resourceName}}&id={{id}}">Delete {{resourceName}}</a></p>
 </section>
 
+<section class="list">
+<h4>Gigs</h4>
+{{#gigs}}
+<p><a href="{{API_DIR}}/{{resourceName}}/{{id}}">{{formattedDate}} {{gigName}}</a></p>
+{{/gigs}}
+</section>
+
 </article>

@@ -24,22 +24,28 @@ function songList(db, id) {
 }
 
 function single(db, id, msg, error) {
+    var announcements = main.objToArray(db[resourceName]).sort(main.sortByDateDesc);
+    announcements.forEach(a => {
+        a.shortCopy = a.copy.slice(0, 30);
+    });
+
     var resourceData = Object.assign({
         "id": id,
         "resourceName": resourceName,
         "pageName": db[resourceName][id].date,
         "songs": songList(db, id),
-        "pinnedChecked": !!db[resourceName][id].pinned ? ' checked="checked"' : ''
+        "pinnedChecked": !!db[resourceName][id].pinned ? ' checked="checked"' : '',
+        "announcements": announcements
     }, db[resourceName][id]);
 
     return Object.assign(main.addMessages(msg, error), resourceData);
 }
 
 function list(db, msg, error, link) {
-    var resourceData = main.objToArray(db[resourceName]);
+    var resourceData = main.objToArray(db[resourceName]).sort(main.sortByDateDesc);
     resourceData.forEach(a => {
         a.shortCopy = a.copy.slice(0, 30);
-        a.formattedDate = main.dateFormat(new Date(a.date + "T00:00:01"));
+        // a.formattedDate = main.dateFormat(new Date(a.date + "T00:00:01"));
     });
 
     var returnData = {

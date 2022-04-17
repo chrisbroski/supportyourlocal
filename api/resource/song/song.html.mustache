@@ -72,4 +72,11 @@
 <p><a class="button" href="{{{API_DIR}}}/delete?resource={{resourceName}}&id={{id}}">Delete {{resourceName}}</a></p>
 </section>
 
+<section class="list">
+<h4>Songs</h4>
+{{#songs}}
+<p><a href="{{API_DIR}}/{{resourceName}}/{{id}}">{{name}}</a></p>
+{{/songs}}
+</section>
+
 </article>

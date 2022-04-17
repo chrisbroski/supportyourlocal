@@ -50,26 +50,30 @@ Endure backup and parse test. (In case of catastrophic failure.)
 
 Admin key in .env (for backups and troubleshooting)
 
-Auto login after password change or set
-
-Song media should be an array that includes media type (Spotify, mp3, etc.) a URL, description, and credits.
+## Features for next version
 
 Get rid of the "header" include crap, but add a "head" include crap with Title and other meta-data.
 
-## Features for next version
+Auto login after password change or set
 
 Add list to side of update (single) edit pages too, if width sufficient (otherwise hide)
 
 All https
 
-Image upload
+### Image upload
+
 * optimization
 * resize: thumbnail, medium, large, and original
 * Monitor max storage
+* Add to photo data: size and dimensions
 
 Add venmo/etc. pay information.
 
+### Sub-Array Data
+
 Make separate page for sub-arrays (like track listing) Adding URL media links should end up working the same way.
+
+Song media should be an array that includes media type (Spotify, mp3, etc.) a URL, description, and credits.
 
 Add 0 to infinite media - audio, video to songs and releases. Add 0 to infinte album art to a release.
 

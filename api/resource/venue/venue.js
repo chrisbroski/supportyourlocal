@@ -23,7 +23,8 @@ function single(db, id, msg, error) {
         "id": id,
         "resourceName": resourceName,
         "pageName": db[resourceName][id].name,
-        "countries": main.country(db[resourceName][id].country)
+        "countries": main.country(db[resourceName][id].country),
+        "venues": main.objToArray(db[resourceName]).sort(main.sortByName)
     }, db[resourceName][id]);
 
     return Object.assign(main.addMessages(msg, error), resourceData);

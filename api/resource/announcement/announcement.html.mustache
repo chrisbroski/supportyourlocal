@@ -50,5 +50,14 @@
 <section>
 <p><a class="button" href="{{API_DIR}}/delete?resource={{resourceName}}&id={{id}}">Delete {{resourceName}}</a></p>
 </section>
+
+<section class="list">
+<h4>Announcements</h4>
+{{#announcements}}
+<p><a href="{{API_DIR}}/{{resourceName}}/{{id}}">{{date}}{{#pinned}}*{{/pinned}}
+    {{shortCopy}}</a>
+</p>
+{{/announcements}}
+</section>
 {{/loggedIn}}
 </article>
