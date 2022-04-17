@@ -11,19 +11,86 @@
 
 <h5><a href="{{API_DIR}}/">Home</a> &gt; <a href="{{API_DIR}}/{{resourceName}}">{{resourceName}}s</a> &gt; {{pageName}}</h5>
 
+{{{message-display}}}
+
 <section>
+<form method="POST" action="{{API_DIR}}/{{resourceName}}/{{id}}">
+<input type="hidden" name="method" value="PUT">
 
-<h3>{{name}}</h3>
-<p>Released on {{date}}</p>
-{{#cover-front}}
-<p><img src="/photo/{{.}}"></p>
-{{/cover-front}}
-{{#cover-back}}
-<p><img src="/photo/{{.}}"></p>
-{{/cover-back}}
+<p><label>Name</label> (Optional for single release)<br>
+    <input type="text" name="name" value="{{name}}" autofocus="autofocus">
+<p><label>Release Date</label>*<br>
+    <input type="date" name="date" value="{{date}}">
 
-<pre>{{desc}}</pre>
+<h3>Front Cover</h3>
+<div class="photos">
+<input type="radio" name="cover-front" value="" id="cover-front-none"{{{no-photo}}}><label for="cover-front-none"><img src="{{API_DIR}}/nophoto" alt="No photo"></label>
+{{#front-cover-photos}}
+<input type="radio" name="cover-front" value="{{file}}" id="cover-front-{{file}}"{{{selected}}}><label for="cover-front-{{file}}"><img src="/photo/{{file}}"></label>
+{{/front-cover-photos}}
+</div>
+
+<h3>Back Cover</h3>
+<div class="photos">
+<input type="radio" name="cover-back" value="" id="cover-back-none"{{{no-photo}}}><label for="cover-back-none"><img src="{{API_DIR}}/nophoto" alt="No photo"></label>
+{{#back-cover-photos}}
+<input type="radio" name="cover-back" value="{{file}}" id="cover-back-{{file}}"{{{selected}}}><label for="cover-back-{{file}}"><img src="/photo/{{file}}"></label>
+{{/back-cover-photos}}
+</div>
+
+<p><label>Description<br><textarea name="desc">{{desc}}</textarea></p>
+<p><label>Credits<br><textarea name="credits">{{credits}}</textarea></p>
+
+<h2>Album Links <span>(if not a single)</span></h2>
+<h3>Audio</h3>
+<p><label>Spotify</label><br>
+    <input type="text" name="spotify" value="{{audio.spotify}}">
+
+<h3>Video</h3>
+<p><label>YouTube</label><br>
+    <input type="text" name="youtube" value="{{video.youtube}}">
+<p><label>Facebook</label><br>
+    <input type="text" name="fb" value="{{video.fb}}">
+
+<footer><p><button>Update {{resourceName}}</button></footer>
+</form>
 </section>
 
+<section>
+<p><a class="button" href="{{API_DIR}}/delete?resource={{resourceName}}&id={{id}}">Delete {{resourceName}}</a></p>
+</section>
+
+<section>
+<h2>Tracks</h2>
+<form method="POST" action="{{API_DIR}}/{{resourceName}}/{{id}}">
+    <p><select name="song-id">
+        <option value="">Select Song</option>
+        {{#songlist}}
+        <option value="{{song-id}}">{{song-name}}</option>
+        {{/songlist}}
+    </select>
+    <p><button>Add Song</button>
+</form>
+
+<h3>Album Order</h3>
+{{#albumList}}
+<div class="songlist">
+<p>
+<form method="POST" action="{{API_DIR}}/{{resourceName}}/{{id}}">
+    <input type="hidden" name="method" value="PATCH">
+    <input type="hidden" name="index" value="0">
+    <input type="hidden" name="song-id" value="{{song-id}}">
+    <button>↑</button>
+</form>
+{{song-name}}
+<form method="POST" action="{{API_DIR}}/{{resourceName}}/{{id}}">
+    <input type="hidden" name="method" value="PATCH">
+    <input type="hidden" name="index" value="-1">
+    <input type="hidden" name="song-id" value="{{song-id}}">
+    <button>×</button>
+</form>
+</p>
+</div>
+{{/albumList}}
 </section>
 </article>

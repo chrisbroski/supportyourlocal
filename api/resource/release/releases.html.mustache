@@ -16,7 +16,7 @@
 <section>
 <form method="POST" action="{{API_DIR}}/{{resourceName}}/">
 
-<p><label>Name</label> (Optional for single release)<br>
+<p><label>Name</label><br>
     <input type="text" name="name" autofocus="autofocus" value="{{formData.name}}">
 
 <p><label>Release Date</label>*<br>
@@ -45,7 +45,7 @@
 <p><label>Description<br><textarea name="desc">{{formData.desc}}</textarea></p>
 <p><label>Credits<br><textarea name="credits">{{formData.credits}}</textarea></p>
 
-<h2>Songs</h2>
+<h2>Tracks</h2>
 <p><select name="initial-song">
 <option value="">Select Song</option>
 {{#songlist}}

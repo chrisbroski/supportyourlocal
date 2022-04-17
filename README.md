@@ -58,8 +58,6 @@ Get rid of the "header" include crap, but add a "head" include crap with Title a
 
 ## Features for next version
 
-Style guide page. Populate drop-down from guide colors.
-
 Add list to side of update (single) edit pages too, if width sufficient (otherwise hide)
 
 All https
@@ -71,11 +69,9 @@ Image upload
 
 Add venmo/etc. pay information.
 
-Single releases should be allowed 2 songs
+Make separate page for sub-arrays (like track listing) Adding URL media links should end up working the same way.
 
 Add 0 to infinite media - audio, video to songs and releases. Add 0 to infinte album art to a release.
-
-I don't think *Site* is the proper resource name. It should probably be *Style* and be displayed as a proper style guide. Have up to 6 colors (or infinite?) and make the top 2 the web site ones. Should there be shades of color? Maybe.
 
 ### Tests
 
@@ -90,6 +86,10 @@ Songs partially done. The rest, not at all
 
 ## Features for next next version
 
+Style guide page. Populate drop-down from guide colors.
+
+I don't think *Site* is the proper resource name. It should probably be *Style* and be displayed as a proper style guide. Have up to 6 colors (or infinite?) and make the top 2 the web site ones. Should there be shades of color? Maybe.
+
 Central Site
 
 Get local features working with member cities. "Check in" on mobile when at open mics, etc.
@@ -99,8 +99,6 @@ Email list
 EPK
 
 Password recovery using email.
-
-Detect if port is in use with node-netstat
 
 #### Setup Agreement:
 
