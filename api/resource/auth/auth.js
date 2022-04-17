@@ -56,6 +56,7 @@ function isUserLockedOut(username) {
 function fail(req, rsp, msg, db, API_DIR, email) {
     var passwordAutofocus = "";
     var emailAutofocus = "";
+    var secure = (process.env.DEV === "Y") ? "" : " Secure";
     if (email) {
         passwordAutofocus = ' autofocus="autofocus"';
     } else {
@@ -64,8 +65,8 @@ function fail(req, rsp, msg, db, API_DIR, email) {
     }
 
     rsp.setHeader('Set-Cookie', [
-        `token=; Path=/; SameSite=Strict; Secure`,
-        `user=; Path=/; SameSite=Strict; Secure`
+        `token=; Path=/; SameSite=Strict; HttpOnly;${secure}`,
+        `user=; Path=/; SameSite=Strict; HttpOnly;${secure}`
     ]);
 
     if (req.headers.accept === 'application/json') {
@@ -131,13 +132,20 @@ function isUpdateInvalid(formData, db, id) {
     return msg;
 }
 
+function setLoginCookie(rsp, userData, userId) {
+    var token = main.hash(userData.password + userId, userData.salt);
+    var secure = (process.env.DEV === "Y") ? "" : " Secure";
+
+    rsp.setHeader('Set-Cookie', [
+        `token=${token}; Path=/; SameSite=Strict; Max-Age=${SESSION_TIMEOUT_SECONDS}; HttpOnly;${secure}`,
+        `user=${userId}; Path=/; SameSite=Strict; Max-Age=${SESSION_TIMEOUT_SECONDS}; HttpOnly;${secure}`
+    ]);
+}
+
 function login(req, rsp, body, db, API_DIR) {
     var lockoutDuration;
     var userId;
-    var token;
     var userData;
-    var secure = " Secure";
-    secure = ""; // at least until I get https on everything
 
     if (!body.username) {
         return fail(req, rsp, `User email required.`, db, API_DIR);
@@ -165,16 +173,7 @@ function login(req, rsp, body, db, API_DIR) {
     }
 
     if (userData.hash === main.hash(body.password, userData.salt)) {
-        if (process.env.QA) {
-            secure = "";
-        }
-        token = main.hash(userData.password + userId, userData.salt);
-
-        rsp.setHeader('Set-Cookie', [
-            `token=${token}; Path=/; SameSite=Strict; Max-Age=${SESSION_TIMEOUT_SECONDS};${secure}`,
-            `user=${userId}; Path=/; SameSite=Strict; Max-Age=${SESSION_TIMEOUT_SECONDS};${secure}`
-        ]);
-
+        setLoginCookie(rsp, userData, userId);
         rsp.writeHead(303, {'Content-Type': 'text/html', "Location": `${API_DIR}/site`});
         rsp.end(main.renderPage(req, null, {"msg": ["Logged in"], "title": `Logged in`, "link": `${API_DIR}/`}, db, API_DIR));
         return true;
@@ -188,9 +187,10 @@ function login(req, rsp, body, db, API_DIR) {
 this.login = login;
 
 function logout(req, rsp, db, API_DIR) {
+    var secure = (process.env.DEV === "Y") ? "" : " Secure";
     rsp.setHeader('Set-Cookie', [
-        `token=; Path=/; SameSite=Strict;`, // make secure later
-        `user=; Path=/; SameSite=Strict;` // make secure later
+        `token=; Path=/; SameSite=Strict; HttpOnly;${secure}`, // make secure later
+        `user=; Path=/; SameSite=Strict; HttpOnly;${secure}` // make secure later
     ]);
     rsp.writeHead(303, {'Content-Type': 'text/html', "Location": `${API_DIR}/`});
     rsp.end(main.renderPage(req, null, {"msg": ["Logged out"], "title": `Logged out`, "link": `${API_DIR}/`}, db, API_DIR));
@@ -206,6 +206,7 @@ function set(req, rsp, id, formData, db, save, API_DIR) {
     }
 
     updatePassword(id, formData, db, save);
+    setLoginCookie(rsp, db.user[id], id);
     rsp.writeHead(303, {'Content-Type': 'text/html', "Location": `${API_DIR}/`});
     rsp.end(main.renderPage(req, null, {"msg": ["Password set"], "title": `Password set`, "link": `${API_DIR}/`}, db, API_DIR));
     return;
@@ -221,7 +222,7 @@ function resetPassword(id, db, save) {
 }
 
 this.reset = function(req, rsp, id, db, save, API_DIR) {
-    if (!main.isMod(req, db.user)) {
+    if (!main.isMod(req, db)) {
         rsp.writeHead(403, {'Content-Type': 'text/plain'});
         rsp.end('Only moderators can reset passwords.');
         return;
@@ -229,9 +230,11 @@ this.reset = function(req, rsp, id, db, save, API_DIR) {
 
     var token = resetPassword(id, db, save);
 
-    var returnUrl = `https://${req.headers.host}${API_DIR}/password/${id}?token=${token}`;
+    // make secure when it is secure
+    var returnUrl = `http://${req.headers.host}${API_DIR}/password/${id}?token=${token}`;
     // sendResetEmail(returnUrl, rsp, data.user[path.id].email, 'reset-password');
-    rsp.writeHead(200, {'Content-Type': 'text/plain'}).end(`Complete reset at: ${returnUrl}`);
+    rsp.writeHead(200, {'Content-Type': 'text/html'});//.end(`Complete reset at: ${returnUrl}`);
+    rsp.end(main.renderPage(req, null, {"msg": ["Password reset"], "title": `Password Reset`, "link": returnUrl}, db, API_DIR));
     return;
 };
 
@@ -250,13 +253,14 @@ this.update = function (req, rsp, id, formData, db, save, API_DIR) {
     // validate more fields
     updatePassword(id, formData, db, save);
     var returnData = main.responseData("", "", db, "Change Password", API_DIR, ["Password updated."]);
+    setLoginCookie(rsp, db.user[id], id);
 
     if (req.headers.accept === 'application/json') {
         return main.returnJson(rsp, returnData);
     }
 
     returnData.back = req.headers.referer;
-    rsp.writeHead(303, {'Content-Type': 'text/html', "Location": `${API_DIR}/login`});
+    rsp.writeHead(303, {'Content-Type': 'text/html', "Location": `${API_DIR}/user/`});
     rsp.end(main.renderPage(req, null, returnData, db, API_DIR));
 };
 

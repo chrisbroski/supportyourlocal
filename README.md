@@ -52,12 +52,6 @@ Admin key in .env (for backups and troubleshooting)
 
 ## Features for next version
 
-Get rid of the "header" include crap, but add a "head" include crap with Title and other meta-data.
-
-Auto login after password change or set
-
-Add list to side of update (single) edit pages too, if width sufficient (otherwise hide)
-
 All https
 
 ### Image upload
@@ -67,7 +61,9 @@ All https
 * Monitor max storage
 * Add to photo data: size and dimensions
 
-Add venmo/etc. pay information.
+Tip jar page
+
+Get rid of the "header" include crap, but add a "head" include crap with Title and other meta-data. (To support front-end feature.)
 
 ### Sub-Array Data
 
