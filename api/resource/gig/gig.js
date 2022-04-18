@@ -158,7 +158,7 @@ function list(req, db, msg, error, link) {
         });
         pageName = "Past Gigs";
     } else {
-        gigs.sort(main.sortByDate);
+        gigs.sort(main.sortByDateDesc);
     }
 
     gigs.forEach(g => {
