@@ -24,7 +24,7 @@
     <input type="text" name="givenName" value="{{givenName}}">
 <p><label>Last Name</label><br>
     <input type="text" name="surname" value="{{surname}}">
-<p><label>Position</label> (Singer, guitarist, lyricist, etc.)<br>
+<p><label>Position</label> (Singer, guitarist, manager, etc.)<br>
     <input type="text" name="position" value="{{position}}">
 <p><label>Home City</label><br>
     <input type="text" name="city" value="{{city}}">
@@ -47,7 +47,11 @@
 
 <p>
     <label><input type="checkbox" value="Y"{{{adminChecked}}} name="admin"> Admin</label>
+    (Will be able to create and edit other users.)
+</p>
+<p>
     <label><input type="checkbox" value="Y"{{{memberChecked}}} name="bandMember"> Band Member</label>
+    (Bio and other information will appear on the about page.)
 </p>
 
 <!-- <p><label>Photo</label><br>

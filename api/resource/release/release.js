@@ -6,11 +6,13 @@ const main = require('../../inc/main.js');
 const resourceName = 'release';
 const template = {};
 
-function songList(songs) {
+function songList(songs, id) {
     return songs.map(s => {
+        var selected = (id === s.id) ? ' selected="selected"' : "";
         return {
             "song-id": s.id,
-            "song-name": s.name
+            "song-name": s.name,
+            "selected": selected
         };
     });
 }
@@ -79,9 +81,11 @@ function list(db, msg, error, link) {
         // "today": main.dateFormat(new Date()),
         "resourceName": resourceName,
         "songlist": songList(main.objToArray(db.song)),
-        "photos": db.photos,
+        "front-cover-photos": main.displayPhotos(db.photos),
+        "back-cover-photos": main.displayPhotos(db.photos),
         "no-photo": main.noPhotoSelected(),
-        "pageName": `${main.toTitleCase(resourceName)}s`
+        "pageName": `${main.toTitleCase(resourceName)}s`,
+        "formData": {"date": main.dateFormat(new Date())}
     };
 
     return Object.assign(main.addMessages(msg, error, link), resourceData);
@@ -147,6 +151,8 @@ function isUpdateInvalid(formData, db, id) {
     if (!formData.name && !formData.desc && !hasSong) {
         msg.push('You must give your release a name, description, or one song.');
     }
+
+    msg.push('Test 400.');
 
     return msg;
 }
@@ -286,19 +292,23 @@ this.reorderSong = function(req, rsp, id, formData, db, save, API_DIR) {
 
 this.create = function (req, rsp, formData, db, save, API_DIR) {
     var error = isUpdateInvalid(formData, db, id);
+    var returnData;
     if (error.length) {
-        rsp.writeHead(400, {'Content-Type': 'text/html'});
-        rsp.end(main.renderPage(req, template.list, Object.assign({
+        returnData = Object.assign({
             "hasError": true,
-            "error": error,
-            "formData": formData
-        }, list(db)), db, API_DIR));
-        // ^ this needs selected values too
+            "error": error
+        }, list(db));
+        returnData.formData = formData;
+        returnData["front-cover-photos"] = main.displayPhotos(db.photos, formData["cover-front"]);
+        returnData["back-cover-photos"] = main.displayPhotos(db.photos, formData["cover-back"]);
+        returnData.songlist = songList(main.objToArray(db.song), formData["initial-song"]);
+        rsp.writeHead(400, {'Content-Type': 'text/html'});
+        rsp.end(main.renderPage(req, template.list, returnData, db, API_DIR));
         return;
     }
 
     var id = main.createResource(formData, db, save, resourceName, updateResource);
-    var returnData = main.responseData(id, resourceName, db, "Created", API_DIR);
+    returnData = main.responseData(id, resourceName, db, "Created", API_DIR);
 
     if (req.headers.accept === 'application/json') {
         rsp.setHeader("Location", `${API_DIR}/${resourceName}/${id}`);

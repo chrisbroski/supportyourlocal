@@ -17,14 +17,14 @@
 <form method="POST" action="{{API_DIR}}/{{resourceName}}/">
 
 <p><label>Date</label>*<br>
-    <input type="date" name="date" value="{{today}}" autofocus="autofocus">
+    <input type="date" name="date" value="{{formData.date}}" autofocus="autofocus">
 
 <p><label>Start</label>*<br>
-    <input type="time" name="startTime" value="20:00" required="required">
+    <input type="time" name="startTime" required="required" value="{{formData.startTime}}">
 
 <p><label>Duration</label>*<br>
-    <input type="number" name="durationH" min="0" max="24" step="1" value="1"> hours
-    <input type="number" name="durationM" min="0" max="60" step="1" value="0"> minutes
+    <input type="number" name="durationH" min="0" max="24" step="1" value="{{formData.durationH}}"> hours
+    <input type="number" name="durationM" min="0" max="60" step="1" value="{{formData.durationM}}"> minutes
 
 <p><label>Venue</label>*<br>
     <select name="venue" required="required">
@@ -34,10 +34,10 @@
         {{/venues}}
     </select>
 
-<p><label>Description<br><textarea name="desc">{{desc}}</textarea></p>
+<p><label>Description<br><textarea name="desc">{{formData.desc}}</textarea></p>
 
 <p><label>Gig Name</label><br>
-    <input type="text" name="title" value="">
+    <input type="text" name="title" value="{{formData.title}}">
 
 <footer><p><button>Create {{resourceName}}</button></footer>
 </form>

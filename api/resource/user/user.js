@@ -53,7 +53,7 @@ function list(db, msg, error, link) {
         "today": main.dateFormat(new Date()),
         "resourceName": resourceName,
         "countries": main.country(),
-        "photos": db.photos,
+        "photos": main.displayPhotos(db.photos),
         "no-photo": main.noPhotoSelected(),
         "pageName": "Members"
     };
@@ -132,21 +132,27 @@ function updateResource(id, formData, db, save) {
 
 this.create = function (req, rsp, formData, db, save, API_DIR) {
     var error = isCreateInvalid(req, rsp, formData, db);
+    var returnData;
     if (error.length) {
-        rsp.writeHead(400, {'Content-Type': 'text/html'});
-        rsp.end(main.renderPage(req, template.list, Object.assign({
+        returnData = Object.assign({
             "hasError": true,
             "error": error,
             "formData": formData
-        }, list(db)), db, API_DIR));
-        // ^ this needs selected values for country
+        }, list(db));
+        returnData.countries = main.country(formData.country);
+        returnData.photos = main.displayPhotos(db.photos, formData.photo);
+
+        returnData.adminChecked = (formData.admin === "Y") ? ' checked="checked"': "";
+        returnData.memberChecked = (formData.bandMember === "Y") ? ' checked="checked"': "";
+        rsp.writeHead(400, {'Content-Type': 'text/html'});
+        rsp.end(main.renderPage(req, template.list, returnData, db, API_DIR));
         return;
     }
 
     var id = main.createResource(formData, db, save, resourceName, updateResource);
     db[resourceName][id].token = main.makeId(12);
 
-    var returnData = main.responseData(id, resourceName, db, "Created", API_DIR);
+    returnData = main.responseData(id, resourceName, db, "Created", API_DIR);
 
     if (req.headers.accept === 'application/json') {
         rsp.setHeader("Location", returnData.link);

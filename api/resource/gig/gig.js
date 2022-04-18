@@ -77,7 +77,7 @@ function venueList(db, id) {
     const venues = [];
     Object.keys(db.venue).forEach(v => {
         var selected = "";
-        if (id && db[resourceName][id].venue === v) {
+        if (id && id === v) {
             selected = ' selected="selected"';
         }
         venues.push({
@@ -107,7 +107,7 @@ function single(db, id, msg, error) {
         "id": id,
         "resourceName": resourceName,
         "pageName": pageName,
-        "venues": venueList(db, id),
+        "venues": venueList(db, db[resourceName][id].venue),
         "venueName": db.venue[db[resourceName][id].venue].name,
         "gigs": gigs
     }, db[resourceName][id]);
@@ -171,7 +171,13 @@ function list(req, db, msg, error, link) {
         "gig": gigs,
         "resourceName": resourceName,
         "venues": venueList(db, ""),
-        "pageName": pageName
+        "pageName": pageName,
+        "formData": {
+            "date": main.dateFormat(new Date()),
+            "startTime": "20:00",
+            "durationH": 1,
+            "durationM": 0
+        }
     };
     return Object.assign(main.addMessages(msg, error, link), resourceData);
 }
@@ -279,34 +285,33 @@ function isUpdateInvalid(formData) {
         msg.push('Venue is required.');
     }
 
-    // return main.invalidMsg(rsp, msg, req, db, API_DIR);
     return msg;
 }
 
 this.create = function (req, rsp, formData, db, save, API_DIR) {
     var error = isUpdateInvalid(formData);
+    var returnData;
     if (error.length) {
-        rsp.writeHead(400, {'Content-Type': 'text/html'});
-        rsp.end(main.renderPage(req, template.list, Object.assign({
+        returnData = Object.assign({
             "hasError": true,
-            "error": error,
-            "formData": formData
-        }, list(req, db)), db, API_DIR));
-        // ^ this needs selected values too
+            "error": error
+        }, list(req, db));
+        returnData.formData = formData;
+        returnData.venues = venueList(db, formData.venue);
+        rsp.writeHead(400, {'Content-Type': 'text/html'});
+        rsp.end(main.renderPage(req, template.list, returnData, db, API_DIR));
         return;
     }
 
     var id = main.createResource(formData, db, save, resourceName, updateResource);
-    var returnData = main.responseData(id, resourceName, db, "Created", API_DIR);
+    returnData = main.responseData(id, resourceName, db, "Created", API_DIR);
 
     if (req.headers.accept === 'application/json') {
         rsp.setHeader("Location", `${API_DIR}/${resourceName}/${id}`);
         return main.returnJson(rsp, returnData, 201);
     }
 
-    // returnData.back = req.headers.referer;
     rsp.writeHead(200, {'Content-Type': 'text/html'});
-    // rsp.end(main.renderPage(req, null, returnData, db, API_DIR));
     rsp.end(main.renderPage(req, template.list, Object.assign({
         "hasMsg": true,
         "link": {"text": `Created ${resourceName} id ${id}`, "href": `${API_DIR}/${resourceName}/${id}`}
@@ -328,13 +333,10 @@ this.update = function (req, rsp, id, formData, db, save, API_DIR) {
     var returnData = main.responseData(id, resourceName, db, "Updated", API_DIR);
 
     if (req.headers.accept === 'application/json') {
-        // rsp.setHeader("Location", `${API_DIR}/${resourceName}/${id}`);
         return main.returnJson(rsp, returnData);
     }
 
-    // returnData.back = req.headers.referer;
     rsp.writeHead(200, {'Content-Type': 'text/html'});
-    // rsp.end(main.renderPage(req, null, returnData, db, API_DIR));
     rsp.end(main.renderPage(req, template.single, single(db, id, [`${resourceName} id ${id} updated.`]), db, API_DIR));
 };
 

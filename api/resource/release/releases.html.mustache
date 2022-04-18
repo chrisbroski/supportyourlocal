@@ -26,20 +26,18 @@
 <div class="photos">
 <input type="radio" name="cover-front" value="" id="cover-front-none"{{{no-photo}}}>
 <label for="cover-front-none"><img src="{{API_DIR}}/nophoto" alt="No photo"></label>
-{{#photos}}
-    <input type="radio" name="cover-front" value="{{.}}" id="cover-front-{{.}}">
-    <label for="cover-front-{{.}}"><img src="/photo/{{.}}"></label>
-{{/photos}}
+{{#front-cover-photos}}
+<input type="radio" name="cover-front" value="{{file}}" id="cover-front-{{file}}"{{{selected}}}><label for="cover-front-{{file}}"><img src="/photo/{{file}}"></label>
+{{/front-cover-photos}}
 </div>
 
 <h3>Back Cover</h3>
 <div class="photos">
 <input type="radio" name="cover-back" value="" id="cover-back-none"{{{no-photo}}}>
 <label for="cover-back-none"><img src="{{API_DIR}}/nophoto" alt="No photo"></label>
-{{#photos}}
-<input type="radio" name="cover-back" value="{{.}}" id="cover-back-{{.}}">
-<label for="cover-back-{{.}}"><img src="/photo/{{.}}"></label>
-{{/photos}}
+{{#back-cover-photos}}
+<input type="radio" name="cover-back" value="{{file}}" id="cover-back-{{file}}"{{{selected}}}><label for="cover-back-{{file}}"><img src="/photo/{{file}}"></label>
+{{/back-cover-photos}}
 </div>
 
 <p><label>Description<br><textarea name="desc">{{formData.desc}}</textarea></p>
@@ -49,7 +47,7 @@
 <p><select name="initial-song">
 <option value="">Select Song</option>
 {{#songlist}}
-<option value="{{song-id}}">{{song-name}}</option>
+<option value="{{song-id}}"{{{selected}}}>{{song-name}}</option>
 {{/songlist}}
 </select>
 

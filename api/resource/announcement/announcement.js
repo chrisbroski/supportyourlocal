@@ -8,17 +8,15 @@ function songList(db, id) {
     const songs = [];
     Object.keys(db.song).forEach(sid => {
         var selected = "";
-        if (id && db[resourceName][id] && db[resourceName][id].song === sid) {
+        if (id && id === sid) {
             selected = ' selected="selected"';
         }
-        if (db.song[sid].audio.spotify) {
-            songs.push({
-                "id": sid,
-                "name": db.song[sid].name,
-                "selected": selected,
-                "date": db.song[sid].date
-            });
-        }
+        songs.push({
+            "id": sid,
+            "name": db.song[sid].name,
+            "selected": selected,
+            "date": db.song[sid].date
+        });
     });
     return songs.sort(main.sortByDate);
 }
@@ -33,7 +31,7 @@ function single(db, id, msg, error) {
         "id": id,
         "resourceName": resourceName,
         "pageName": db[resourceName][id].date,
-        "songs": songList(db, id),
+        "songs": songList(db, db[resourceName][id].song),
         "pinnedChecked": !!db[resourceName][id].pinned ? ' checked="checked"' : '',
         "announcements": announcements
     }, db[resourceName][id]);
@@ -45,15 +43,16 @@ function list(db, msg, error, link) {
     var resourceData = main.objToArray(db[resourceName]).sort(main.sortByDateDesc);
     resourceData.forEach(a => {
         a.shortCopy = a.copy.slice(0, 30);
-        // a.formattedDate = main.dateFormat(new Date(a.date + "T00:00:01"));
     });
 
     var returnData = {
         [resourceName]: resourceData,
-        // "formData": {"date": main.dateFormat(new Date())},
         "resourceName": resourceName,
         "songs": songList(db, ""),
-        "pageName": `${main.toTitleCase(resourceName)}s`
+        "pageName": `${main.toTitleCase(resourceName)}s`,
+        "formData": {
+            "date": main.dateFormat(new Date())
+        }
     };
     return Object.assign(main.addMessages(msg, error, link), returnData);
 }
@@ -94,9 +93,6 @@ function isUpdateInvalid(formData) {
         msg.push('Either copy text or a song is required.');
     }
 
-    // msg.push('test 400 error');
-
-    // return main.invalidMsg(rsp, msg, req, db, API_DIR);
     return msg;
 }
 
@@ -111,28 +107,27 @@ function updateResource(id, formData, db, save) {
 
 this.create = function (req, rsp, formData, db, save, API_DIR) {
     var error = isUpdateInvalid(formData);
+    var returnData;
     if (error.length) {
+        returnData = list(db);
+        returnData.hasError = true;
+        returnData.error = error;
+        returnData.formData = formData;
+        returnData.songs = songList(db, formData.song);
         rsp.writeHead(400, {'Content-Type': 'text/html'});
-        rsp.end(main.renderPage(req, template.list, Object.assign({
-            "hasError": true,
-            "error": error,
-            "formData": formData
-        }, list(db)), db, API_DIR));
-        // ^ this needs selected values too
+        rsp.end(main.renderPage(req, template.list, returnData, db, API_DIR));
         return;
     }
 
     var id = main.createResource(formData, db, save, resourceName, updateResource);
-    var returnData = main.responseData(id, resourceName, db, "Created", API_DIR);
+    returnData = main.responseData(id, resourceName, db, "Created", API_DIR);
 
     if (req.headers.accept === 'application/json') {
         rsp.setHeader("Location", `${API_DIR}/${resourceName}/${id}`);
         return main.returnJson(rsp, returnData, 201);
     }
 
-    // returnData.back = req.headers.referer;
     rsp.writeHead(201, {'Content-Type': 'text/html'});
-    // rsp.end(main.renderPage(req, null, returnData, db, API_DIR));
     rsp.end(main.renderPage(req, template.list, Object.assign({
         "hasMsg": true,
         "link": {"text": `Created ${resourceName} id ${id}`, "href": `${API_DIR}/${resourceName}/${id}`}

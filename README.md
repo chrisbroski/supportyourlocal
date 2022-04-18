@@ -79,10 +79,8 @@ Songs partially done. The rest, not at all
 
 ### Known Bugs
 
-* Select boxes not persisting after 400
-* Deletion can cause invalid state
 * Updates don't persist new form data after 400
-* Default date not working
+* Deletion can cause invalid state
 
 ## Features for next next version
 

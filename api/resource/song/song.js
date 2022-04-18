@@ -12,7 +12,11 @@ function single(db, id, msg, error) {
         "resourceName": resourceName,
         "pageName": db[resourceName][id].name,
         "genres": main.genre(db[resourceName][id].genre1),
-        "songs": main.objToArray(db[resourceName]).sort(main.sortByName)
+        "songs": main.objToArray(db[resourceName]).sort(main.sortByName),
+        "formData": {
+            "durationM": 0,
+            "durationS": 0
+        }
     }, db[resourceName][id]);
 
     return Object.assign(main.addMessages(msg, error), resourceData);
@@ -37,7 +41,11 @@ function list(db, msg, error, link) {
         "today": main.dateFormat(new Date()),
         "resourceName": resourceName,
         "genres": main.genre(),
-        "pageName": `${main.toTitleCase(resourceName)}s`
+        "pageName": `${main.toTitleCase(resourceName)}s`,
+        "formData": {
+            "durationM": 0,
+            "durationS": 0
+        }
     };
 
     return Object.assign(main.addMessages(msg, error, link), resourceData);
@@ -144,19 +152,21 @@ function updateResource(id, formData, db, save) {
 
 this.create = function (req, rsp, formData, db, save, API_DIR) {
     var error = isUpdateInvalid(req, rsp, formData);
+    var returnData;
     if (error.length) {
-        rsp.writeHead(400, {'Content-Type': 'text/html'});
-        rsp.end(main.renderPage(req, template.list, Object.assign({
+        returnData = Object.assign({
             "hasError": true,
-            "error": error,
-            "formData": formData
-        }, list(db)), db, API_DIR));
-        // ^ this needs selected values too
+            "error": error
+        }, list(db));
+        returnData.formData = formData;
+        returnData.genres = main.genre(formData.genre1);
+        rsp.writeHead(400, {'Content-Type': 'text/html'});
+        rsp.end(main.renderPage(req, template.list, returnData, db, API_DIR));
         return;
     }
 
     var id = main.createResource(formData, db, save, resourceName, updateResource);
-    var returnData = main.responseData(id, resourceName, db, "Created", API_DIR);
+    returnData = main.responseData(id, resourceName, db, "Created", API_DIR);
 
     if (req.headers.accept === 'application/json') {
         rsp.setHeader("Location", returnData.link);
@@ -176,15 +186,18 @@ this.update = function (req, rsp, id, formData, db, save, API_DIR) {
         return main.notFound(rsp, req.url, 'PUT', req, db);
     }
     var error = isUpdateInvalid(req, rsp, formData);
+    var returnData;
     if (error.length) {
+        returnData = single(db, id, "", error);
+        // returnData.genres = main.genre(formData.genre1);
         rsp.writeHead(400, {'Content-Type': 'text/html'});
-        rsp.end(main.renderPage(req, template.single, single(db, id, "", error), db, API_DIR));
+        rsp.end(main.renderPage(req, template.single, returnData, db, API_DIR));
         return;
     }
 
     // validate more fields
     updateResource(id, formData, db, save);
-    var returnData = main.responseData(id, resourceName, db, "Updated", API_DIR);
+    returnData = main.responseData(id, resourceName, db, "Updated", API_DIR);
 
     if (req.headers.accept === 'application/json') {
         return main.returnJson(rsp, returnData);

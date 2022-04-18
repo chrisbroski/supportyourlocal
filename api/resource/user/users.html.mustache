@@ -22,8 +22,8 @@
     <input type="text" name="givenName" value="{{formData.givenName}}">
 <p><label>Surname</label><br>
     <input type="text" name="surname" value="{{formData.surname}}">
-<p><label>Position</label> (Singer, guitarist, lyricist, etc.)<br>
-    <input type="text" name="position" value="{{position}}" value="{{formData.position}}">
+<p><label>Position</label> (Singer, guitarist, manager, etc.)<br>
+    <input type="text" name="position" value="{{formData.position}}">
 <p><label>Home City</label><br>
     <input type="text" name="city" value="{{formData.city}}">
 <p><label>Home State</label><br>
@@ -38,12 +38,18 @@
 <h2>Photo</h2>
 <div class="photos">
 <input type="radio" name="photo" value="" id="photo-none"{{{no-photo}}}><label for="photo-none"><img src="{{API_DIR}}/nophoto" alt="No photo"></label>
-{{#photos}}<input type="radio" name="photo" value="{{.}}" id="photo-{{.}}"><label for="photo-{{.}}"><img src="/photo/{{.}}"></label>{{/photos}}
+{{#photos}}
+<input type="radio" name="photo" value="{{file}}" id="photo-{{file}}"{{{selected}}}><label for="photo-{{file}}"><img src="/photo/{{file}}"></label>
+{{/photos}}
 </div>
 
 <p>
-    <label><input type="checkbox" value="Y" name="admin"> Admin</label>
-    <label><input type="checkbox" value="Y" name="bandMember"> Band Member</label>
+    <label><input type="checkbox" value="Y" name="admin"{{{adminChecked}}}> Admin</label>
+    (Will be able to create and edit other users.)
+</p>
+<p>
+    <label><input type="checkbox" value="Y" name="bandMember"{{{memberChecked}}}> Band Member</label>
+    (Bio and other information will appear on the about page.)
 </p>
 
 <p><label>Bio</label><br><textarea name="bio">{{formData.bio}}</textarea>

@@ -71,19 +71,21 @@ function isUpdateInvalid(req, rsp, formData) {
 
 this.create = function (req, rsp, formData, db, save, API_DIR) {
     var error = isUpdateInvalid(req, rsp, formData);
+    var returnData;
     if (error.length) {
-        rsp.writeHead(400, {'Content-Type': 'text/html'});
-        rsp.end(main.renderPage(req, template.list, Object.assign({
+        returnData = Object.assign({
             "hasError": true,
             "error": error,
             "formData": formData
-        }, list(db)), db, API_DIR));
-        // ^ this needs selected values for country
+        }, list(db));
+        returnData.countries = main.country(formData.country);
+        rsp.writeHead(400, {'Content-Type': 'text/html'});
+        rsp.end(main.renderPage(req, template.list, returnData, db, API_DIR));
         return;
     }
 
     var id = main.createResource(formData, db, save, resourceName, updateResource);
-    var returnData = main.responseData(id, resourceName, db, "Created", API_DIR);
+    returnData = main.responseData(id, resourceName, db, "Created", API_DIR);
 
     if (req.headers.accept === 'application/json') {
         rsp.setHeader("Location", returnData.link);

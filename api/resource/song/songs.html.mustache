@@ -23,10 +23,10 @@
     <input type="text" name="artist" value="{{formData.artist}}">
 
 <p><label>Duration</label><br>
-    <input type="number" name="durationM" min="0" max="120" step="1" value="0" value="{{formData.durationM}}"> minutes
-    <input type="number" name="durationS" min="0" max="60" step="1" value="0" value="{{formData.durationS}}"> seconds
+    <input type="number" name="durationM" min="0" max="120" step="1" value="{{formData.durationM}}"> minutes
+    <input type="number" name="durationS" min="0" max="60" step="1" value="{{formData.durationS}}"> seconds
 
-<p><label>Description<br><textarea name="desc">{{desc}}</textarea></p>
+<p><label>Description<br><textarea name="desc">{{formData.desc}}</textarea></p>
 
 <p><label>Genre</label><br>
     <select name="genre1">
