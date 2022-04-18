@@ -84,6 +84,8 @@ Songs partially done. The rest, not at all
 
 ## Features for next next version
 
+Custom fonts - Upload and make available in style guide.
+
 Style guide page. Populate drop-down from guide colors.
 
 I don't think *Site* is the proper resource name. It should probably be *Style* and be displayed as a proper style guide. Have up to 6 colors (or infinite?) and make the top 2 the web site ones. Should there be shades of color? Maybe.
