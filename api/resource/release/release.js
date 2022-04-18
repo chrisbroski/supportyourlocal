@@ -152,8 +152,6 @@ function isUpdateInvalid(formData, db, id) {
         msg.push('You must give your release a name, description, or one song.');
     }
 
-    msg.push('Test 400.');
-
     return msg;
 }
 
