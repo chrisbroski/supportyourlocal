@@ -78,6 +78,7 @@ function updateResource(body, db, save) {
     db[resourceName].social.spotify = body["social-spotify"];
     db[resourceName].social.instagram = body["social-instagram"];
     db[resourceName].social.youtube = body["social-youtube"];
+    db[resourceName].social.tiktok = body["social-tiktok"];
     db[resourceName].social.podcast = body["social-podcast"];
 
     save();
