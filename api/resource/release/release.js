@@ -230,7 +230,7 @@ function patchResource(id, formData, db, save) {
     save();
 }
 
-this.addSong = function (req, rsp, id, formData, db, save, API_DIR) {
+this.addSong = function (req, rsp, id, formData, db, save) {
     // if (isSongInvalid(req, rsp, id, formData, db)) {
     //     return;
     // }
@@ -256,7 +256,7 @@ this.addSong = function (req, rsp, id, formData, db, save, API_DIR) {
     save();
 
     if (req.headers.accept === 'application/json') {
-        rsp.setHeader("Location", `${API_DIR}/${resourceName}/${id}`);
+        rsp.setHeader("Location", `${process.env.SUBDIR}/${resourceName}/${id}`);
         return main.returnJson(rsp, {}, 201);
     }
 
@@ -265,7 +265,7 @@ this.addSong = function (req, rsp, id, formData, db, save, API_DIR) {
     rsp.end(main.renderPage(req, template.single, single(db, id, ["Song added"]), db));
 };
 
-this.reorderSong = function(req, rsp, id, formData, db, save, API_DIR) {
+this.reorderSong = function(req, rsp, id, formData, db, save) {
     if (!db[resourceName][id]) {
         return main.notFound(rsp, req.url, 'PATCH', req, db);
     }
@@ -288,7 +288,7 @@ this.reorderSong = function(req, rsp, id, formData, db, save, API_DIR) {
     rsp.end(main.renderPage(req, template.single, single(db, id, [`${resourceName} id ${id} songs updated.`]), db));
 };
 
-this.create = function (req, rsp, formData, db, save, API_DIR) {
+this.create = function (req, rsp, formData, db, save) {
     var error = isUpdateInvalid(formData, db, id);
     var returnData;
     if (error.length) {
@@ -309,18 +309,18 @@ this.create = function (req, rsp, formData, db, save, API_DIR) {
     returnData = main.responseData(id, resourceName, db, "Created");
 
     if (req.headers.accept === 'application/json') {
-        rsp.setHeader("Location", `${API_DIR}/${resourceName}/${id}`);
+        rsp.setHeader("Location", `${process.env.SUBDIR}/${resourceName}/${id}`);
         return main.returnJson(rsp, returnData, 201);
     }
 
     rsp.writeHead(201, {'Content-Type': 'text/html'});
     rsp.end(main.renderPage(req, template.list, Object.assign({
         "hasMsg": true,
-        "link": {"text": `Created ${resourceName} id ${id}`, "href": `${API_DIR}/${resourceName}/${id}`}
-    }, list(db)), db, API_DIR));
+        "link": {"text": `Created ${resourceName} id ${id}`, "href": `${process.env.SUBDIR}/${resourceName}/${id}`}
+    }, list(db)), db));
 };
 
-this.update = function (req, rsp, id, formData, db, save, API_DIR) {
+this.update = function (req, rsp, id, formData, db, save) {
     if (!db[resourceName][id]) {
         return main.notFound(rsp, req.url, 'PUT', req, db);
     }
@@ -343,7 +343,7 @@ this.update = function (req, rsp, id, formData, db, save, API_DIR) {
     rsp.end(main.renderPage(req, template.single, single(db, id, [`${resourceName} id ${id} updated.`]), db));
 };
 
-this.remove = function (req, rsp, id, db, save, API_DIR) {
+this.remove = function (req, rsp, id, db, save) {
     var name;
     if (!db[resourceName][id]) {
         return main.notFound(rsp, req.url, 'DELETE', req, db);

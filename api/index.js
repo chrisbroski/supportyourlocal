@@ -202,7 +202,7 @@ function rspPost(req, rsp, path, body) {
     }
 
     if (path.resource === 'song') {
-        return song.create(req, rsp, body, db, endure.save, API_DIR);
+        return song.create(req, rsp, body, db, endure.save);
     }
 
     if (path.resource === 'announcement') {
@@ -215,9 +215,9 @@ function rspPost(req, rsp, path, body) {
 
     if (path.resource === 'release') {
         if (path.id) {
-            return release.addSong(req, rsp, path.id, body, db, endure.save, API_DIR);
+            return release.addSong(req, rsp, path.id, body, db, endure.save);
         } else {
-            return release.create(req, rsp, body, db, endure.save, API_DIR);
+            return release.create(req, rsp, body, db, endure.save);
         }
     }
 
@@ -242,7 +242,7 @@ function rspPut(req, rsp, path, body) {
         return venue.update(req, rsp, path.id, body, db, endure.save);
     }
     if (path.resource === 'song') {
-        return song.update(req, rsp, path.id, body, db, endure.save, API_DIR);
+        return song.update(req, rsp, path.id, body, db, endure.save);
     }
     if (path.resource === 'announcement') {
         return announcement.update(req, rsp, path.id, body, db, endure.save);
@@ -251,7 +251,7 @@ function rspPut(req, rsp, path, body) {
         return site.update(req, rsp, body, db, endure.save);
     }
     if (path.resource === 'release') {
-        return release.update(req, rsp, path.id, body, db, endure.save, API_DIR);
+        return release.update(req, rsp, path.id, body, db, endure.save);
     }
 
     if (path.resource === 'password') {
@@ -274,7 +274,7 @@ function rspDelete(req, rsp, path) {
     }
 
     if (path.resource === 'song') {
-        return song.remove(req, rsp, path.id, db, endure.save, API_DIR);
+        return song.remove(req, rsp, path.id, db, endure.save);
     }
 
     if (path.resource === 'announcement') {
@@ -286,7 +286,7 @@ function rspDelete(req, rsp, path) {
     }
 
     if (path.resource === 'release') {
-        return release.remove(req, rsp, path.id, db, endure.save, API_DIR);
+        return release.remove(req, rsp, path.id, db, endure.save);
     }
 
     if (path.resource === `password`) {
@@ -298,7 +298,7 @@ function rspDelete(req, rsp, path) {
 
 function rspPatch(req, rsp, path, body) {
     if (path.resource === 'release') {
-        return release.reorderSong(req, rsp, path.id, body, db, endure.save, API_DIR);
+        return release.reorderSong(req, rsp, path.id, body, db, endure.save);
     }
 
     return main.notFound(rsp, req.url, 'PUT', req, db);
