@@ -100,6 +100,8 @@ EPK
 
 Password recovery using email.
 
+More data validation
+
 #### Setup Agreement:
 
 On setup, read and agree to rules:

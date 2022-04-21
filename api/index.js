@@ -34,6 +34,7 @@ const announcement = require('./resource/announcement/announcement.js');
 const user = require('./resource/user/user.js');
 const site = require('./resource/site/site.js');
 const release = require('./resource/release/release.js');
+const photo = require('./resource/photo/photo.js');
 
 // Application state
 const ASSET = {};
@@ -208,7 +209,9 @@ function rspPost(req, rsp, path, body) {
         return auth.set(req, rsp, path.id, body, db, endure.save, API_DIR);
     }
 
-    // if (path.pathname === `${API_DIR}/forgot-password`) {}
+    if (path.resource === 'photo') {
+        return photo.create(req, rsp, body, db, endure.save, API_DIR);
+    }
 
     if (path.resource === 'gig') {
         return gig.create(req, rsp, body, db, endure.save, API_DIR);
@@ -416,6 +419,9 @@ function rspGet(req, rsp, path) {
     if (path.resource === "password") {
         return auth.getPassword(req, rsp, path.id, db, API_DIR);
     }
+    if (path.resource === "photo") {
+        return photo.get(req, rsp, path.id, db, API_DIR);
+    }
     // if (path.pathname === `${API_DIR}/forgot-password`) {}
 
     return main.notFound(rsp, path.pathname, 'GET', req, db);
@@ -432,14 +438,53 @@ function getMethod(req, body) {
     return method;
 }
 
+function getExtension(filename) {
+    var ext = "";
+    if (filename.indexOf("?") >= 0) {
+        filename = filename.slice(0, filename.indexOf("?"));
+    }
+    if (filename.indexOf(".") >= 0) {
+        ext = filename.slice(filename.lastIndexOf("."));
+    }
+    return ext;
+}
+
+function getMatching(string, regex) {
+    const matches = string.match(regex);
+    if (!matches || matches.length < 2) {
+        return null;
+    }
+    return matches[1];
+}
+
+function getBoundary(request) {
+    let contentType = request.headers['content-type'];
+    const contentTypeArray = contentType.split(';').map(item => item.trim());
+    const boundaryPrefix = 'boundary=';
+    let boundary = contentTypeArray.find(item => item.startsWith(boundaryPrefix));
+    if (!boundary) {
+        return null;
+    }
+    boundary = boundary.slice(boundaryPrefix.length);
+    if (boundary) {
+        boundary = boundary.trim();
+    }
+    return boundary;
+}
+
 function parseBody(req, body) {
     var contentType = '';
     var parsedBody = {};
-    if (!body) {
-        return parsedBody;
-    }
+
     if (req.headers['content-type']) {
         contentType = req.headers['content-type'].split(";")[0];
+    }
+
+    if (!body) {
+        if (contentType === 'application/json') {
+            return parsedBody;
+        }
+        return "";
     }
 
     if (contentType === 'application/json') {
@@ -450,6 +495,41 @@ function parseBody(req, body) {
             console.log(body);
         }
         return parsedBody;
+    }
+
+    if (contentType === 'multipart/form-data') {
+        const boundary = getBoundary(req);
+        const result = {};
+        const rawDataArray = body.split(boundary);
+
+        rawDataArray.forEach(item => {
+            // Use non-matching groups to exclude part of the result
+            const name = getMatching(item, /(?:name=")(.+?)(?:")/);
+            if (!name) {
+                return;
+            }
+            const value = getMatching(item, /(?:\r\n\r\n)([\S\s]*)(?:\r\n--$)/);
+            if (!value) {
+                return;
+            }
+            const filename = getMatching(item, /(?:filename=")(.*?)(?:")/);
+            if (filename) {
+                const file = {};
+                file[name] = value;
+                file.filename = filename;
+                const contentType = getMatching(item, /(?:Content-Type:)(.*?)(?:\r\n)/);
+                if (contentType) {
+                    file.type = getExtension(filename);
+                }
+                if (!result.files) {
+                    result.files = [];
+                }
+                result.files.push(file);
+            } else {
+                result[name] = value;
+            }
+        });
+        return result;
     }
 
     return main.parseQs(body);
@@ -519,12 +599,16 @@ function routeMethods(req, rsp, body) {
 
 function collectReqBody(req, rsp) {
     var body = [];
+    if (req.headers['content-type'] && req.headers['content-type'].split(";")[0] === "multipart/form-data") {
+        req.setEncoding('binary');
+    } else {
+        req.setEncoding('utf8');
+    }
 
     req.on('data', function (chunk) {
         body.push(chunk);
     }).on('end', function () {
-        body = Buffer.concat(body).toString();
-        routeMethods(req, rsp, body);
+        routeMethods(req, rsp, body.join());
     });
 }
 

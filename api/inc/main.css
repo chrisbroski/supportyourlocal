@@ -128,6 +128,7 @@ section.list {
     border-top: 0 none;
     border-left: 1px solid #888;
 }
+section.list img {width: 45%; }
 div.songlist form {
     display: inline-block;
 }
@@ -183,6 +184,14 @@ section > img, section > p > img, section > p > a > img {
     margin: 4px 0 4px 12px;
     width: 50%;
     float: right;
+}
+#photo-noauth {
+    padding: 4px;
+}
+#photo-noauth img {
+    margin: 4px;
+    float: left;
+    width: 150px;
 }
 @keyframes fadeOutAfterLoad {
     0% {

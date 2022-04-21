@@ -11,8 +11,8 @@
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.0.0",
-    "multiparty": "^4.2.3",
     "mustache": "^4.2.0",
+    "sharp": "^0.30.4",
     "showdown": "^2.0.3"
   }
 }
