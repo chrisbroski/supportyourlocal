@@ -1,3 +1,4 @@
+const fs = require("fs").promises;
 const main = require('../../inc/main.js');
 var url = require('url');
 
@@ -199,8 +200,8 @@ this.get = function (req, rsp, id, db) {
 };
 
 async function loadData() {
-    template.single = await main.readFile(`${__dirname}/${resourceName}.html.mustache`, 'utf8');
-    template.list = await main.readFile(`${__dirname}/${resourceName}s.html.mustache`, 'utf8');
+    template.single = await fs.readFile(`${__dirname}/${resourceName}.html.mustache`, 'utf8');
+    template.list = await fs.readFile(`${__dirname}/${resourceName}s.html.mustache`, 'utf8');
 }
 
 loadData();

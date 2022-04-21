@@ -1,9 +1,5 @@
-const fs = require("fs");
-const util = require('util');
+const fs = require("fs").promises;
 const crypto = require("crypto");
-const readFile = util.promisify(fs.readFile);
-const fileStat = util.promisify(fs.stat);
-this.readFile = readFile;
 
 const mustache = require("mustache");
 
@@ -400,9 +396,9 @@ this.isLoggedIn = isLoggedIn;
 
 var cssVer;
 async function loadData() {
-    TEMPLATE.head = await readFile(`${__dirname}/head.pht.mustache`, 'utf8');
-    TEMPLATE.header = await readFile(`${__dirname}/header.pht.mustache`, 'utf8');
-    TEMPLATE.generic = await readFile(`${__dirname}/generic.html.mustache`, 'utf8');
+    TEMPLATE.head = await fs.readFile(`${__dirname}/head.pht.mustache`, 'utf8');
+    TEMPLATE.header = await fs.readFile(`${__dirname}/header.pht.mustache`, 'utf8');
+    TEMPLATE.generic = await fs.readFile(`${__dirname}/generic.html.mustache`, 'utf8');
     TEMPLATE.msg = `{{#hasError}}
 <ul class="msg error">
 {{#error}}
@@ -422,7 +418,7 @@ async function loadData() {
 </ul>
 {{/hasMsg}}`;
 
-    const fileStats = await fileStat(`${__dirname}/main.css`);
+    const fileStats = await fs.stat(`${__dirname}/main.css`);
     cssVer = +fileStats.mtime;
 }
 

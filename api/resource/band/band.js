@@ -1,3 +1,4 @@
+const fs = require("fs").promises;
 const showdown  = require('showdown');
 const converter = new showdown.Converter({"noHeaderId": true, "simpleLineBreaks": true});
 
@@ -118,8 +119,8 @@ this.get = function (req, rsp, db) {
 };
 
 async function loadData() {
-    template.band = await main.readFile(`${__dirname}/${resourceName}.html.mustache`, 'utf8');
-    template.bandNoAuth = await main.readFile(`${__dirname}/${resourceName}-noauth.html.mustache`, 'utf8');
+    template.band = await fs.readFile(`${__dirname}/${resourceName}.html.mustache`, 'utf8');
+    template.bandNoAuth = await fs.readFile(`${__dirname}/${resourceName}-noauth.html.mustache`, 'utf8');
 }
 
 loadData();

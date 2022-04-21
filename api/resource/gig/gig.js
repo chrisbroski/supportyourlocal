@@ -1,6 +1,6 @@
+const fs = require("fs").promises;
 const showdown  = require('showdown');
 const converter = new showdown.Converter({"noHeaderId": true, "simpleLineBreaks": true});
-
 const main = require('../../inc/main.js');
 var url = require('url');
 
@@ -389,11 +389,11 @@ this.get = function (req, rsp, id, db, mapKey) {
 };
 
 async function loadData() {
-    template.single = await main.readFile(`${__dirname}/${resourceName}.html.mustache`, 'utf8');
-    template.singleNoAuth = await main.readFile(`${__dirname}/${resourceName}-noauth.html.mustache`, 'utf8');
+    template.single = await fs.readFile(`${__dirname}/${resourceName}.html.mustache`, 'utf8');
+    template.singleNoAuth = await fs.readFile(`${__dirname}/${resourceName}-noauth.html.mustache`, 'utf8');
 
-    template.list = await main.readFile(`${__dirname}/${resourceName}s.html.mustache`, 'utf8');
-    template.listNoAuth = await main.readFile(`${__dirname}/${resourceName}s-noauth.html.mustache`, 'utf8');
+    template.list = await fs.readFile(`${__dirname}/${resourceName}s.html.mustache`, 'utf8');
+    template.listNoAuth = await fs.readFile(`${__dirname}/${resourceName}s-noauth.html.mustache`, 'utf8');
 }
 
 loadData();

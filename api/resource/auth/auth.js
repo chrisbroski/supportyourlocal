@@ -1,3 +1,4 @@
+const fs = require("fs").promises;
 const main = require('../../inc/main.js');
 var url = require('url');
 
@@ -312,10 +313,10 @@ this.init = function(loginFail, lockoutDuration, sessionDuration) {
 };
 
 async function loadData() {
-    template.login = await main.readFile(`${__dirname}/login.html.mustache`, 'utf8');
-    template.password = await main.readFile(`${__dirname}/password.html.mustache`, 'utf8');
-    template.forgotPassword = await main.readFile(`${__dirname}/forgot-password.html.mustache`, 'utf8');
-    template.user = await main.readFile(`${__dirname}/../user/user.html.mustache`, 'utf8');
+    template.login = await fs.readFile(`${__dirname}/login.html.mustache`, 'utf8');
+    template.password = await fs.readFile(`${__dirname}/password.html.mustache`, 'utf8');
+    template.forgotPassword = await fs.readFile(`${__dirname}/forgot-password.html.mustache`, 'utf8');
+    template.user = await fs.readFile(`${__dirname}/../user/user.html.mustache`, 'utf8');
 }
 
 loadData();

@@ -1,11 +1,7 @@
 // Standard libs
 const http = require('http');
-const fs = require("fs");
-const util = require('util');
+const fs = require("fs").promises;
 const url = require('url');
-
-const readFile = util.promisify(fs.readFile);
-const readDir = util.promisify(fs.readdir);
 
 // npm modules
 require('dotenv').config();
@@ -120,7 +116,7 @@ function getPath(pathname) {
 }
 
 async function photos(path) {
-    var photos = await readDir(path);
+    var photos = await fs.readdir(path);
     var fileTypes = [".jpg", ".jpeg", ".png"];
     return photos.filter(p => {
         var extension = p.slice(p.lastIndexOf(".")).toLowerCase();
@@ -614,15 +610,15 @@ async function loadData() {
         db.photos = await photos(process.env.PHOTO_PATH);
     }
 
-    ASSET.favicon = await readFile(`${__dirname}/inc/favicon.png`);
-    ASSET.mainCss = await readFile(`${__dirname}/inc/main.css`, 'utf8');
-    ASSET.noPhoto = await readFile(`${__dirname}/inc/nophoto.png`);
-    ASSET.ajaxTool = await readFile(`${__dirname}/ajax-tool.html`, 'utf8');
+    ASSET.favicon = await fs.readFile(`${__dirname}/inc/favicon.png`);
+    ASSET.mainCss = await fs.readFile(`${__dirname}/inc/main.css`, 'utf8');
+    ASSET.noPhoto = await fs.readFile(`${__dirname}/inc/nophoto.png`);
+    ASSET.ajaxTool = await fs.readFile(`${__dirname}/ajax-tool.html`, 'utf8');
 
-    // TEMPLATE.home = await readFile(`${__dirname}/index.html.mustache`, 'utf8');
-    // TEMPLATE.homeNoAuth = await readFile(`${__dirname}/index-noauth.html.mustache`, 'utf8');
-    TEMPLATE.tests = await readFile(`${__dirname}/tests.html.mustache`, 'utf8');
-    TEMPLATE.delete = await readFile(`${__dirname}/inc/delete.html.mustache`, 'utf8');
+    // TEMPLATE.home = await fs.readFile(`${__dirname}/index.html.mustache`, 'utf8');
+    // TEMPLATE.homeNoAuth = await fs.readFile(`${__dirname}/index-noauth.html.mustache`, 'utf8');
+    TEMPLATE.tests = await fs.readFile(`${__dirname}/tests.html.mustache`, 'utf8');
+    TEMPLATE.delete = await fs.readFile(`${__dirname}/inc/delete.html.mustache`, 'utf8');
 
     MANIFEST.start_url = `${API_DIR}/`;
     MANIFEST.name = `Admin - ${db.band.name} - Your Local Band`;

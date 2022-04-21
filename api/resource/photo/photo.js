@@ -1,5 +1,6 @@
 // const sharp = require('sharp');
-const fs = require("fs");
+// const fs = require("fs");fs
+const fs = require("fs").promises;
 
 // Custom libs
 const main = require('../../inc/main.js');
@@ -145,9 +146,9 @@ this.get = function (req, rsp, id, db) {
 };
 
 async function loadData() {
-    template.single = await main.readFile(`${__dirname}/${resourceName}.html.mustache`, 'utf8');
-    template.list = await main.readFile(`${__dirname}/${resourceName}s.html.mustache`, 'utf8');
-    template.listNoAuth = await main.readFile(`${__dirname}/${resourceName}-noauth.html.mustache`, 'utf8');
+    template.single = await fs.readFile(`${__dirname}/${resourceName}.html.mustache`, 'utf8');
+    template.list = await fs.readFile(`${__dirname}/${resourceName}s.html.mustache`, 'utf8');
+    template.listNoAuth = await fs.readFile(`${__dirname}/${resourceName}-noauth.html.mustache`, 'utf8');
 }
 
 loadData();

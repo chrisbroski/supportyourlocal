@@ -1,9 +1,6 @@
+const fs = require("fs").promises;
 const showdown  = require('showdown');
 const converter = new showdown.Converter({"noHeaderId": true, "simpleLineBreaks": true});
-    // text      = '# hello, markdown!',
-    // html      = converter.makeHtml(text);
-
-// Custom libs
 const main = require('../../inc/main.js');
 
 const resourceName = 'site';
@@ -390,11 +387,11 @@ this.home = function (req, rsp, db) {
 };
 
 async function loadData() {
-    template.site = await main.readFile(`${__dirname}/${resourceName}.html.mustache`, 'utf8');
-    template.start = await main.readFile(`${__dirname}/start.html.mustache`, 'utf8');
+    template.site = await fs.readFile(`${__dirname}/${resourceName}.html.mustache`, 'utf8');
+    template.start = await fs.readFile(`${__dirname}/start.html.mustache`, 'utf8');
 
-    template.home = await main.readFile(`${__dirname}/index.html.mustache`, 'utf8');
-    template.homeNoAuth = await main.readFile(`${__dirname}/index-noauth.html.mustache`, 'utf8');
+    template.home = await fs.readFile(`${__dirname}/index.html.mustache`, 'utf8');
+    template.homeNoAuth = await fs.readFile(`${__dirname}/index-noauth.html.mustache`, 'utf8');
 }
 
 loadData();
