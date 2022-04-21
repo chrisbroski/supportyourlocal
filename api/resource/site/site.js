@@ -115,7 +115,7 @@ function updateResource(body, db, save) {
     save();
 }
 
-this.setup = function (req, rsp, formData, db, save, API_DIR, setupToken) {
+this.setup = function (req, rsp, formData, db, save, setupToken) {
     var error = isSetupInvalid(formData, setupToken);
 
     if (error.length) {
@@ -137,11 +137,11 @@ this.setup = function (req, rsp, formData, db, save, API_DIR, setupToken) {
         return main.returnJson(rsp, returnData);
     }
 
-    rsp.writeHead(303, {'Content-Type': 'text/plain', "Location": `${API_DIR}/login`});
+    rsp.writeHead(303, {'Content-Type': 'text/plain', "Location": `${process.env.SUBDIR}/login`});
     rsp.end("Site setup complete.");
 };
 
-this.update = function (req, rsp, formData, db, save, API_DIR) {
+this.update = function (req, rsp, formData, db, save) {
     var error = isUpdateInvalid(formData);
     if (error.length) {
         rsp.writeHead(400, {'Content-Type': 'text/html'});
@@ -355,11 +355,11 @@ this.getCss = function (req, rsp, data, isCss) {
     return main.returnJson(rsp, data[resourceName]);
 };
 
-this.start = function (req, rsp, db, API_DIR, qs) {
+this.start = function (req, rsp, db, qs) {
     var setupToken = qs["setup-token"] || "";
     // rsp.setHeader('Cache-Control', 'max-age=0,no-cache,no-store,post-check=0,pre-check=0');
     rsp.writeHead(200, {'Content-Type': 'text/html'});
-    rsp.end(main.renderPage(req, template.start, {"setup-token": setupToken}, db, API_DIR));
+    rsp.end(main.renderPage(req, template.start, {"setup-token": setupToken}, db));
 };
 
 this.get = function (req, rsp, db) {

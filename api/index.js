@@ -222,7 +222,7 @@ function rspPost(req, rsp, path, body) {
     }
 
     if (path.resource === 'start') {
-        return site.setup(req, rsp, body, db, endure.save, API_DIR, process.env.SETUP_TOKEN);
+        return site.setup(req, rsp, body, db, endure.save, process.env.SETUP_TOKEN);
     }
 
     return main.notFound(rsp, req.url, 'POST', req, db);
@@ -230,7 +230,7 @@ function rspPost(req, rsp, path, body) {
 
 function rspPut(req, rsp, path, body) {
     if (path.resource === 'band') {
-        return band.update(req, rsp, body, db, endure.save, API_DIR);
+        return band.update(req, rsp, body, db, endure.save);
     }
     if (path.resource === 'user') {
         return user.update(req, rsp, path.id, body, db, endure.save, API_DIR);
@@ -248,7 +248,7 @@ function rspPut(req, rsp, path, body) {
         return announcement.update(req, rsp, path.id, body, db, endure.save);
     }
     if (path.resource === 'site') {
-        return site.update(req, rsp, body, db, endure.save, API_DIR);
+        return site.update(req, rsp, body, db, endure.save);
     }
     if (path.resource === 'release') {
         return release.update(req, rsp, path.id, body, db, endure.save, API_DIR);
@@ -549,7 +549,7 @@ function routeMethods(req, rsp, body) {
 
     // redirect for initial setup
     if (allowedBeforeSetup(method, path) && Object.keys(db.user) < 1) {
-        return site.start(req, rsp, db, API_DIR, path.qs);
+        return site.start(req, rsp, db, path.qs);
     }
 
     if (method === 'GET') {
