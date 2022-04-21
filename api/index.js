@@ -9,12 +9,9 @@ require('dotenv').config();
 
 // Configuration
 const PORT = process.env.PORT || 29170;
-const API_DIR = process.env.API_DIR || "/api";
-process.env.SUBDIR = API_DIR;
+// const API_DIR = process.env.API_DIR || "/api";
+process.env.SUBDIR = process.env.API_DIR || "/api";
 const MAP_KEY = process.env.MAP_KEY || "";
-const FAIL_UNTIL_LOCKOUT = process.env.FAIL_UNTIL_LOCKOUT || 10;
-const LOCKOUT_DURATION_SECONDS = process.env.LOCKOUT_DURATION_SECONDS || 600000;
-const SESSION_TIMEOUT_SECONDS = process.env.SESSION_TIMEOUT_SECONDS || 31622400;
 
 // Custom libs
 const main = require('./inc/main.js');
@@ -22,7 +19,6 @@ const endure = require('./inc/endure.js');
 
 // Resources
 const auth = require('./resource/auth/auth.js');
-auth.init(FAIL_UNTIL_LOCKOUT, LOCKOUT_DURATION_SECONDS, SESSION_TIMEOUT_SECONDS);
 const gig = require('./resource/gig/gig.js');
 const venue = require('./resource/venue/venue.js');
 const band = require('./resource/band/band.js');
@@ -210,7 +206,7 @@ function rspPost(req, rsp, path, body) {
     }
 
     if (path.resource === 'user') {
-        return user.create(req, rsp, body, db, endure.save, API_DIR);
+        return user.create(req, rsp, body, db, endure.save);
     }
 
     if (path.resource === 'release') {
@@ -233,7 +229,7 @@ function rspPut(req, rsp, path, body) {
         return band.update(req, rsp, body, db, endure.save);
     }
     if (path.resource === 'user') {
-        return user.update(req, rsp, path.id, body, db, endure.save, API_DIR);
+        return user.update(req, rsp, path.id, body, db, endure.save);
     }
     if (path.resource === 'gig') {
         return gig.update(req, rsp, path.id, body, db, endure.save);
@@ -266,7 +262,7 @@ function rspPut(req, rsp, path, body) {
 
 function rspDelete(req, rsp, path) {
     if (path.resource === 'user') {
-        return user.remove(req, rsp, path.id, db, endure.save, API_DIR);
+        return user.remove(req, rsp, path.id, db, endure.save);
     }
 
     if (path.resource === 'venue') {
@@ -402,7 +398,7 @@ function rspGet(req, rsp, path) {
     if (path.resource === "photo") {
         return photo.get(req, rsp, path.id, db);
     }
-    // if (path.pathname === `${API_DIR}/forgot-password`) {}
+    // if (path.pathname === `${process.env.SUBDIR}/forgot-password`) {}
 
     return main.notFound(rsp, path.pathname, 'GET', req, db);
 }
@@ -528,7 +524,7 @@ function allowedBeforeSetup(method, path) {
 function routeMethods(req, rsp, body) {
     var parsedBody = parseBody(req, body);
     var method = getMethod(req, parsedBody);
-    var path = getPath(req.url, API_DIR);
+    var path = getPath(req.url);
 
     // To trigger a 500 for testing:
     // if (req.method !== 'OPTIONS') {
@@ -620,7 +616,7 @@ async function loadData() {
     TEMPLATE.tests = await fs.readFile(`${__dirname}/tests.html.mustache`, 'utf8');
     TEMPLATE.delete = await fs.readFile(`${__dirname}/inc/delete.html.mustache`, 'utf8');
 
-    MANIFEST.start_url = `${API_DIR}/`;
+    MANIFEST.start_url = `${process.env.SUBDIR}/`;
     MANIFEST.name = `Admin - ${db.band.name} - Your Local Band`;
     MANIFEST.short_name = `Admin ${db.band.name}`;
     MANIFEST.background_color = db.site.color1;
@@ -628,7 +624,7 @@ async function loadData() {
 
 function startHTTP() {
     http.createServer(collectReqBody).listen(PORT, function () {
-        console.log(`Server started on http://0.0.0.0:${PORT}${API_DIR}`);
+        console.log(`Server started on http://0.0.0.0:${PORT}${process.env.SUBDIR}`);
     });
 }
 

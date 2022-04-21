@@ -4,9 +4,10 @@ var url = require('url');
 
 const template = {};
 const failedLogins = {};
-var LOGIN_FAIL_UNTIL_LOCKOUT;
-var LOCKOUT_DURATION_SECONDS;
-var SESSION_TIMEOUT_SECONDS;
+
+process.env.FAIL_UNTIL_LOCKOUT = process.env.FAIL_UNTIL_LOCKOUT || 10;
+process.env.LOCKOUT_DURATION_SECONDS = process.env.LOCKOUT_DURATION_SECONDS || 600000;
+process.env.SESSION_TIMEOUT_SECONDS = process.env.SESSION_TIMEOUT_SECONDS || 31622400;
 
 function single(db, id, req, msg, error) {
     var authUserData = main.getAuthUserData(req, db.user);
@@ -31,7 +32,7 @@ function cleanFailedLogins() {
 
     Object.keys(failedLogins).forEach(function (login) {
         failedLogins[login] = failedLogins[login].filter(function (failedAt) {
-            return (failedAt > now - LOCKOUT_DURATION_SECONDS);
+            return (failedAt > now - process.env.LOCKOUT_DURATION_SECONDS);
         });
     });
 }
@@ -48,7 +49,7 @@ function isUserLockedOut(username) {
     if (!failedLogins[username]) {
         return false;
     }
-    if (failedLogins[username].length >= LOGIN_FAIL_UNTIL_LOCKOUT) {
+    if (failedLogins[username].length >= process.env.FAIL_UNTIL_LOCKOUT) {
         return true;
     }
     return false;
@@ -138,8 +139,8 @@ function setLoginCookie(rsp, userData, userId) {
     var secure = (process.env.DEV === "Y") ? "" : " Secure";
 
     rsp.setHeader('Set-Cookie', [
-        `token=${token}; Path=/; SameSite=Strict; Max-Age=${SESSION_TIMEOUT_SECONDS}; HttpOnly;${secure}`,
-        `user=${userId}; Path=/; SameSite=Strict; Max-Age=${SESSION_TIMEOUT_SECONDS}; HttpOnly;${secure}`
+        `token=${token}; Path=/; SameSite=Strict; Max-Age=${process.env.SESSION_TIMEOUT_SECONDS}; HttpOnly;${secure}`,
+        `user=${userId}; Path=/; SameSite=Strict; Max-Age=${process.env.SESSION_TIMEOUT_SECONDS}; HttpOnly;${secure}`
     ]);
 }
 
@@ -168,7 +169,7 @@ function login(req, rsp, body, db) {
     }
 
     if (isUserLockedOut(userId)) {
-        lockoutDuration = Math.round(LOCKOUT_DURATION_SECONDS / 60000);
+        lockoutDuration = Math.round(process.env.LOCKOUT_DURATION_SECONDS / 60000);
         return fail(req, rsp, `User locked out from too many failed attempts.
         Try again in ${lockoutDuration} minutes.`, db, body.username);
     }
@@ -304,12 +305,6 @@ this.getPassword = function (req, rsp, id, db) {
         rsp.writeHead(400, {'Content-Type': 'text/html'});
         rsp.end(main.renderPage(req, template.password, pwData, db));
     }
-};
-
-this.init = function(loginFail, lockoutDuration, sessionDuration) {
-    LOGIN_FAIL_UNTIL_LOCKOUT = loginFail;
-    LOCKOUT_DURATION_SECONDS = lockoutDuration;
-    SESSION_TIMEOUT_SECONDS = sessionDuration;
 };
 
 async function loadData() {
