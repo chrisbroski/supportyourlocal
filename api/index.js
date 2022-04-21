@@ -206,7 +206,7 @@ function rspPost(req, rsp, path, body) {
     }
 
     if (path.resource === 'announcement') {
-        return announcement.create(req, rsp, body, db, endure.save, API_DIR);
+        return announcement.create(req, rsp, body, db, endure.save);
     }
 
     if (path.resource === 'user') {
@@ -245,7 +245,7 @@ function rspPut(req, rsp, path, body) {
         return song.update(req, rsp, path.id, body, db, endure.save, API_DIR);
     }
     if (path.resource === 'announcement') {
-        return announcement.update(req, rsp, path.id, body, db, endure.save, API_DIR);
+        return announcement.update(req, rsp, path.id, body, db, endure.save);
     }
     if (path.resource === 'site') {
         return site.update(req, rsp, body, db, endure.save, API_DIR);
@@ -278,7 +278,7 @@ function rspDelete(req, rsp, path) {
     }
 
     if (path.resource === 'announcement') {
-        return announcement.remove(req, rsp, path.id, db, endure.save, API_DIR);
+        return announcement.remove(req, rsp, path.id, db, endure.save);
     }
 
     if (path.resource === 'gig') {
