@@ -190,15 +190,15 @@ function rspPost(req, rsp, path, body) {
     }
 
     if (path.resource === 'photo') {
-        return photo.create(req, rsp, body, db, endure.save, API_DIR);
+        return photo.create(req, rsp, body, db, endure.save);
     }
 
     if (path.resource === 'gig') {
-        return gig.create(req, rsp, body, db, endure.save, API_DIR);
+        return gig.create(req, rsp, body, db, endure.save);
     }
 
     if (path.resource === 'venue') {
-        return venue.create(req, rsp, body, db, endure.save, API_DIR);
+        return venue.create(req, rsp, body, db, endure.save);
     }
 
     if (path.resource === 'song') {
@@ -236,10 +236,10 @@ function rspPut(req, rsp, path, body) {
         return user.update(req, rsp, path.id, body, db, endure.save, API_DIR);
     }
     if (path.resource === 'gig') {
-        return gig.update(req, rsp, path.id, body, db, endure.save, API_DIR);
+        return gig.update(req, rsp, path.id, body, db, endure.save);
     }
     if (path.resource === 'venue') {
-        return venue.update(req, rsp, path.id, body, db, endure.save, API_DIR);
+        return venue.update(req, rsp, path.id, body, db, endure.save);
     }
     if (path.resource === 'song') {
         return song.update(req, rsp, path.id, body, db, endure.save, API_DIR);
@@ -270,7 +270,7 @@ function rspDelete(req, rsp, path) {
     }
 
     if (path.resource === 'venue') {
-        return venue.remove(req, rsp, path.id, db, endure.save, API_DIR);
+        return venue.remove(req, rsp, path.id, db, endure.save);
     }
 
     if (path.resource === 'song') {
@@ -282,7 +282,7 @@ function rspDelete(req, rsp, path) {
     }
 
     if (path.resource === 'gig') {
-        return gig.remove(req, rsp, path.id, db, endure.save, API_DIR);
+        return gig.remove(req, rsp, path.id, db, endure.save);
     }
 
     if (path.resource === 'release') {

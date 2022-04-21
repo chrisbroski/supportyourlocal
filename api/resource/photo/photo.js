@@ -63,11 +63,11 @@ function updateResource(body, db, save) {
     save();
 }
 
-this.update = function (req, rsp, formData, db, save, API_DIR) {
+this.update = function (req, rsp, formData, db, save) {
     var error = isUpdateInvalid(formData);
     if (error.length) {
         rsp.writeHead(400, {'Content-Type': 'text/html'});
-        rsp.end(main.renderPage(req, template.list, single(db, [`${resourceName} updated.`]), db, API_DIR));
+        rsp.end(main.renderPage(req, template.list, single(db, [`${resourceName} updated.`]), db));
         return;
     }
 

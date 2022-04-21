@@ -69,7 +69,7 @@ function isUpdateInvalid(req, rsp, formData) {
     return msg;
 }
 
-this.create = function (req, rsp, formData, db, save, API_DIR) {
+this.create = function (req, rsp, formData, db, save) {
     var error = isUpdateInvalid(req, rsp, formData);
     var returnData;
     if (error.length) {
@@ -95,11 +95,11 @@ this.create = function (req, rsp, formData, db, save, API_DIR) {
     rsp.writeHead(200, {'Content-Type': 'text/html'});
     rsp.end(main.renderPage(req, template.list, Object.assign({
         "hasMsg": true,
-        "link": {"text": `Created ${resourceName} id ${id}`, "href": `${API_DIR}/${resourceName}/${id}`}
+        "link": {"text": `Created ${resourceName} id ${id}`, "href": `${process.env.SUBDIR}/${resourceName}/${id}`}
     }, list(db)), db));
 };
 
-this.update = function (req, rsp, id, formData, db, save, API_DIR) {
+this.update = function (req, rsp, id, formData, db, save) {
     if (!db[resourceName][id]) {
         return main.notFound(rsp, req.url, 'PUT', req, db);
     }
@@ -124,7 +124,7 @@ this.update = function (req, rsp, id, formData, db, save, API_DIR) {
     rsp.end(main.renderPage(req, template.single, single(db, id, [`${resourceName} id ${id} updated.`]), db));
 };
 
-this.remove = function (req, rsp, id, db, save, API_DIR) {
+this.remove = function (req, rsp, id, db, save) {
     var name;
     if (!db[resourceName][id]) {
         return main.notFound(rsp, req.url, 'DELETE', req, db);
