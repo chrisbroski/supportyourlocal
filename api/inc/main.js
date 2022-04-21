@@ -6,7 +6,6 @@ const fileStat = util.promisify(fs.stat);
 this.readFile = readFile;
 
 const mustache = require("mustache");
-require('dotenv').config({path: `${__dirname}/.env`});
 
 const countries = require('./countries.json');
 const genres = require('./genres.json');
@@ -273,28 +272,6 @@ function isMod(req, db) {
     return (userData.admin === "Y");
 }
 this.isMod = isMod;
-
-function invalidMsg(rsp, msg, req, db, API_DIR) {
-    if (!msg.length) {
-        return false;
-    }
-
-    if (req.headers.accept === "application/json") {
-        rsp.writeHead(400, {'Content-Type': 'application/json'});
-        rsp.end(JSON.stringify(msg));
-        return true;
-    }
-
-    // this should go back to its own page with messages
-    rsp.writeHead(400, {'Content-Type': 'text/html'});
-    rsp.end(renderPage(req, null, {
-        "resourceName": "400 Bad Request",
-        "title": "Invalid Request (400)",
-        "msg": msg
-    }, db, API_DIR));
-    return true;
-}
-this.invalidMsg = invalidMsg;
 
 function notFound(rsp, url, verb, req, db) {
     if (req.headers.accept === "application/json") {

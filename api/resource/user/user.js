@@ -99,7 +99,6 @@ function isCreateInvalid(req, rsp, formData, db) {
         msg.push(`Email ${formData.email} already exists.`);
     }
 
-    // return main.invalidMsg(rsp, msg, req, db, API_DIR);
     return msg;
 }
 function isUpdateInvalid(req, rsp, formData) {
@@ -109,7 +108,6 @@ function isUpdateInvalid(req, rsp, formData) {
         msg.push('Email is required.');
     }
 
-    // return main.invalidMsg(rsp, msg, req, db, API_DIR);
     return msg;
 }
 

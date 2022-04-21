@@ -65,7 +65,6 @@ function isUpdateInvalid(req, rsp, formData) {
         msg.push('Name is required.');
     }
 
-    // return main.invalidMsg(rsp, msg, req, db, API_DIR);
     return msg;
 }
 

@@ -83,7 +83,6 @@ function isUpdateInvalid(body) {
     }
 
     return msg;
-    // return main.invalidMsg(rsp, msg, req, db, API_DIR);
 }
 
 function initialSetup(body, db, save) {

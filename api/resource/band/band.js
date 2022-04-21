@@ -52,7 +52,6 @@ function isUpdateInvalid(body) {
         msg.push('Band name is required.');
     }
 
-    // return main.invalidMsg(rsp, msg, req, db, API_DIR);
     return msg;
 }
 

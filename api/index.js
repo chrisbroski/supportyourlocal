@@ -8,12 +8,13 @@ const readFile = util.promisify(fs.readFile);
 const readDir = util.promisify(fs.readdir);
 
 // npm modules
-require('dotenv').config({path: `${__dirname}/.env`});
+require('dotenv').config();
 // const sendmail = require('sendmail')();
 
 // Configuration
 const PORT = process.env.PORT || 29170;
 const API_DIR = process.env.API_DIR || "/api";
+process.env.SUBDIR = API_DIR;
 const MAP_KEY = process.env.MAP_KEY || "";
 const FAIL_UNTIL_LOCKOUT = process.env.FAIL_UNTIL_LOCKOUT || 10;
 const LOCKOUT_DURATION_SECONDS = process.env.LOCKOUT_DURATION_SECONDS || 600000;
