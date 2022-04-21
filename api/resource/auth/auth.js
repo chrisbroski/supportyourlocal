@@ -143,7 +143,7 @@ function setLoginCookie(rsp, userData, userId) {
     ]);
 }
 
-function login(req, rsp, body, db, API_DIR) {
+function login(req, rsp, body, db) {
     var lockoutDuration;
     var userId;
     var userData;
@@ -175,8 +175,8 @@ function login(req, rsp, body, db, API_DIR) {
 
     if (userData.hash === main.hash(body.password, userData.salt)) {
         setLoginCookie(rsp, userData, userId);
-        rsp.writeHead(303, {'Content-Type': 'text/html', "Location": `${API_DIR}/site`});
-        rsp.end(main.renderPage(req, null, {"msg": ["Logged in"], "title": `Logged in`, "link": `${API_DIR}/`}, db));
+        rsp.writeHead(303, {'Content-Type': 'text/html', "Location": `${process.env.SUBDIR}/site`});
+        rsp.end(main.renderPage(req, null, {"msg": ["Logged in"], "title": `Logged in`, "link": `${process.env.SUBDIR}/`}, db));
         return true;
     }
 
@@ -198,7 +198,7 @@ function logout(req, rsp, db) {
 }
 this.logout = logout;
 
-function set(req, rsp, id, formData, db, save, API_DIR) {
+function set(req, rsp, id, formData, db, save) {
     var error = isSetInvalid(req, formData, db, id);
     if (error.length) {
         rsp.writeHead(400, {'Content-Type': 'text/html'});
@@ -208,8 +208,8 @@ function set(req, rsp, id, formData, db, save, API_DIR) {
 
     updatePassword(id, formData, db, save);
     setLoginCookie(rsp, db.user[id], id);
-    rsp.writeHead(303, {'Content-Type': 'text/html', "Location": `${API_DIR}/`});
-    rsp.end(main.renderPage(req, null, {"msg": ["Password set"], "title": `Password set`, "link": `${API_DIR}/`}, db));
+    rsp.writeHead(303, {'Content-Type': 'text/html', "Location": `${process.env.SUBDIR}/`});
+    rsp.end(main.renderPage(req, null, {"msg": ["Password set"], "title": `Password set`, "link": `${process.env.SUBDIR}/`}, db));
     return;
 }
 this.set = set;
@@ -222,7 +222,7 @@ function resetPassword(id, db, save) {
     return db.user[id].token;
 }
 
-this.reset = function(req, rsp, id, db, save, API_DIR) {
+this.reset = function(req, rsp, id, db, save) {
     if (!main.isMod(req, db)) {
         rsp.writeHead(403, {'Content-Type': 'text/plain'});
         rsp.end('Only moderators can reset passwords.');
@@ -232,14 +232,14 @@ this.reset = function(req, rsp, id, db, save, API_DIR) {
     var token = resetPassword(id, db, save);
 
     // make secure when it is secure
-    var returnUrl = `http://${req.headers.host}${API_DIR}/password/${id}?token=${token}`;
+    var returnUrl = `http://${req.headers.host}${process.env.SUBDIR}/password/${id}?token=${token}`;
     // sendResetEmail(returnUrl, rsp, data.user[path.id].email, 'reset-password');
     rsp.writeHead(200, {'Content-Type': 'text/html'});//.end(`Complete reset at: ${returnUrl}`);
     rsp.end(main.renderPage(req, null, {"msg": ["Password reset"], "title": `Password Reset`, "link": returnUrl}, db));
     return;
 };
 
-this.update = function (req, rsp, id, formData, db, save, API_DIR) {
+this.update = function (req, rsp, id, formData, db, save) {
     if (!db.user[id]) {
         return main.notFound(rsp, req.url, 'PUT', req, db);
     }
@@ -261,7 +261,7 @@ this.update = function (req, rsp, id, formData, db, save, API_DIR) {
     }
 
     returnData.back = req.headers.referer;
-    rsp.writeHead(303, {'Content-Type': 'text/html', "Location": `${API_DIR}/user/`});
+    rsp.writeHead(303, {'Content-Type': 'text/html', "Location": `${process.env.SUBDIR}/user/`});
     rsp.end(main.renderPage(req, null, returnData, db));
 };
 

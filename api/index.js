@@ -182,11 +182,11 @@ function getDelete(req, rsp) {
 
 function rspPost(req, rsp, path, body) {
     if (path.path === '/login') {
-        return auth.login(req, rsp, body, db, API_DIR);
+        return auth.login(req, rsp, body, db);
     }
 
     if (path.resource === "password") {
-        return auth.set(req, rsp, path.id, body, db, endure.save, API_DIR);
+        return auth.set(req, rsp, path.id, body, db, endure.save);
     }
 
     if (path.resource === 'photo') {
@@ -256,7 +256,7 @@ function rspPut(req, rsp, path, body) {
 
     if (path.resource === 'password') {
         if (path.id) {
-            return auth.update(req, rsp, path.id, body, db, endure.save, API_DIR);
+            return auth.update(req, rsp, path.id, body, db, endure.save);
         }
         return;
     }
@@ -290,7 +290,7 @@ function rspDelete(req, rsp, path) {
     }
 
     if (path.resource === `password`) {
-        return auth.reset(req, rsp, path.id, db, endure.save, API_DIR);
+        return auth.reset(req, rsp, path.id, db, endure.save);
     }
 
     return main.notFound(rsp, req.url, 'DELETE', req, db);
