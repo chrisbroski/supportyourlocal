@@ -68,37 +68,20 @@ function removeQs(fullUrl) {
     return fullUrl.slice(0, fullUrl.indexOf('?'));
 }
 
-function extractResource(pathname) {
-    var resource = "";
-    var reResource;
-    var val;
+function regexExtract(pattern, source) {
+    var value = "";
+    var reId = new RegExp(pattern, "i");
+    var result;
 
-    if (pathname.slice(-1) !== "/") {
-        pathname = pathname + "/";
-    }
-    reResource = new RegExp("^\/([^\/]+)[\/]", "i");
-    val = reResource.exec(pathname);
-    if (val) {
-        resource = val[1];
-    }
-    return decodeURIComponent(resource);
-}
-
-function extractId(pathname, resource) {
-    var id = "";
-    var reId;
-    var val;
-
-    if (pathname.slice(-1) !== "/") {
-        pathname = pathname + "/";
+    if (source.slice(-1) !== "/") {
+        source = source + "/";
     }
 
-    reId = new RegExp('^\/' + resource + '\/([^\/]+)', "i");
-    val = reId.exec(pathname);
-    if (val) {
-        id = val[1];
+    result = reId.exec(source);
+    if (result) {
+        value = result[1];
     }
-    return decodeURIComponent(id);
+    return decodeURIComponent(value);
 }
 
 function extractFileType(path) {
@@ -123,9 +106,9 @@ function getPath(pathname, API_DIR) {
         return {"pathname": pathname, id: "", resource: ""};
     }
 
-    var resource = extractResource(path);
+    var resource = regexExtract("^\/([^\/]+)[\/]", path);
     return {
-        "id": extractId(path, resource),
+        "id": regexExtract('^\/' + resource + '\/([^\/]+)', path),
         "pathname": decodeURI(pathname),
         "resource": resource,
         "path": path,
