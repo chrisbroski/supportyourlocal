@@ -97,12 +97,12 @@ function extractFileType(path) {
     return path.slice(lastDot + 1);
 }
 
-function getPath(pathname, API_DIR) {
+function getPath(pathname) {
     var path;
     var qs = main.parseQs(pathname, true);
     var raw = pathname;
     pathname = removeQs(pathname);
-    path = pathname.slice(API_DIR.length);
+    path = pathname.slice(process.env.SUBDIR.length);
     if (!path) {
         return {"pathname": pathname, id: "", resource: ""};
     }
@@ -139,21 +139,21 @@ function authenticate(req, rsp, path) {
 
     cookies = main.parseCookie(req.headers.cookie);
     if (!cookies.user) {
-        return auth.fail(req, rsp, 'Not logged in', db, API_DIR);
+        return auth.fail(req, rsp, 'Not logged in', db);
     }
     userid = cookies.user;
 
     userData = db.user[userid];
     if (!userData) {
-        return auth.fail(req, rsp, 'User id not found', db, API_DIR);
+        return auth.fail(req, rsp, 'User id not found', db);
     }
 
     if (!userData.hash) {
-        return auth.fail(req, rsp, 'User not able to log in. Please contact your moderator.', db, API_DIR);
+        return auth.fail(req, rsp, 'User not able to log in. Please contact your moderator.', db);
     }
 
     if (main.hash(userData.password + userid, userData.salt) !== cookies.token) {
-        return auth.fail(req, rsp, 'Invalid token', db, API_DIR);
+        return auth.fail(req, rsp, 'Invalid token', db);
     }
 
     return true;
@@ -181,7 +181,7 @@ function getDelete(req, rsp) {
         "back": req.headers.referer
     };
     rsp.writeHead(200, {'Content-Type': 'text/html'});
-    rsp.end(main.renderPage(req, TEMPLATE.delete, deleteData, db, API_DIR));
+    rsp.end(main.renderPage(req, TEMPLATE.delete, deleteData, db));
 }
 
 function rspPost(req, rsp, path, body) {
@@ -341,7 +341,7 @@ function rspGet(req, rsp, path) {
     }
     if (path.path === '/tests') {
         rsp.writeHead(200, {'Content-Type': 'text/html'});
-        rsp.end(main.renderPage(req, TEMPLATE.tests, {}, db, API_DIR));
+        rsp.end(main.renderPage(req, TEMPLATE.tests, {}, db));
         return;
     }
     if (path.path === '/manifest.json') {
@@ -350,16 +350,16 @@ function rspGet(req, rsp, path) {
         return;
     }
     if (path.path === '/login') {
-        return auth.get(req, rsp, db, API_DIR);
+        return auth.get(req, rsp, db);
     }
     if (path.path === '/' || path.resource === '') {
-        return site.home(req, rsp, db, API_DIR);
+        return site.home(req, rsp, db);
     }
     if (path.resource === 'band') {
-        return band.get(req, rsp, db, API_DIR);
+        return band.get(req, rsp, db);
     }
     if (path.path === '/logout') {
-        return auth.logout(req, rsp, db, API_DIR);
+        return auth.logout(req, rsp, db);
     }
     if (path.resource === `data`) {
         rsp.setHeader('Cache-Control', 'max-age=0,no-cache,no-store,post-check=0,pre-check=0');
@@ -377,34 +377,34 @@ function rspGet(req, rsp, path) {
         return;
     }
     if (path.resource === 'gig') {
-        return gig.get(req, rsp, path.id, db, API_DIR, MAP_KEY);
+        return gig.get(req, rsp, path.id, db, MAP_KEY);
     }
     if (path.resource === 'venue') {
-        return venue.get(req, rsp, path.id, db, API_DIR);
+        return venue.get(req, rsp, path.id, db);
     }
     if (path.resource === 'song') {
-        return song.get(req, rsp, path.id, path.qs, db, API_DIR);
+        return song.get(req, rsp, path.id, path.qs, db);
     }
     if (path.resource === 'announcement') {
-        return announcement.get(req, rsp, path.id, db, API_DIR);
+        return announcement.get(req, rsp, path.id, db);
     }
     if (path.resource === 'user') {
-        return user.get(req, rsp, path.id, db, API_DIR);
+        return user.get(req, rsp, path.id, db);
     }
     if (path.resource === 'site') {
-        return site.get(req, rsp, db, API_DIR);
+        return site.get(req, rsp, db);
     }
     if (path.resource === 'release') {
-        return release.get(req, rsp, path.id, db, API_DIR);
+        return release.get(req, rsp, path.id, db);
     }
     if (path.resource === 'delete') {
-        return getDelete(req, rsp, db, API_DIR);
+        return getDelete(req, rsp, db);
     }
     if (path.resource === "password") {
-        return auth.getPassword(req, rsp, path.id, db, API_DIR);
+        return auth.getPassword(req, rsp, path.id, db);
     }
     if (path.resource === "photo") {
-        return photo.get(req, rsp, path.id, db, API_DIR);
+        return photo.get(req, rsp, path.id, db);
     }
     // if (path.pathname === `${API_DIR}/forgot-password`) {}
 

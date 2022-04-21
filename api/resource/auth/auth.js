@@ -53,7 +53,7 @@ function isUserLockedOut(username) {
     return false;
 }
 
-function fail(req, rsp, msg, db, API_DIR, email) {
+function fail(req, rsp, msg, db, email) {
     var passwordAutofocus = "";
     var emailAutofocus = "";
     var secure = (process.env.DEV === "Y") ? "" : " Secure";
@@ -73,7 +73,7 @@ function fail(req, rsp, msg, db, API_DIR, email) {
         return main.returnJson(rsp, {"msg": msg}, 403);
     } else {
         rsp.writeHead(403, {'Content-Type': 'text/html'});
-        rsp.end(main.renderPage(req, template.login, {"msg": msg, "email": email, "passwordAutofocus": passwordAutofocus, "emailAutofocus": emailAutofocus}, db, API_DIR));
+        rsp.end(main.renderPage(req, template.login, {"msg": msg, "email": email, "passwordAutofocus": passwordAutofocus, "emailAutofocus": emailAutofocus}, db));
     }
     return false;
 }
@@ -148,52 +148,52 @@ function login(req, rsp, body, db, API_DIR) {
     var userData;
 
     if (!body.username) {
-        return fail(req, rsp, `User email required.`, db, API_DIR);
+        return fail(req, rsp, `User email required.`, db);
     }
 
     if (!body.password) {
-        return fail(req, rsp, `Password required.`, db, API_DIR, body.username);
+        return fail(req, rsp, `Password required.`, db, body.username);
     }
 
     userId = main.getUserIdByEmail(body.username, db.user);
     userData = db.user[userId];
     if (!userId) {
         addFailedLogin(userId);
-        return fail(req, rsp, `Bad username and/or password`, db, API_DIR, body.username);
+        return fail(req, rsp, `Bad username and/or password`, db, body.username);
     }
 
     if (!userData.hash) {
-        return fail(req, rsp, 'User not able to log in. Please contact your moderator.', db, API_DIR, body.username);
+        return fail(req, rsp, 'User not able to log in. Please contact your moderator.', db, body.username);
     }
 
     if (isUserLockedOut(userId)) {
         lockoutDuration = Math.round(LOCKOUT_DURATION_SECONDS / 60000);
         return fail(req, rsp, `User locked out from too many failed attempts.
-        Try again in ${lockoutDuration} minutes.`, db, API_DIR, body.username);
+        Try again in ${lockoutDuration} minutes.`, db, body.username);
     }
 
     if (userData.hash === main.hash(body.password, userData.salt)) {
         setLoginCookie(rsp, userData, userId);
         rsp.writeHead(303, {'Content-Type': 'text/html', "Location": `${API_DIR}/site`});
-        rsp.end(main.renderPage(req, null, {"msg": ["Logged in"], "title": `Logged in`, "link": `${API_DIR}/`}, db, API_DIR));
+        rsp.end(main.renderPage(req, null, {"msg": ["Logged in"], "title": `Logged in`, "link": `${API_DIR}/`}, db));
         return true;
     }
 
     // Failed login
     addFailedLogin(userId);
-    fail(req, rsp, 'Bad username and/or password', db, API_DIR, body.username);
+    fail(req, rsp, 'Bad username and/or password', db, body.username);
     return false;
 }
 this.login = login;
 
-function logout(req, rsp, db, API_DIR) {
+function logout(req, rsp, db) {
     var secure = (process.env.DEV === "Y") ? "" : " Secure";
     rsp.setHeader('Set-Cookie', [
         `token=; Path=/; SameSite=Strict; HttpOnly;${secure}`, // make secure later
         `user=; Path=/; SameSite=Strict; HttpOnly;${secure}` // make secure later
     ]);
-    rsp.writeHead(303, {'Content-Type': 'text/html', "Location": `${API_DIR}/`});
-    rsp.end(main.renderPage(req, null, {"msg": ["Logged out"], "title": `Logged out`, "link": `${API_DIR}/`}, db, API_DIR));
+    rsp.writeHead(303, {'Content-Type': 'text/html', "Location": `${process.env.SUBDIR}/`});
+    rsp.end(main.renderPage(req, null, {"msg": ["Logged out"], "title": `Logged out`, "link": `${process.env.SUBDIR}/`}, db));
 }
 this.logout = logout;
 
@@ -201,14 +201,14 @@ function set(req, rsp, id, formData, db, save, API_DIR) {
     var error = isSetInvalid(req, formData, db, id);
     if (error.length) {
         rsp.writeHead(400, {'Content-Type': 'text/html'});
-        rsp.end(main.renderPage(req, template.password, Object.assign(main.addMessages("", error), {"token": formData.token, "email": formData.email, "id": id}), db, API_DIR));
+        rsp.end(main.renderPage(req, template.password, Object.assign(main.addMessages("", error), {"token": formData.token, "email": formData.email, "id": id}), db));
         return;
     }
 
     updatePassword(id, formData, db, save);
     setLoginCookie(rsp, db.user[id], id);
     rsp.writeHead(303, {'Content-Type': 'text/html', "Location": `${API_DIR}/`});
-    rsp.end(main.renderPage(req, null, {"msg": ["Password set"], "title": `Password set`, "link": `${API_DIR}/`}, db, API_DIR));
+    rsp.end(main.renderPage(req, null, {"msg": ["Password set"], "title": `Password set`, "link": `${API_DIR}/`}, db));
     return;
 }
 this.set = set;
@@ -234,7 +234,7 @@ this.reset = function(req, rsp, id, db, save, API_DIR) {
     var returnUrl = `http://${req.headers.host}${API_DIR}/password/${id}?token=${token}`;
     // sendResetEmail(returnUrl, rsp, data.user[path.id].email, 'reset-password');
     rsp.writeHead(200, {'Content-Type': 'text/html'});//.end(`Complete reset at: ${returnUrl}`);
-    rsp.end(main.renderPage(req, null, {"msg": ["Password reset"], "title": `Password Reset`, "link": returnUrl}, db, API_DIR));
+    rsp.end(main.renderPage(req, null, {"msg": ["Password reset"], "title": `Password Reset`, "link": returnUrl}, db));
     return;
 };
 
@@ -246,7 +246,7 @@ this.update = function (req, rsp, id, formData, db, save, API_DIR) {
     var error = isUpdateInvalid(formData, db, id);
     if (error.length) {
         rsp.writeHead(400, {'Content-Type': 'text/html'});
-        rsp.end(main.renderPage(req, template.user, single(db, id, req, "", error), db, API_DIR));
+        rsp.end(main.renderPage(req, template.user, single(db, id, req, "", error), db));
         return;
     }
 
@@ -261,19 +261,19 @@ this.update = function (req, rsp, id, formData, db, save, API_DIR) {
 
     returnData.back = req.headers.referer;
     rsp.writeHead(303, {'Content-Type': 'text/html', "Location": `${API_DIR}/user/`});
-    rsp.end(main.renderPage(req, null, returnData, db, API_DIR));
+    rsp.end(main.renderPage(req, null, returnData, db));
 };
 
-this.get = function (req, rsp, db, API_DIR) {
+this.get = function (req, rsp, db) {
     if (req.headers.accept === 'application/json') {
         return main.returnJson(rsp, {});
     }
 
     rsp.writeHead(200, {'Content-Type': 'text/html'});
-    rsp.end(main.renderPage(req, template.login, {}, db, API_DIR));
+    rsp.end(main.renderPage(req, template.login, {}, db));
 };
 
-this.getPassword = function (req, rsp, id, db, API_DIR) {
+this.getPassword = function (req, rsp, id, db) {
     var qs = url.parse(req.url, true).query;
     var pwData = {"id": id, "token": qs.token, "msg": []};
 
@@ -298,10 +298,10 @@ this.getPassword = function (req, rsp, id, db, API_DIR) {
 
     if (pwData.msg.length === 0) {
         rsp.writeHead(200, {'Content-Type': 'text/html'});
-        rsp.end(main.renderPage(req, template.password, pwData, db, API_DIR));
+        rsp.end(main.renderPage(req, template.password, pwData, db));
     } else {
         rsp.writeHead(400, {'Content-Type': 'text/html'});
-        rsp.end(main.renderPage(req, template.password, pwData, db, API_DIR));
+        rsp.end(main.renderPage(req, template.password, pwData, db));
     }
 };
 

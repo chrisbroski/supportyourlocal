@@ -299,7 +299,7 @@ this.create = function (req, rsp, formData, db, save, API_DIR) {
         returnData.formData = formData;
         returnData.venues = venueList(db, formData.venue);
         rsp.writeHead(400, {'Content-Type': 'text/html'});
-        rsp.end(main.renderPage(req, template.list, returnData, db, API_DIR));
+        rsp.end(main.renderPage(req, template.list, returnData, db));
         return;
     }
 
@@ -315,7 +315,7 @@ this.create = function (req, rsp, formData, db, save, API_DIR) {
     rsp.end(main.renderPage(req, template.list, Object.assign({
         "hasMsg": true,
         "link": {"text": `Created ${resourceName} id ${id}`, "href": `${API_DIR}/${resourceName}/${id}`}
-    }, list(req, db)), db, API_DIR));
+    }, list(req, db)), db));
 };
 
 this.update = function (req, rsp, id, formData, db, save, API_DIR) {
@@ -325,7 +325,7 @@ this.update = function (req, rsp, id, formData, db, save, API_DIR) {
     var error = isUpdateInvalid(formData);
     if (error.length) {
         rsp.writeHead(400, {'Content-Type': 'text/html'});
-        rsp.end(main.renderPage(req, template.single, single(db, id, "", error), db, API_DIR));
+        rsp.end(main.renderPage(req, template.single, single(db, id, "", error), db));
         return;
     }
 
@@ -337,7 +337,7 @@ this.update = function (req, rsp, id, formData, db, save, API_DIR) {
     }
 
     rsp.writeHead(200, {'Content-Type': 'text/html'});
-    rsp.end(main.renderPage(req, template.single, single(db, id, [`${resourceName} id ${id} updated.`]), db, API_DIR));
+    rsp.end(main.renderPage(req, template.single, single(db, id, [`${resourceName} id ${id} updated.`]), db));
 };
 
 this.remove = function (req, rsp, id, db, save, API_DIR) {
@@ -357,10 +357,10 @@ this.remove = function (req, rsp, id, db, save, API_DIR) {
     }
 
     rsp.writeHead(200, {'Content-Type': 'text/html'});
-    rsp.end(main.renderPage(req, null, returnData, db, API_DIR));
+    rsp.end(main.renderPage(req, null, returnData, db));
 };
 
-this.get = function (req, rsp, id, db, API_DIR, mapKey) {
+this.get = function (req, rsp, id, db, mapKey) {
     rsp.setHeader('Cache-Control', 'max-age=0,no-cache,no-store,post-check=0,pre-check=0');
     if (id) {
         if (!db[resourceName][id]) {
@@ -371,9 +371,9 @@ this.get = function (req, rsp, id, db, API_DIR, mapKey) {
         }
         rsp.writeHead(200, {'Content-Type': 'text/html'});
         if (main.isLoggedIn(req, db.user)) {
-            rsp.end(main.renderPage(req, template.single, single(db, id), db, API_DIR));
+            rsp.end(main.renderPage(req, template.single, single(db, id), db));
         } else {
-            rsp.end(main.renderPage(req, template.singleNoAuth, singleNoAuth(db, id), db, API_DIR));
+            rsp.end(main.renderPage(req, template.singleNoAuth, singleNoAuth(db, id), db));
         }
     } else {
         if (req.headers.accept === 'application/json') {
@@ -381,9 +381,9 @@ this.get = function (req, rsp, id, db, API_DIR, mapKey) {
         }
         rsp.writeHead(200, {'Content-Type': 'text/html'});
         if (main.isLoggedIn(req, db.user)) {
-            rsp.end(main.renderPage(req, template.list, list(req, db), db, API_DIR));
+            rsp.end(main.renderPage(req, template.list, list(req, db), db));
         } else {
-            rsp.end(main.renderPage(req, template.listNoAuth, listNoAuth(req, db), db, API_DIR));
+            rsp.end(main.renderPage(req, template.listNoAuth, listNoAuth(req, db), db));
         }
     }
 };

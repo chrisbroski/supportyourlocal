@@ -128,7 +128,7 @@ this.setup = function (req, rsp, formData, db, save, API_DIR, setupToken) {
             "hasError": true,
             "error": error,
             "formData": formData
-        }, db, API_DIR));
+        }, db));
         return;
     }
 
@@ -148,7 +148,7 @@ this.update = function (req, rsp, formData, db, save, API_DIR) {
     var error = isUpdateInvalid(formData);
     if (error.length) {
         rsp.writeHead(400, {'Content-Type': 'text/html'});
-        rsp.end(main.renderPage(req, template.single, single(db, "", error), db, API_DIR));
+        rsp.end(main.renderPage(req, template.single, single(db, "", error), db));
         return;
     }
 
@@ -160,10 +160,8 @@ this.update = function (req, rsp, formData, db, save, API_DIR) {
         return main.returnJson(rsp, returnData);
     }
 
-    // returnData.back = req.headers.referer;
     rsp.writeHead(200, {'Content-Type': 'text/html'});
-    // rsp.end(main.renderPage(req, null, returnData, db, API_DIR));
-    rsp.end(main.renderPage(req, template.site, single(db, [`${resourceName} updated.`]), db, API_DIR));
+    rsp.end(main.renderPage(req, template.site, single(db, [`${resourceName} updated.`]), db));
 };
 
 function getCustomCSS(site) {
@@ -367,26 +365,26 @@ this.start = function (req, rsp, db, API_DIR, qs) {
     rsp.end(main.renderPage(req, template.start, {"setup-token": setupToken}, db, API_DIR));
 };
 
-this.get = function (req, rsp, db, API_DIR) {
+this.get = function (req, rsp, db) {
     rsp.setHeader('Cache-Control', 'max-age=0,no-cache,no-store,post-check=0,pre-check=0');
     if (req.headers.accept === 'application/json') {
         return siteData(rsp, db);
     }
     rsp.writeHead(200, {'Content-Type': 'text/html'});
-    rsp.end(main.renderPage(req, template.site, single(db), db, API_DIR));
+    rsp.end(main.renderPage(req, template.site, single(db), db));
 };
 
-this.home = function (req, rsp, db, API_DIR) {
+this.home = function (req, rsp, db) {
     if (req.headers.accept === 'application/json') {
         rsp.writeHead(200, {'Content-Type': 'application/json'});
         return rsp.end("{}");
     }
     if (main.isLoggedIn(req, db.user)) {
         rsp.writeHead(200, {'Content-Type': 'text/html'});
-        rsp.end(main.renderPage(req, template.home, db.band, db, API_DIR));
+        rsp.end(main.renderPage(req, template.home, db.band, db));
     } else {
         rsp.writeHead(200, {'Content-Type': 'text/html'});
-        rsp.end(main.renderPage(req, template.homeNoAuth, homeNoAuth(db), db, API_DIR));
+        rsp.end(main.renderPage(req, template.homeNoAuth, homeNoAuth(db), db));
     }
     return;
 };

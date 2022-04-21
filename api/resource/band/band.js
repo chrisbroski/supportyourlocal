@@ -87,8 +87,7 @@ this.update = function (req, rsp, formData, db, save, API_DIR) {
     var error = isUpdateInvalid(formData);
     if (error.length) {
         rsp.writeHead(400, {'Content-Type': 'text/html'});
-        // rsp.end(main.renderPage(req, template.single, single(db, id, "", error), db, API_DIR));
-        rsp.end(main.renderPage(req, template.band, single(db, [`${resourceName} updated.`]), db, API_DIR));
+        rsp.end(main.renderPage(req, template.band, single(db, [`${resourceName} updated.`]), db));
         return;
     }
 
@@ -102,20 +101,19 @@ this.update = function (req, rsp, formData, db, save, API_DIR) {
 
     // returnData.back = req.headers.referer;
     rsp.writeHead(200, {'Content-Type': 'text/html'});
-    // rsp.end(main.renderPage(req, null, returnData, db, API_DIR));
     rsp.end(main.renderPage(req, template.band, single(db, [`${resourceName} updated.`]), db, API_DIR));
 };
 
-this.get = function (req, rsp, db, API_DIR) {
+this.get = function (req, rsp, db) {
     rsp.setHeader('Cache-Control', 'max-age=0,no-cache,no-store,post-check=0,pre-check=0');
     if (req.headers.accept === 'application/json') {
         return main.returnJson(rsp, db.band);
     }
     rsp.writeHead(200, {'Content-Type': 'text/html'});
     if (main.isLoggedIn(req, db.user)) {
-        rsp.end(main.renderPage(req, template.band, single(db), db, API_DIR));
+        rsp.end(main.renderPage(req, template.band, single(db), db));
     } else {
-        rsp.end(main.renderPage(req, template.bandNoAuth, singleNoAuth(db), db, API_DIR));
+        rsp.end(main.renderPage(req, template.bandNoAuth, singleNoAuth(db), db));
     }
 };
 

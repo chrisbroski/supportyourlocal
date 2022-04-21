@@ -244,7 +244,7 @@ this.addSong = function (req, rsp, id, formData, db, save, API_DIR) {
             "hasError": true,
             "error": error,
             "formData": formData
-        }, list(db)), db, API_DIR));
+        }, list(db)), db));
         // ^ this needs selected values too
         return;
     }
@@ -262,7 +262,7 @@ this.addSong = function (req, rsp, id, formData, db, save, API_DIR) {
 
     // returnData.back = req.headers.referer;
     rsp.writeHead(201, {'Content-Type': 'text/html'});
-    rsp.end(main.renderPage(req, template.single, single(db, id, ["Song added"]), db, API_DIR));
+    rsp.end(main.renderPage(req, template.single, single(db, id, ["Song added"]), db));
 };
 
 this.reorderSong = function(req, rsp, id, formData, db, save, API_DIR) {
@@ -273,7 +273,7 @@ this.reorderSong = function(req, rsp, id, formData, db, save, API_DIR) {
     var error = isReorderInvalid(formData, db, id);
     if (error.length) {
         rsp.writeHead(400, {'Content-Type': 'text/html'});
-        rsp.end(main.renderPage(req, template.single, single(db, id, "", error), db, API_DIR));
+        rsp.end(main.renderPage(req, template.single, single(db, id, "", error), db));
         return;
     }
 
@@ -285,7 +285,7 @@ this.reorderSong = function(req, rsp, id, formData, db, save, API_DIR) {
     }
 
     rsp.writeHead(200, {'Content-Type': 'text/html'});
-    rsp.end(main.renderPage(req, template.single, single(db, id, [`${resourceName} id ${id} songs updated.`]), db, API_DIR));
+    rsp.end(main.renderPage(req, template.single, single(db, id, [`${resourceName} id ${id} songs updated.`]), db));
 };
 
 this.create = function (req, rsp, formData, db, save, API_DIR) {
@@ -301,7 +301,7 @@ this.create = function (req, rsp, formData, db, save, API_DIR) {
         returnData["back-cover-photos"] = main.displayPhotos(db.photos, formData["cover-back"]);
         returnData.songlist = songList(main.objToArray(db.song), formData["initial-song"]);
         rsp.writeHead(400, {'Content-Type': 'text/html'});
-        rsp.end(main.renderPage(req, template.list, returnData, db, API_DIR));
+        rsp.end(main.renderPage(req, template.list, returnData, db));
         return;
     }
 
@@ -327,7 +327,7 @@ this.update = function (req, rsp, id, formData, db, save, API_DIR) {
     var error = isUpdateInvalid(formData, db, id);
     if (error.length) {
         rsp.writeHead(400, {'Content-Type': 'text/html'});
-        rsp.end(main.renderPage(req, template.single, single(db, id, "", error), db, API_DIR));
+        rsp.end(main.renderPage(req, template.single, single(db, id, "", error), db));
         return;
     }
 
@@ -340,7 +340,7 @@ this.update = function (req, rsp, id, formData, db, save, API_DIR) {
     }
 
     rsp.writeHead(200, {'Content-Type': 'text/html'});
-    rsp.end(main.renderPage(req, template.single, single(db, id, [`${resourceName} id ${id} updated.`]), db, API_DIR));
+    rsp.end(main.renderPage(req, template.single, single(db, id, [`${resourceName} id ${id} updated.`]), db));
 };
 
 this.remove = function (req, rsp, id, db, save, API_DIR) {
@@ -360,10 +360,10 @@ this.remove = function (req, rsp, id, db, save, API_DIR) {
     }
 
     rsp.writeHead(200, {'Content-Type': 'text/html'});
-    rsp.end(main.renderPage(req, null, returnData, db, API_DIR));
+    rsp.end(main.renderPage(req, null, returnData, db));
 };
 
-this.get = function (req, rsp, id, db, API_DIR) {
+this.get = function (req, rsp, id, db) {
     rsp.setHeader('Cache-Control', 'max-age=0,no-cache,no-store,post-check=0,pre-check=0');
     if (id) {
         if (!db[resourceName][id]) {
@@ -374,9 +374,9 @@ this.get = function (req, rsp, id, db, API_DIR) {
         }
         rsp.writeHead(200, {'Content-Type': 'text/html'});
         if (main.isLoggedIn(req, db.user)) {
-            rsp.end(main.renderPage(req, template.single, single(db, id), db, API_DIR));
+            rsp.end(main.renderPage(req, template.single, single(db, id), db));
         } else {
-            rsp.end(main.renderPage(req, template.singleNoAuth, singleNoAuth(db, id), db, API_DIR));
+            rsp.end(main.renderPage(req, template.singleNoAuth, singleNoAuth(db, id), db));
         }
     } else {
         if (req.headers.accept === 'application/json') {
@@ -384,9 +384,9 @@ this.get = function (req, rsp, id, db, API_DIR) {
         }
         rsp.writeHead(200, {'Content-Type': 'text/html'});
         if (main.isLoggedIn(req, db.user)) {
-            rsp.end(main.renderPage(req, template.list, list(db), db, API_DIR));
+            rsp.end(main.renderPage(req, template.list, list(db), db));
         } else {
-            rsp.end(main.renderPage(req, template.listNoAuth, listNoAuth(db), db, API_DIR));
+            rsp.end(main.renderPage(req, template.listNoAuth, listNoAuth(db), db));
         }
     }
 };

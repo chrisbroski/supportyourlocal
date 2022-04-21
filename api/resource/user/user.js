@@ -143,7 +143,7 @@ this.create = function (req, rsp, formData, db, save, API_DIR) {
         returnData.adminChecked = (formData.admin === "Y") ? ' checked="checked"': "";
         returnData.memberChecked = (formData.bandMember === "Y") ? ' checked="checked"': "";
         rsp.writeHead(400, {'Content-Type': 'text/html'});
-        rsp.end(main.renderPage(req, template.list, returnData, db, API_DIR));
+        rsp.end(main.renderPage(req, template.list, returnData, db));
         return;
     }
 
@@ -161,7 +161,7 @@ this.create = function (req, rsp, formData, db, save, API_DIR) {
     rsp.end(main.renderPage(req, template.list, Object.assign({
         "hasMsg": true,
         "link": {"text": `Created ${resourceName} id ${id}`, "href": `${API_DIR}/${resourceName}/${id}`}
-    }, list(db)), db, API_DIR));
+    }, list(db)), db));
 };
 
 this.update = function (req, rsp, id, formData, db, save, API_DIR) {
@@ -172,7 +172,7 @@ this.update = function (req, rsp, id, formData, db, save, API_DIR) {
     var error = isUpdateInvalid(req, rsp, formData);
     if (error.length) {
         rsp.writeHead(400, {'Content-Type': 'text/html'});
-        rsp.end(main.renderPage(req, template.single, single(db, id, req, "", error), db, API_DIR));
+        rsp.end(main.renderPage(req, template.single, single(db, id, req, "", error), db));
         return;
     }
 
@@ -183,10 +183,8 @@ this.update = function (req, rsp, id, formData, db, save, API_DIR) {
         return main.returnJson(rsp, returnData);
     }
 
-    // returnData.back = req.headers.referer;
     rsp.writeHead(200, {'Content-Type': 'text/html'});
-    rsp.end(main.renderPage(req, template.single, single(db, id, req, [`${resourceName} id ${id} updated.`]), db, API_DIR));
-    // rsp.end(main.renderPage(req, null, returnData, db, API_DIR));
+    rsp.end(main.renderPage(req, template.single, single(db, id, req, [`${resourceName} id ${id} updated.`]), db));
 };
 
 this.remove = function (req, rsp, id, db, save, API_DIR) {
@@ -209,7 +207,7 @@ this.remove = function (req, rsp, id, db, save, API_DIR) {
     rsp.end(main.renderPage(req, null, returnData, db, API_DIR));
 };
 
-this.get = function (req, rsp, id, db, API_DIR) {
+this.get = function (req, rsp, id, db) {
     rsp.setHeader('Cache-Control', 'max-age=0,no-cache,no-store,post-check=0,pre-check=0');
     if (id) {
         if (!db[resourceName][id]) {
@@ -219,13 +217,13 @@ this.get = function (req, rsp, id, db, API_DIR) {
             return main.returnJson(rsp, singleData(db, id));
         }
         rsp.writeHead(200, {'Content-Type': 'text/html'});
-        rsp.end(main.renderPage(req, template.single, single(db, id, req), db, API_DIR));
+        rsp.end(main.renderPage(req, template.single, single(db, id, req), db));
     } else {
         if (req.headers.accept === 'application/json') {
             return main.returnJson(rsp, listData(db, req));
         }
         rsp.writeHead(200, {'Content-Type': 'text/html'});
-        rsp.end(main.renderPage(req, template.list, list(db), db, API_DIR));
+        rsp.end(main.renderPage(req, template.list, list(db), db));
     }
 };
 

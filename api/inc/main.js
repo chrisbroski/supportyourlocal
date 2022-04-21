@@ -307,7 +307,7 @@ function getUserIdByEmail(email, users) {
 }
 this.getUserIdByEmail = getUserIdByEmail;
 
-function renderPage(req, pageTemplate, d, db, API_DIR) {
+function renderPage(req, pageTemplate, d, db) {
     var userData = getAuthUserData(req, db.user);
     var loggedIn = true;
 
@@ -323,12 +323,12 @@ function renderPage(req, pageTemplate, d, db, API_DIR) {
         "site": db.site,
         "server": req.headers.host,
         "loggedIn": loggedIn,
-        "API_DIR": API_DIR
+        "API_DIR": process.env.SUBDIR
     });
 
     var head = mustache.render(TEMPLATE.head, {
         "cssVersion": cssVer,
-        "API_DIR": API_DIR
+        "API_DIR": process.env.SUBDIR
     });
 
     var messageDisplay = mustache.render(TEMPLATE.msg, {
@@ -348,7 +348,7 @@ function renderPage(req, pageTemplate, d, db, API_DIR) {
         "homeName": db.band.name,
         "message-display": messageDisplay,
         "resourceNameCap": toTitleCase(d.resourceName),
-        "API_DIR": API_DIR
+        "API_DIR": process.env.SUBDIR
     }, d));
 }
 this.renderPage = renderPage;
