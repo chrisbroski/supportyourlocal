@@ -236,7 +236,7 @@ this.addSong = function (req, rsp, id, formData, db, save, API_DIR) {
     // }
 
     // var id = main.createResource(formData, db, save, resourceName, updateResource);
-    // var returnData = main.responseData(id, resourceName, db, "Song Added", API_DIR, ["Song added"]);
+    // var returnData = main.responseData(id, resourceName, db, "Song Added", ["Song added"]);
     var error = isSongInvalid(formData);
     if (error.length) {
         rsp.writeHead(400, {'Content-Type': 'text/html'});
@@ -249,7 +249,7 @@ this.addSong = function (req, rsp, id, formData, db, save, API_DIR) {
         return;
     }
     // var id = main.createResource(formData, db, save, resourceName, updateResource);
-    // var returnData = main.responseData(id, resourceName, db, "Song Added", API_DIR, ["Song added"]);
+    // var returnData = main.responseData(id, resourceName, db, "Song Added", ["Song added"]);
     if (formData["song-id"]) {
         db[resourceName][id].songs.push(formData["song-id"]);
     }
@@ -278,7 +278,7 @@ this.reorderSong = function(req, rsp, id, formData, db, save, API_DIR) {
     }
 
     patchResource(id, formData, db, save);
-    var returnData = main.responseData(id, resourceName, db, "Updated", API_DIR);
+    var returnData = main.responseData(id, resourceName, db, "Updated");
 
     if (req.headers.accept === 'application/json') {
         return main.returnJson(rsp, returnData);
@@ -306,7 +306,7 @@ this.create = function (req, rsp, formData, db, save, API_DIR) {
     }
 
     var id = main.createResource(formData, db, save, resourceName, updateResource);
-    returnData = main.responseData(id, resourceName, db, "Created", API_DIR);
+    returnData = main.responseData(id, resourceName, db, "Created");
 
     if (req.headers.accept === 'application/json') {
         rsp.setHeader("Location", `${API_DIR}/${resourceName}/${id}`);
@@ -333,7 +333,7 @@ this.update = function (req, rsp, id, formData, db, save, API_DIR) {
 
     // validate more fields
     updateResource(id, formData, db, save);
-    var returnData = main.responseData(id, resourceName, db, "Updated", API_DIR);
+    var returnData = main.responseData(id, resourceName, db, "Updated");
 
     if (req.headers.accept === 'application/json') {
         return main.returnJson(rsp, returnData);
@@ -353,7 +353,7 @@ this.remove = function (req, rsp, id, db, save, API_DIR) {
     delete db[resourceName][id];
     save();
 
-    var returnData = main.responseData(id, resourceName, db, "Deleted", API_DIR, [`${resourceName} '${name}' deleted.`]);
+    var returnData = main.responseData(id, resourceName, db, "Deleted", [`${resourceName} '${name}' deleted.`]);
 
     if (req.headers.accept === 'application/json') {
         return main.returnJson(rsp, returnData);

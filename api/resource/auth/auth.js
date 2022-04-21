@@ -253,7 +253,7 @@ this.update = function (req, rsp, id, formData, db, save, API_DIR) {
 
     // validate more fields
     updatePassword(id, formData, db, save);
-    var returnData = main.responseData("", "", db, "Change Password", API_DIR, ["Password updated."]);
+    var returnData = main.responseData("", "", db, "Change Password", ["Password updated."]);
     setLoginCookie(rsp, db.user[id], id);
 
     if (req.headers.accept === 'application/json') {

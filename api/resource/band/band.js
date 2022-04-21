@@ -94,7 +94,7 @@ this.update = function (req, rsp, formData, db, save, API_DIR) {
 
     updateResource(formData, db, save);
 
-    var returnData = main.responseData("", resourceName, db, "Updated", API_DIR, ["Band information updated."]);
+    var returnData = main.responseData("", resourceName, db, "Updated", ["Band information updated."]);
 
     if (req.headers.accept === 'application/json') {
         return main.returnJson(rsp, returnData);

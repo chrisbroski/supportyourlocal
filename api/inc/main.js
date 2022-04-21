@@ -236,18 +236,18 @@ function createResource(formData, db, save, resourceName, updateResource) {
 }
 this.createResource = createResource;
 
-function responseData(id, resourceName, db, action, API_DIR, msg) {
+function responseData(id, resourceName, db, action, msg) {
     var responseJson = {
         "id": id
     };
     if (resourceName && id) {
         responseJson.data = db[resourceName][id];
-        responseJson.link = `${API_DIR}/${resourceName}/${id}`;
+        responseJson.link = `${process.env.SUBDIR}/${resourceName}/${id}`;
         responseJson.title = `${action} ${toTitleCase(resourceName)}`;
     }
 
     if (action === "Deleted" && resourceName) {
-        responseJson.link = `${API_DIR}/${resourceName}/`;
+        responseJson.link = `${process.env.SUBDIR}/${resourceName}/`;
     }
 
     if (msg && msg.length > 0) {

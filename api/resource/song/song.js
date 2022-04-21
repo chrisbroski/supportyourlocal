@@ -166,7 +166,7 @@ this.create = function (req, rsp, formData, db, save, API_DIR) {
     }
 
     var id = main.createResource(formData, db, save, resourceName, updateResource);
-    returnData = main.responseData(id, resourceName, db, "Created", API_DIR);
+    returnData = main.responseData(id, resourceName, db, "Created");
 
     if (req.headers.accept === 'application/json') {
         rsp.setHeader("Location", returnData.link);
@@ -197,7 +197,7 @@ this.update = function (req, rsp, id, formData, db, save, API_DIR) {
 
     // validate more fields
     updateResource(id, formData, db, save);
-    returnData = main.responseData(id, resourceName, db, "Updated", API_DIR);
+    returnData = main.responseData(id, resourceName, db, "Updated");
 
     if (req.headers.accept === 'application/json') {
         return main.returnJson(rsp, returnData);
@@ -218,7 +218,7 @@ this.remove = function (req, rsp, id, db, save, API_DIR) {
     delete db[resourceName][id];
     save();
 
-    var returnData = main.responseData(id, resourceName, db, "Deleted", API_DIR, [`${resourceName} '${name}' deleted.`]);
+    var returnData = main.responseData(id, resourceName, db, "Deleted", [`${resourceName} '${name}' deleted.`]);
 
     if (req.headers.accept === 'application/json') {
         return main.returnJson(rsp, returnData);
