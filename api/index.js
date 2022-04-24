@@ -730,7 +730,9 @@ function startHTTP() {
     global.photoStorageUsed = Object.values(db.photo).reduce((total, b) => {
         return total + b.size;
     }, 0);
-    cssMainVer = +(new Date(cssStat.mtime));
+    if (cssStat) {
+        cssMainVer = +(new Date(cssStat.mtime));
+    }
 }
 
 init();
