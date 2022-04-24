@@ -697,13 +697,14 @@ function init() {
     });
 }
 
+var cssStat;
 async function loadData() {
     db = await endure.load(`${__dirname}/../data`);
     if (process.env.PHOTO_PATH) {
         db.photo = await photos(process.env.PHOTO_PATH);
     }
     if (process.env.CSS_FRONT) {
-        cssMainVer = await fs.stat(process.env.CSS_FRONT).mtime;
+        cssStat = await fs.stat(process.env.CSS_FRONT);
     }
 
     ASSET.favicon = await fs.readFile(`${__dirname}/inc/favicon.png`);
@@ -729,6 +730,7 @@ function startHTTP() {
     global.photoStorageUsed = Object.values(db.photo).reduce((total, b) => {
         return total + b.size;
     }, 0);
+    cssMainVer = +(new Date(cssStat.mtime));
 }
 
 init();
