@@ -40,8 +40,8 @@ function single(db, id, msg, error) {
         "pageName": pageName(db, id),
         "songlist": songList(main.objToArray(db.song)),
         "albumList": albumList(db[resourceName][id].songs, db),
-        "front-cover-photos": main.displayPhotos(db.photos, db[resourceName][id]["cover-front"]),
-        "back-cover-photos": main.displayPhotos(db.photos, db[resourceName][id]["cover-back"]),
+        "front-cover-photos": main.displayPhotos(db.photo, db[resourceName][id]["cover-front"]),
+        "back-cover-photos": main.displayPhotos(db.photo, db[resourceName][id]["cover-back"]),
         "no-photo": main.noPhotoSelected(db[resourceName][id].photo),
         "releases": main.objToArray(db[resourceName]).sort(main.sortByDateDesc).map(r => {
             r.releaseName = r.name || db.song[r.songs[0]].name;
@@ -60,8 +60,8 @@ function singleNoAuth(db, id) {
         "songlist": songList(main.objToArray(db.song)),
         "hasAlbumList": db[resourceName][id].songs.length > 1,
         "albumList": albumList(db[resourceName][id].songs, db),
-        "front-cover-photos": main.displayPhotos(db.photos, db[resourceName][id]["cover-front"]),
-        "back-cover-photos": main.displayPhotos(db.photos, db[resourceName][id]["cover-back"]),
+        "front-cover-photos": main.displayPhotos(db.photo, db[resourceName][id]["cover-front"]),
+        "back-cover-photos": main.displayPhotos(db.photo, db[resourceName][id]["cover-back"]),
         "releaseLink": db[resourceName][id].audio.spotify || db.song[db[resourceName][id].songs[0]].audio.spotify,
         "descHtml": converter.makeHtml(db[resourceName][id].desc),
         "hasVideo": (db[resourceName][id].video && (db[resourceName][id].video.fb || db[resourceName][id].video.youtube))
@@ -81,8 +81,8 @@ function list(db, msg, error, link) {
         // "today": main.dateFormat(new Date()),
         "resourceName": resourceName,
         "songlist": songList(main.objToArray(db.song)),
-        "front-cover-photos": main.displayPhotos(db.photos),
-        "back-cover-photos": main.displayPhotos(db.photos),
+        "front-cover-photos": main.displayPhotos(db.photo),
+        "back-cover-photos": main.displayPhotos(db.photo),
         "no-photo": main.noPhotoSelected(),
         "pageName": `${main.toTitleCase(resourceName)}s`,
         "formData": {"date": main.dateFormat(new Date())}
@@ -107,7 +107,7 @@ function listNoAuth(db) {
         // "today": main.dateFormat(new Date()),
         "resourceName": resourceName,
         "songlist": songList(main.objToArray(db.song)),
-        "photos": db.photos,
+        "photos": db.photo,
         "no-photo": main.noPhotoSelected(),
         "pageName": `${main.toTitleCase(resourceName)}s`
     };
@@ -297,8 +297,8 @@ this.create = function (req, rsp, formData, db, save) {
             "error": error
         }, list(db));
         returnData.formData = formData;
-        returnData["front-cover-photos"] = main.displayPhotos(db.photos, formData["cover-front"]);
-        returnData["back-cover-photos"] = main.displayPhotos(db.photos, formData["cover-back"]);
+        returnData["front-cover-photos"] = main.displayPhotos(db.photo, formData["cover-front"]);
+        returnData["back-cover-photos"] = main.displayPhotos(db.photo, formData["cover-back"]);
         returnData.songlist = songList(main.objToArray(db.song), formData["initial-song"]);
         rsp.writeHead(400, {'Content-Type': 'text/html'});
         rsp.end(main.renderPage(req, template.list, returnData, db));

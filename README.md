@@ -61,9 +61,13 @@ All https
 * Monitor max storage
 * Add to photo data: size and dimensions
 
-Tip jar page
+X Photo upload, delete, and monitor max storage for next release. Others photo features for later.
 
-Get rid of the "header" include crap, but add a "head" include crap with Title and other meta-data. (To support front-end feature.)
+Add payment options to band page: venmo, paypal, cashapp, Patreon
+
+X Get rid of the "header" include crap, but add a "head" include crap with Title and other meta-data. (To support front-end feature.)
+
+X Remove "url" library - replace with native
 
 ### Sub-Array Data
 

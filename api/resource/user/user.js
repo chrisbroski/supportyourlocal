@@ -39,7 +39,7 @@ function single(db, id, req, msg, error) {
         "memberChecked": !!db[resourceName][id].bandMember ? ' checked="checked"' : '',
         "isOwnUser": (authUserData.userid === id),
         "countries": main.country(db[resourceName][id].country),
-        "photos": main.displayPhotos(db.photos, db[resourceName][id].photo),
+        "photos": main.displayPhotos(db.photo, db[resourceName][id].photo),
         "no-photo": main.noPhotoSelected(db[resourceName][id].photo),
         "users": users
     }, db[resourceName][id]);
@@ -54,7 +54,7 @@ function list(db, msg, error, link) {
         "today": main.dateFormat(new Date()),
         "resourceName": resourceName,
         "countries": main.country(),
-        "photos": main.displayPhotos(db.photos),
+        "photos": main.displayPhotos(db.photo),
         "no-photo": main.noPhotoSelected(),
         "pageName": "Members"
     };
@@ -139,7 +139,7 @@ this.create = function (req, rsp, formData, db, save) {
             "formData": formData
         }, list(db));
         returnData.countries = main.country(formData.country);
-        returnData.photos = main.displayPhotos(db.photos, formData.photo);
+        returnData.photos = main.displayPhotos(db.photo, formData.photo);
 
         returnData.adminChecked = (formData.admin === "Y") ? ' checked="checked"': "";
         returnData.memberChecked = (formData.bandMember === "Y") ? ' checked="checked"': "";

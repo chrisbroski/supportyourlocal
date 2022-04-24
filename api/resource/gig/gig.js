@@ -2,7 +2,6 @@ const fs = require("fs").promises;
 const showdown  = require('showdown');
 const converter = new showdown.Converter({"noHeaderId": true, "simpleLineBreaks": true});
 const main = require('../../inc/main.js');
-var url = require('url');
 
 const resourceName = 'gig';
 const template = {};
@@ -140,7 +139,7 @@ function singleNoAuth(db, id) {
 }
 
 function list(req, db, msg, error, link) {
-    var qs = url.parse(req.url, true).query;
+    var qs = main.parseQs(req.url, true);
     var now = new Date();
     var gigs = main.objToArray(db[resourceName]);
     var pageName = "Gigs";
@@ -183,7 +182,7 @@ function list(req, db, msg, error, link) {
 }
 
 function listNoAuth(req, db) {
-    var qs = url.parse(req.url, true).query;
+    var qs = main.parseQs(req.url, true);
     var now = new Date();
     var gigs = main.objToArray(db[resourceName]);
     var pageName = "Shows";
@@ -243,7 +242,7 @@ function singleData(db, id, mapKey) {
 }
 
 function listData(db, req, mapKey) {
-    var qs = url.parse(req.url, true).query;
+    var qs = main.parseQs(req.url, true);
     var now = new Date();
     var gigData = {};
     gigData.resourceName = resourceName;

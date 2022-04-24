@@ -1,6 +1,5 @@
 const fs = require("fs").promises;
 const main = require('../../inc/main.js');
-var url = require('url');
 
 const template = {};
 const failedLogins = {};
@@ -20,7 +19,7 @@ function single(db, id, req, msg, error) {
         "memberChecked": !!db.user[id].bandMember ? ' checked="checked"' : '',
         "isOwnUser": (authUserData.userid === id),
         "countries": main.country(db.user[id].country),
-        "photos": main.displayPhotos(db.photos, db.user[id].photo),
+        "photos": main.displayPhotos(db.photo, db.user[id].photo),
         "no-photo": main.noPhotoSelected(db.user[id].photo)
     }, db.user[id]);
 
@@ -276,7 +275,7 @@ this.get = function (req, rsp, db) {
 };
 
 this.getPassword = function (req, rsp, id, db) {
-    var qs = url.parse(req.url, true).query;
+    var qs = main.parseQs(req.url, true);
     var pwData = {"id": id, "token": qs.token, "msg": []};
 
     if (!id || !db.user[id]) {

@@ -1,6 +1,5 @@
 const fs = require("fs").promises;
 const main = require('../../inc/main.js');
-var url = require('url');
 
 const resourceName = 'announcement';
 const template = {};
@@ -66,7 +65,7 @@ function singleData(db, id) {
 }
 
 function listData(db, req) {
-    var qs = url.parse(req.url, true).query;
+    var qs = main.parseQs(req.url, true);
 
     var announcementData = {};
     announcementData.announcements = main.objToArray(db[resourceName]).sort(main.sortByDateDesc);

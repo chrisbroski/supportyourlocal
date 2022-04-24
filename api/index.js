@@ -1,7 +1,6 @@
 // Standard libs
 const http = require('http');
 const fs = require("fs").promises;
-const url = require('url');
 
 // npm modules
 require('dotenv').config();
@@ -9,9 +8,9 @@ require('dotenv').config();
 
 // Configuration
 const PORT = process.env.PORT || 29170;
-// const API_DIR = process.env.API_DIR || "/api";
 process.env.SUBDIR = process.env.API_DIR || "/api";
 const MAP_KEY = process.env.MAP_KEY || "";
+process.env.PHOTO_STORAGE_LIMIT = process.env.PHOTO_STORAGE_LIMIT || 0;
 
 // Custom libs
 const main = require('./inc/main.js');
@@ -36,7 +35,7 @@ const MANIFEST = {
     "$schema": "https://json.schemastore.org/web-manifest-combined.json",
     "name": "Your Local Band",
     "short_name": "YourLocal",
-    "start_url": "/api/",
+    "start_url": process.env.SUBDIR,
     "display": "standalone",
     "background_color": "#fff",
     "description": "Band information system",
@@ -50,6 +49,18 @@ const MANIFEST = {
     "orientation": "portrait"
 };
 var db;
+var cssMainVer = "";
+global.photoStorageUsed = 0;
+
+function htmlEsc(str) {
+    return str.replace(/[\u00A0-\u9999<>\&]/gim, function(i) {
+        return '&#' + i.charCodeAt(0) + ';';
+    });
+}
+
+function attrEsc(str) {
+    return str.replace('"', '&quot;');
+}
 
 function removeQs(fullUrl) {
     if (!fullUrl) {
@@ -111,13 +122,55 @@ function getPath(pathname) {
     };
 }
 
+function parsePath(ref, qs) {
+    var splitted;
+    var parsed;
+    var results = {};
+    if (!ref) {
+        return results;
+    }
+    splitted = ref.split(" ");
+    if (splitted.length < 3) {
+        return results;
+    }
+    results.path = splitted[1];
+    parsed = getPath(process.env.SUBDIR + results.path);
+    results.page = parsed.resource;
+    results.id = "";
+    if (parsed.qs) {
+        results.id = parsed.qs.id || "";
+    }
+    results.resource = qs.resource || "";
+    if (!results.resource) {
+        results.resource = results.page;
+    }
+    results.name = qs.name || "";
+    if (!results.name) {
+        results.name = "name";
+    }
+    return results;
+}
+
 async function photos(path) {
     var photos = await fs.readdir(path);
     var fileTypes = [".jpg", ".jpeg", ".png"];
-    return photos.filter(p => {
+    // var totalPhotoSize = 0;
+    photos = photos.filter(p => {
         var extension = p.slice(p.lastIndexOf(".")).toLowerCase();
         return (fileTypes.indexOf(extension) > -1);
     });
+    var photo = {};
+    await photos.forEach(async p => {
+        const fileStats = await fs.stat(`${path}/${p}`);
+        photo[p] = {};
+        photo[p].size = fileStats.size;
+        // totalPhotoSize += fileStats.size;
+        // console.log(totalPhotoSize);
+    });
+    // console.log(totalPhotoSize);
+    // global.photoStorageUsed = totalPhotoSize;
+    // console.log(global.photoStorageUsed);
+    return photo;
 }
 
 function authenticate(req, rsp, path) {
@@ -161,7 +214,7 @@ function isFileForm(req) {
 }*/
 
 function getDelete(req, rsp) {
-    var searchParams = url.parse(req.url, true).query;
+    var searchParams = main.parseQs(req.url, true);
 
     if (!db[searchParams.resource][searchParams.id]) {
         return main.notFound(rsp, req.url, 'GET', req, db);
@@ -285,6 +338,10 @@ function rspDelete(req, rsp, path) {
         return release.remove(req, rsp, path.id, db, endure.save);
     }
 
+    if (path.resource === 'photo') {
+        return photo.remove(req, rsp, path.id, db, endure.save);
+    }
+
     if (path.resource === `password`) {
         return auth.reset(req, rsp, path.id, db, endure.save);
     }
@@ -298,6 +355,42 @@ function rspPatch(req, rsp, path, body) {
     }
 
     return main.notFound(rsp, req.url, 'PUT', req, db);
+}
+
+function getHead(req, rsp, qs) {
+    var protocol = (process.env.DEV === "Y") ? "http://" : "https://";
+    var metaData = [];
+    var server = req.headers.host;
+    var request = parsePath(req.headers.referrer, qs);
+    var title = [];
+    title.push(htmlEsc(db.band.name));
+    if (request.page) {
+        title.unshift(main.toTitleCase(request.page));
+    }
+
+    var item = "";
+    if (request.id) {
+        if (db[request.resource] && db[request.resource][request.name]) {
+            item = db[request.resource][request.name]; // get id name
+            title.unshift(item);
+        }
+    }
+    metaData.push(`<title>${title.join(" - ")}</title>`);
+    if (db.band.desc) {
+        metaData.push(`<meta name="description" content="${attrEsc(db.band.desc)}">`);
+        metaData.push(`<meta property="og:description" content="${attrEsc(db.band.desc)}" />`);
+    }
+    metaData.push(`<link rel="stylesheet" href="/inc/main.css?v=${cssMainVer}">`);
+    metaData.push('<link rel="icon" href="/favicon.ico">');
+    if (db.site.thumbnail) {
+        metaData.push(`<meta property="og:image" content="${server}/photo/${db.site.thumbnail}" />`);
+    }
+    metaData.push(`<meta property="og:url" content="${protocol}${server}${request.path}" />`);
+    metaData.push('<meta property="og:type" content="website" />');
+    metaData.push(`<meta property="og:title" content="${title.join(" - ")}" />`);
+    rsp.writeHead(200, {'Content-Type': 'text/pht'});
+    rsp.end(metaData.join("\n"));
+    return;
 }
 
 function rspGet(req, rsp, path) {
@@ -397,6 +490,9 @@ function rspGet(req, rsp, path) {
     }
     if (path.resource === "photo") {
         return photo.get(req, rsp, path.id, db);
+    }
+    if (path.resource === "meta") {
+        return getHead(req, rsp, path.qs);
     }
     // if (path.pathname === `${process.env.SUBDIR}/forgot-password`) {}
 
@@ -583,8 +679,9 @@ function collectReqBody(req, rsp) {
 
     req.on('data', function (chunk) {
         body.push(chunk);
-    }).on('end', function () {
-        routeMethods(req, rsp, body.join());
+    });
+    req.on('end', function () {
+        routeMethods(req, rsp, body.join(""));
     });
 }
 
@@ -603,7 +700,10 @@ function init() {
 async function loadData() {
     db = await endure.load(`${__dirname}/../data`);
     if (process.env.PHOTO_PATH) {
-        db.photos = await photos(process.env.PHOTO_PATH);
+        db.photo = await photos(process.env.PHOTO_PATH);
+    }
+    if (process.env.CSS_FRONT) {
+        cssMainVer = await fs.stat(process.env.CSS_FRONT).mtime;
     }
 
     ASSET.favicon = await fs.readFile(`${__dirname}/inc/favicon.png`);
@@ -626,6 +726,9 @@ function startHTTP() {
     http.createServer(collectReqBody).listen(PORT, function () {
         console.log(`Server started on http://0.0.0.0:${PORT}${process.env.SUBDIR}`);
     });
+    global.photoStorageUsed = Object.values(db.photo).reduce((total, b) => {
+        return total + b.size;
+    }, 0);
 }
 
 init();

@@ -1,28 +1,35 @@
 const fs = require("fs").promises;
+const fsCallback = require("fs");
 
 // Custom libs
 const main = require('../../inc/main.js');
 const resourceName = 'photo';
 const template = {};
 
-function single(db, msg, error) {
+function single(db, id, msg, error) {
     var resourceData = {
         "resourceName": resourceName,
         "pageName": 'Photos',
-        "photos": db.photos
+        "photos": Object.keys(db.photo),
+        "id": id,
+        "storageUsed": Math.round(global.photoStorageUsed / 100000)
     };
 
     return Object.assign(main.addMessages(msg, error), resourceData);
 }
 
-function singleNoAuth(db) {
+function list(db, msg, error) {
     var resourceData = {
         "resourceName": resourceName,
         "pageName": 'Photos',
-        "photos": db.photos
+        "photos": Object.keys(db.photo),
+        "storageUsed": Math.round(global.photoStorageUsed / 1000000),
+        "storageLimit": Math.round(process.env.PHOTO_STORAGE_LIMIT / 1000000),
+        "uploadFull": (process.env.PHOTO_STORAGE_LIMIT - global.photoStorageUsed < 0),
+        "bytesLeft": Math.round((process.env.PHOTO_STORAGE_LIMIT - global.photoStorageUsed) / 1000000)
     };
 
-    return resourceData;
+    return Object.assign(main.addMessages(msg, error), resourceData);
 }
 
 function isUpdateInvalid(body) {
@@ -88,12 +95,47 @@ function isPhotoInvalid(body) {
     var msg = [];
     var photoExt = [".png", ".jpg", ".jpeg", ".gif"];
 
+    if (!body.files || body.files.length === 0) {
+        msg.push("You must include a photo.");
+        return msg;
+    }
+
+    console.log(body.files[0].photo.length);
+    if (!body.files || body.files[0].photo.length > 8000000) {
+        msg.push("Photos over 8MB not allowed.");
+    }
+
     if (photoExt.indexOf(body.files[0].type.toLowerCase()) === -1) {
         msg.push(`Only file types allowed: ${photoExt.join(", ")}`);
     }
 
     return msg;
 }
+
+this.remove = function (req, rsp, id, db, save) {
+    if (!db[resourceName][id]) {
+        return main.notFound(rsp, req.url, 'DELETE', req, db);
+    }
+
+    global.photoStorageUsed -= db.photo[id].size;
+    var filePath = `${process.env.PHOTO_PATH}/${id}`;
+    fsCallback.unlink(filePath, (err) => {
+        if (err) throw err;
+        // console.log(filePath);
+    });
+
+    delete db.photo[id];
+    save();
+
+    var returnData = main.responseData(id, resourceName, db, "Deleted", [`${resourceName} '${id}' deleted.`]);
+
+    if (req.headers.accept === 'application/json') {
+        return main.returnJson(rsp, returnData);
+    }
+
+    rsp.writeHead(200, {'Content-Type': 'text/html'});
+    rsp.end(main.renderPage(req, null, returnData, db));
+};
 
 this.create = function (req, rsp, body, db, save) {
     var photoId;
@@ -104,15 +146,21 @@ this.create = function (req, rsp, body, db, save) {
         rsp.end(main.renderPage(req, template.list, single(db, [], error), db));
         return;
     }
+
     photoId = main.makeId();
     filePath = `${process.env.PHOTO_PATH}/${photoId}${body.files[0].type}`;
-    fs.writeFile(filePath, body.files[0].photo, 'binary', (err) => {
+
+    fsCallback.writeFile(filePath, body.files[0].photo, 'binary', (err) => {
+        var size;
         if (err) {
             console.log(err);
         }
         console.log('Photo saved.');
-        db.photos.push(`${photoId}${body.files[0].type}`);
+        db.photo[`${photoId}${body.files[0].type}`] = {};
+        size = body.files[0].photo.length;
+        db.photo[`${photoId}${body.files[0].type}`].size = size;
         save();
+        global.photoStorageUsed += size;
         rsp.writeHead(200, {'Content-Type': 'text/html'});
         rsp.end(main.renderPage(req, template.list, single(db, [`Photo added.`]), db));
     });
@@ -120,33 +168,27 @@ this.create = function (req, rsp, body, db, save) {
 
 this.get = function (req, rsp, id, db) {
     rsp.setHeader('Cache-Control', 'max-age=0,no-cache,no-store,post-check=0,pre-check=0');
-
     if (id) {
         if (!db[resourceName][id]) {
             return main.notFound(rsp, req.url, 'GET', req, db);
         }
         if (req.headers.accept === 'application/json') {
-            return main.returnJson(rsp, db.photos[id]);
+            return main.returnJson(rsp, id);
         }
         rsp.writeHead(200, {'Content-Type': 'text/html'});
         rsp.end(main.renderPage(req, template.single, single(db, id), db));
     } else {
         if (req.headers.accept === 'application/json') {
-            return main.returnJson(rsp, db.photos);
+            return main.returnJson(rsp, db.photo);
         }
         rsp.writeHead(200, {'Content-Type': 'text/html'});
-        if (main.isLoggedIn(req, db.user)) {
-            rsp.end(main.renderPage(req, template.list, single(db), db));
-        } else {
-            rsp.end(main.renderPage(req, template.listNoAuth, singleNoAuth(db), db));
-        }
+        rsp.end(main.renderPage(req, template.list, list(db), db));
     }
 };
 
 async function loadData() {
     template.single = await fs.readFile(`${__dirname}/${resourceName}.html.mustache`, 'utf8');
     template.list = await fs.readFile(`${__dirname}/${resourceName}s.html.mustache`, 'utf8');
-    template.listNoAuth = await fs.readFile(`${__dirname}/${resourceName}-noauth.html.mustache`, 'utf8');
 }
 
 loadData();

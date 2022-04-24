@@ -57,7 +57,7 @@ function displayPhotos(photos, selected) {
     var photoData = [];
     var selectedIdx;
     var selectedPhoto;
-    photos.forEach((p, idx) => {
+    Object.keys(photos).forEach((p, idx) => {
         var sel = '';
         if (selected === p) {
             sel = ' checked="checked"';

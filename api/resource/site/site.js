@@ -28,9 +28,9 @@ function single(db, msg, error) {
         "body-monospace-selected": db.site["body-font-default"] === "monospace" ? ' selected="selected"' : '',
         "body-cursive-selected": db.site["body-font-default"] === "cursive" ? ' selected="selected"' : '',
         "body-fantasy-selected": db.site["body-font-default"] === "fantasy" ? ' selected="selected"' : '',
-        "bg-photos": main.displayPhotos(db.photos, db[resourceName].background),
+        "bg-photos": main.displayPhotos(db.photo, db[resourceName].background),
         "bg-no-photo": main.noPhotoSelected(db[resourceName].background),
-        "thumb-photos": main.displayPhotos(db.photos, db[resourceName].thumbnail),
+        "thumb-photos": main.displayPhotos(db.photo, db[resourceName].thumbnail),
         "thumb-no-photo": main.noPhotoSelected(db[resourceName].thumbnail)
     }, db[resourceName]);
 
