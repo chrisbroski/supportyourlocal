@@ -34,13 +34,23 @@ function singleNoAuth(db) {
         }
     });
 
+    var socials = {};
+    if (db.band.social) {
+        socials = db.band.social;
+    }
+    var payments = {};
+    if (db.band.payment) {
+        payments = db.band.payment;
+    }
     var resourceData = Object.assign({
         "resourceName": resourceName,
         "pageName": 'About',
         "descHtml": converter.makeHtml(db.band.desc),
         "bioHtml": converter.makeHtml(db.band.bio),
         "contactHtml": converter.makeHtml(db.band.contact),
-        "members": members
+        "members": members,
+        "hasSocialMedia": Object.keys(socials).some(s => !!socials[s]),
+        "hasPayment": Object.keys(payments).some(p => !!payments[p])
     }, db[resourceName]);
 
     return resourceData;
@@ -80,6 +90,11 @@ function updateResource(body, db, save) {
     db[resourceName].social.youtube = body["social-youtube"];
     db[resourceName].social.tiktok = body["social-tiktok"];
     db[resourceName].social.podcast = body["social-podcast"];
+
+    if (!db[resourceName].payment) {
+        db[resourceName].payment = {};
+    }
+    db[resourceName].payment.venmo = body["pay-venmo"];
 
     save();
 }
