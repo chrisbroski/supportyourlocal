@@ -63,7 +63,7 @@ All https
 
 X Photo upload, delete, and monitor max storage for next release. Others photo features for later.
 
-Add payment options to band page: venmo, paypal, cashapp, Patreon
+X Add payment options to band page: venmo, paypal, cashapp, Patreon
 
 X Get rid of the "header" include crap, but add a "head" include crap with Title and other meta-data. (To support front-end feature.)
 
