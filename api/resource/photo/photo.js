@@ -100,7 +100,6 @@ function isPhotoInvalid(body) {
         return msg;
     }
 
-    console.log(body.files[0].photo.length);
     if (!body.files || body.files[0].photo.length > 8000000) {
         msg.push("Photos over 8MB not allowed.");
     }
