@@ -383,7 +383,7 @@ function getHead(req, rsp, qs) {
     metaData.push(`<link rel="stylesheet" href="/inc/main.css?v=${cssMainVer}">`);
     metaData.push('<link rel="icon" href="/favicon.ico">');
     if (db.site.thumbnail) {
-        metaData.push(`<meta property="og:image" content="${server}/photo/${db.site.thumbnail}" />`);
+        metaData.push(`<meta property="og:image" content="${protocol}${server}/photo/${db.site.thumbnail}" />`);
     }
     metaData.push(`<meta property="og:url" content="${protocol}${server}${request.path}" />`);
     metaData.push('<meta property="og:type" content="website" />');
