@@ -1,10 +1,10 @@
 # Release Notes
 
-## 1.2.0 - Released 2022-05-01
+## 1.2.1 - Released 2022-04-25
 
 ### Version Information
 
-You are looking at the feature right now!
+You are looking at this feature right now!
 
 ### Bug fixes
 

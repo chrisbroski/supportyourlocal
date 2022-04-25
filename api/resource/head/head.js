@@ -43,6 +43,15 @@ this.get = function (req, rsp, db, qs, cssMainVer) {
     var protocol = (process.env.DEV === "Y") ? "http://" : "https://";
     var metaData = [];
     var server = req.headers.host;
+
+    // remove port 80
+    var serverSplit = server.split(":");
+    if (serverSplit.length > 1) {
+        if (serverSplit[1] === ":80") {
+            server = serverSplit[0];
+        }
+    }
+
     var request = parsePath(req.headers.referrer, qs);
     var title = [];
     title.push(htmlEsc(db.band.name));
