@@ -47,7 +47,7 @@ this.get = function (req, rsp, db, qs, cssMainVer) {
     // remove port 80
     var serverSplit = server.split(":");
     if (serverSplit.length > 1) {
-        if (serverSplit[1] === ":80") {
+        if (serverSplit[1] === "80") {
             server = serverSplit[0];
         }
     }
