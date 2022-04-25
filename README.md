@@ -85,6 +85,7 @@ Songs partially done. The rest, not at all
 
 * Updates don't persist new form data after 400
 * Deletion can cause invalid state
+* Can't log out in prod
 
 ## Features for next next version
 

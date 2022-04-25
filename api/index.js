@@ -27,6 +27,7 @@ const user = require('./resource/user/user.js');
 const site = require('./resource/site/site.js');
 const release = require('./resource/release/release.js');
 const photo = require('./resource/photo/photo.js');
+const version = require('./resource/version/version.js');
 
 // Application state
 const ASSET = {};
@@ -493,6 +494,9 @@ function rspGet(req, rsp, path) {
     }
     if (path.resource === "meta") {
         return getHead(req, rsp, path.qs);
+    }
+    if (path.resource === "version") {
+        return version.get(req, rsp, db);
     }
     // if (path.pathname === `${process.env.SUBDIR}/forgot-password`) {}
 
