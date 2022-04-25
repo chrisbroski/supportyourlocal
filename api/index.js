@@ -28,6 +28,7 @@ const site = require('./resource/site/site.js');
 const release = require('./resource/release/release.js');
 const photo = require('./resource/photo/photo.js');
 const version = require('./resource/version/version.js');
+const head = require('./resource/head/head.js');
 
 // Application state
 const ASSET = {};
@@ -52,127 +53,6 @@ const MANIFEST = {
 var db;
 var cssMainVer = "";
 global.photoStorageUsed = 0;
-
-function htmlEsc(str) {
-    return str.replace(/[\u00A0-\u9999<>\&]/gim, function(i) {
-        return '&#' + i.charCodeAt(0) + ';';
-    });
-}
-
-function attrEsc(str) {
-    return str.replace('"', '&quot;');
-}
-
-function removeQs(fullUrl) {
-    if (!fullUrl) {
-        return '';
-    }
-    if (fullUrl.indexOf('?') === -1) {
-        return fullUrl;
-    }
-    return fullUrl.slice(0, fullUrl.indexOf('?'));
-}
-
-function regexExtract(pattern, source) {
-    var value = "";
-    var reId = new RegExp(pattern, "i");
-    var result;
-
-    if (source.slice(-1) !== "/") {
-        source = source + "/";
-    }
-
-    result = reId.exec(source);
-    if (result) {
-        value = result[1];
-    }
-    return decodeURIComponent(value);
-}
-
-function extractFileType(path) {
-    var lastDot;
-    if (!path) {
-        return "";
-    }
-    lastDot = path.lastIndexOf(".");
-    if (lastDot === -1) {
-        return "";
-    }
-    return path.slice(lastDot + 1);
-}
-
-function getPath(pathname) {
-    var path;
-    var qs = main.parseQs(pathname, true);
-    var raw = pathname;
-    pathname = removeQs(pathname);
-    path = pathname.slice(process.env.SUBDIR.length);
-    if (!path) {
-        return {"pathname": pathname, id: "", resource: ""};
-    }
-
-    var resource = regexExtract("^\/([^\/]+)[\/]", path);
-    return {
-        "id": regexExtract('^\/' + resource + '\/([^\/]+)', path),
-        "pathname": decodeURI(pathname),
-        "resource": resource,
-        "path": path,
-        "type": extractFileType(path),
-        "qs": qs,
-        "raw": raw
-    };
-}
-
-function parsePath(ref, qs) {
-    var splitted;
-    var parsed;
-    var results = {};
-    if (!ref) {
-        return results;
-    }
-    splitted = ref.split(" ");
-    if (splitted.length < 3) {
-        return results;
-    }
-    results.path = splitted[1];
-    parsed = getPath(process.env.SUBDIR + results.path);
-    results.page = parsed.resource;
-    results.id = "";
-    if (parsed.qs) {
-        results.id = parsed.qs.id || "";
-    }
-    results.resource = qs.resource || "";
-    if (!results.resource) {
-        results.resource = results.page;
-    }
-    results.name = qs.name || "";
-    if (!results.name) {
-        results.name = "name";
-    }
-    return results;
-}
-
-async function photos(path) {
-    var photos = await fs.readdir(path);
-    var fileTypes = [".jpg", ".jpeg", ".png"];
-    // var totalPhotoSize = 0;
-    photos = photos.filter(p => {
-        var extension = p.slice(p.lastIndexOf(".")).toLowerCase();
-        return (fileTypes.indexOf(extension) > -1);
-    });
-    var photo = {};
-    await photos.forEach(async p => {
-        const fileStats = await fs.stat(`${path}/${p}`);
-        photo[p] = {};
-        photo[p].size = fileStats.size;
-        // totalPhotoSize += fileStats.size;
-        // console.log(totalPhotoSize);
-    });
-    // console.log(totalPhotoSize);
-    // global.photoStorageUsed = totalPhotoSize;
-    // console.log(global.photoStorageUsed);
-    return photo;
-}
 
 function authenticate(req, rsp, path) {
     var cookies, userid;
@@ -358,42 +238,6 @@ function rspPatch(req, rsp, path, body) {
     return main.notFound(rsp, req.url, 'PUT', req, db);
 }
 
-function getHead(req, rsp, qs) {
-    var protocol = (process.env.DEV === "Y") ? "http://" : "https://";
-    var metaData = [];
-    var server = req.headers.host;
-    var request = parsePath(req.headers.referrer, qs);
-    var title = [];
-    title.push(htmlEsc(db.band.name));
-    if (request.page) {
-        title.unshift(main.toTitleCase(request.page));
-    }
-
-    var item = "";
-    if (request.id) {
-        if (db[request.resource] && db[request.resource][request.name]) {
-            item = db[request.resource][request.name]; // get id name
-            title.unshift(item);
-        }
-    }
-    metaData.push(`<title>${title.join(" - ")}</title>`);
-    if (db.band.desc) {
-        metaData.push(`<meta name="description" content="${attrEsc(db.band.desc)}">`);
-        metaData.push(`<meta property="og:description" content="${attrEsc(db.band.desc)}" />`);
-    }
-    metaData.push(`<link rel="stylesheet" href="/inc/main.css?v=${cssMainVer}">`);
-    metaData.push('<link rel="icon" href="/favicon.ico">');
-    if (db.site.thumbnail) {
-        metaData.push(`<meta property="og:image" content="${protocol}${server}/photo/${db.site.thumbnail}" />`);
-    }
-    metaData.push(`<meta property="og:url" content="${protocol}${server}${request.path}" />`);
-    metaData.push('<meta property="og:type" content="website" />');
-    metaData.push(`<meta property="og:title" content="${title.join(" - ")}" />`);
-    rsp.writeHead(200, {'Content-Type': 'text/pht'});
-    rsp.end(metaData.join("\n"));
-    return;
-}
-
 function rspGet(req, rsp, path) {
     if (path.path === '/favicon.ico') {
         rsp.setHeader('Cache-Control', 'max-age=31536000,public');
@@ -493,7 +337,7 @@ function rspGet(req, rsp, path) {
         return photo.get(req, rsp, path.id, db);
     }
     if (path.resource === "meta") {
-        return getHead(req, rsp, path.qs);
+        return head.get(req, rsp, db, path.qs, cssMainVer);
     }
     if (path.resource === "version") {
         return version.get(req, rsp, db);
@@ -624,7 +468,7 @@ function allowedBeforeSetup(method, path) {
 function routeMethods(req, rsp, body) {
     var parsedBody = parseBody(req, body);
     var method = getMethod(req, parsedBody);
-    var path = getPath(req.url);
+    var path = main.getPath(req.url);
 
     // To trigger a 500 for testing:
     // if (req.method !== 'OPTIONS') {
@@ -705,7 +549,7 @@ var cssStat;
 async function loadData() {
     db = await endure.load(`${__dirname}/../data`);
     if (process.env.PHOTO_PATH) {
-        db.photo = await photos(process.env.PHOTO_PATH);
+        db.photo = await photo.fromFiles(process.env.PHOTO_PATH);
     }
     if (process.env.CSS_FRONT) {
         cssStat = await fs.stat(process.env.CSS_FRONT);

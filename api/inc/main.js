@@ -8,6 +8,66 @@ const genres = require('./genres.json');
 
 const TEMPLATE = {};
 
+function removeQs(fullUrl) {
+    if (!fullUrl) {
+        return '';
+    }
+    if (fullUrl.indexOf('?') === -1) {
+        return fullUrl;
+    }
+    return fullUrl.slice(0, fullUrl.indexOf('?'));
+}
+
+function regexExtract(pattern, source) {
+    var value = "";
+    var reId = new RegExp(pattern, "i");
+    var result;
+
+    if (source.slice(-1) !== "/") {
+        source = source + "/";
+    }
+
+    result = reId.exec(source);
+    if (result) {
+        value = result[1];
+    }
+    return decodeURIComponent(value);
+}
+
+function extractFileType(path) {
+    var lastDot;
+    if (!path) {
+        return "";
+    }
+    lastDot = path.lastIndexOf(".");
+    if (lastDot === -1) {
+        return "";
+    }
+    return path.slice(lastDot + 1);
+}
+
+this.getPath = function (pathname) {
+    var path;
+    var qs = parseQs(pathname, true);
+    var raw = pathname;
+    pathname = removeQs(pathname);
+    path = pathname.slice(process.env.SUBDIR.length);
+    if (!path) {
+        return {"pathname": pathname, id: "", resource: ""};
+    }
+
+    var resource = regexExtract("^\/([^\/]+)[\/]", path);
+    return {
+        "id": regexExtract('^\/' + resource + '\/([^\/]+)', path),
+        "pathname": decodeURI(pathname),
+        "resource": resource,
+        "path": path,
+        "type": extractFileType(path),
+        "qs": qs,
+        "raw": raw
+    };
+};
+
 function parseQs(qs, requireQuestion) {
     var questionIndex = qs.indexOf("?");
     if (questionIndex > -1) {

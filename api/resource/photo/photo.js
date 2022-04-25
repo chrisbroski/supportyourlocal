@@ -70,6 +70,25 @@ function updateResource(body, db, save) {
     save();
 }
 
+this.fromFiles =  async function (path) {
+    var photos = await fs.readdir(path);
+    var fileTypes = [".jpg", ".jpeg", ".png"];
+
+    photos = photos.filter(p => {
+        var extension = p.slice(p.lastIndexOf(".")).toLowerCase();
+        return (fileTypes.indexOf(extension) > -1);
+    });
+
+    var photo = {};
+    await photos.forEach(async p => {
+        const fileStats = await fs.stat(`${path}/${p}`);
+        photo[p] = {};
+        photo[p].size = fileStats.size;
+    });
+
+    return photo;
+};
+
 this.update = function (req, rsp, formData, db, save) {
     var error = isUpdateInvalid(formData);
     if (error.length) {
