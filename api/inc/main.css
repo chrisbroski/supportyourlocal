@@ -121,14 +121,14 @@ section + section {
 section > *:first-child {
     margin-top: 12px;
 }
-section.list {
+section.list, section.photolist {
     position: fixed;
     top: 0; right: 0; bottom: 0;
     width: 360px;
     border-top: 0 none;
     border-left: 1px solid #888;
 }
-section.list img {width: 45%; }
+/* section.list img {width: 45%; } */
 div.songlist form {
     display: inline-block;
 }
@@ -185,6 +185,29 @@ section > img, section > p > img, section > p > a > img {
     width: 50%;
     float: right;
 }
+section.photolist > p {
+    width: 50%;
+    float: right;
+    position: relative;
+}
+section.photolist > p > a {
+    color: white;
+    text-decoration: none;
+}
+section.photolist > p > a > img {
+    margin: 0; padding: 4px;
+    width: 100%;
+    float: none;
+    color: white;
+}
+section.photolist > p > a > span {
+    padding: 2px;
+    background-color: rgba(0, 0, 0, 0.5);
+    position: absolute;
+    top: 4px; left: 4px;
+    font-size: 14px;
+    line-height: 1;
+}
 #photo-noauth {
     padding: 4px;
 }
@@ -221,6 +244,7 @@ section > img, section > p > img, section > p > a > img {
         width: 100%;
         height: 64px;
         overflow: hidden;
+        z-index: 1;
     }
     body > header > p:first-child {
         margin: 0;
@@ -249,7 +273,7 @@ section > img, section > p > img, section > p > a > img {
     body > article {
         padding-right: 0;
     }
-    section.list {
+    section.photolist {
         position: static;
         top: 0; right: 0; bottom: 0;
         width: auto;

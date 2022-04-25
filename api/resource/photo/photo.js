@@ -1,5 +1,6 @@
 const fs = require("fs").promises;
-const fsCallback = require("fs");
+
+const sharp = require("sharp");
 
 // Custom libs
 const main = require('../../inc/main.js');
@@ -10,8 +11,11 @@ function single(db, id, msg, error) {
     var resourceData = {
         "resourceName": resourceName,
         "pageName": 'Photos',
-        "photos": Object.keys(db.photo),
+        "photos": main.objToArray(db.photo),
         "id": id,
+        "width": db.photo[id].width,
+        "height": db.photo[id].height,
+        "size": db.photo[id].size,
         "storageUsed": Math.round(global.photoStorageUsed / 100000)
     };
 
@@ -22,7 +26,7 @@ function list(db, msg, error) {
     var resourceData = {
         "resourceName": resourceName,
         "pageName": 'Photos',
-        "photos": Object.keys(db.photo),
+        "photos": main.objToArray(db.photo),
         "storageUsed": Math.round(global.photoStorageUsed / 1000000),
         "storageLimit": Math.round(process.env.PHOTO_STORAGE_LIMIT / 1000000),
         "uploadFull": (process.env.PHOTO_STORAGE_LIMIT - global.photoStorageUsed < 0),
@@ -82,8 +86,11 @@ this.fromFiles =  async function (path) {
     var photo = {};
     await photos.forEach(async p => {
         const fileStats = await fs.stat(`${path}/${p}`);
+        const metadata = await sharp(`${path}/${p}`).metadata();
         photo[p] = {};
         photo[p].size = fileStats.size;
+        photo[p].width = metadata.width;
+        photo[p].height = metadata.height;
     });
 
     return photo;
@@ -93,7 +100,7 @@ this.update = function (req, rsp, formData, db, save) {
     var error = isUpdateInvalid(formData);
     if (error.length) {
         rsp.writeHead(400, {'Content-Type': 'text/html'});
-        rsp.end(main.renderPage(req, template.list, single(db, [`${resourceName} updated.`]), db));
+        rsp.end(main.renderPage(req, template.list, list(db, [`${resourceName} updated.`]), db));
         return;
     }
 
@@ -106,7 +113,7 @@ this.update = function (req, rsp, formData, db, save) {
     }
 
     rsp.writeHead(200, {'Content-Type': 'text/html'});
-    rsp.end(main.renderPage(req, template.list, single(db, [`Photo added.`]), db));
+    rsp.end(main.renderPage(req, template.list, list(db, [`Photo added.`]), db));
 };
 
 
@@ -130,17 +137,14 @@ function isPhotoInvalid(body) {
     return msg;
 }
 
-this.remove = function (req, rsp, id, db, save) {
+this.remove = async function (req, rsp, id, db, save) {
     if (!db[resourceName][id]) {
         return main.notFound(rsp, req.url, 'DELETE', req, db);
     }
 
     global.photoStorageUsed -= db.photo[id].size;
     var filePath = `${process.env.PHOTO_PATH}/${id}`;
-    fsCallback.unlink(filePath, (err) => {
-        if (err) throw err;
-        // console.log(filePath);
-    });
+    fs.unlink(filePath);
 
     delete db.photo[id];
     save();
@@ -155,33 +159,32 @@ this.remove = function (req, rsp, id, db, save) {
     rsp.end(main.renderPage(req, null, returnData, db));
 };
 
-this.create = function (req, rsp, body, db, save) {
+this.create = async function (req, rsp, body, db, save) {
     var photoId;
     var filePath;
     var error = isPhotoInvalid(body);
     if (error.length) {
         rsp.writeHead(400, {'Content-Type': 'text/html'});
-        rsp.end(main.renderPage(req, template.list, single(db, [], error), db));
+        rsp.end(main.renderPage(req, template.list, list(db, [], error), db));
         return;
     }
 
     photoId = main.makeId();
     filePath = `${process.env.PHOTO_PATH}/${photoId}${body.files[0].type}`;
 
-    fsCallback.writeFile(filePath, body.files[0].photo, 'binary', (err) => {
-        var size;
-        if (err) {
-            console.log(err);
-        }
-        console.log('Photo saved.');
-        db.photo[`${photoId}${body.files[0].type}`] = {};
-        size = body.files[0].photo.length;
-        db.photo[`${photoId}${body.files[0].type}`].size = size;
-        save();
-        global.photoStorageUsed += size;
-        rsp.writeHead(200, {'Content-Type': 'text/html'});
-        rsp.end(main.renderPage(req, template.list, single(db, [`Photo added.`]), db));
-    });
+    await fs.writeFile(filePath, body.files[0].photo, 'binary');
+    console.log('Photo saved.');
+    db.photo[`${photoId}${body.files[0].type}`] = {};
+    var size = body.files[0].photo.length;
+    const metadata = await sharp(Buffer.from(body.files[0].photo, "binary")).metadata();
+    db.photo[`${photoId}${body.files[0].type}`].size = size;
+    db.photo[`${photoId}${body.files[0].type}`].width = metadata.width;
+    db.photo[`${photoId}${body.files[0].type}`].height = metadata.height;
+    save();
+
+    global.photoStorageUsed += size;
+    rsp.writeHead(200, {'Content-Type': 'text/html'});
+    rsp.end(main.renderPage(req, template.list, list(db, [`Photo added.`]), db));
 };
 
 this.get = function (req, rsp, id, db) {
