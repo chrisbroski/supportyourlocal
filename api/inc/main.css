@@ -128,7 +128,6 @@ section.list, section.photolist {
     border-top: 0 none;
     border-left: 1px solid #888;
 }
-/* section.list img {width: 45%; } */
 div.songlist form {
     display: inline-block;
 }
@@ -186,9 +185,11 @@ section > img, section > p > img, section > p > a > img {
     float: right;
 }
 section.photolist > p {
+    margin: 0;
     width: 50%;
     float: right;
     position: relative;
+    line-height: 1;
 }
 section.photolist > p > a {
     color: white;
