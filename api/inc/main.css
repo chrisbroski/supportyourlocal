@@ -146,11 +146,18 @@ div.photos img {
     height: 100px;
 }
 div.photos input {
+    margin-top: 8px;
     display: none;
 }
+
+div.photos input:checked {
+    display: inline-block;
+    position: absolute;
+}
 div.photos input:checked + label img {
-    padding: 4px;
-    border: 2px solid rgb(var(--color2));
+    padding: 0;
+    border: 1px solid rgb(var(--color2));
+    box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.8);
 }
 
 section p img {
