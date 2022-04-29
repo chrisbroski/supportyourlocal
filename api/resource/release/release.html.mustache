@@ -17,10 +17,13 @@
 <form method="POST" action="{{{API_DIR}}}/{{resourceName}}/{{id}}">
 <input type="hidden" name="method" value="PUT">
 
-<p><label>Name</label> (Optional for single release)<br>
+<p><label>Title</label> (Optional for single release)<br>
     <input type="text" name="name" value="{{name}}" autofocus="autofocus">
 <p><label>Release Date</label>*<br>
-    <input type="date" name="date" value="{{date}}">
+    <input type="date" name="date" value="{{date}}" required="required">
+<p><label>Start Promotion On</label><br>
+    (Show title, release date, front cover, and description only)<br>
+    <input type="date" name="promotionStart" value="{{promotionStart}}">
 
 <h3>Front Cover</h3>
 <div class="photos">

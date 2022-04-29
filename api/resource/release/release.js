@@ -33,6 +33,14 @@ function pageName(db, id) {
     return db.song[db.release[id].songs[0]].name;
 }
 
+function songLink(db, id) {
+    var link = db.release[id].audio.spotify;
+    if (!link) {
+        link = db.song[db.release[id].songs[0]].audio.spotify;
+    }
+    return link;
+}
+
 function single(db, id, msg, error) {
     var resourceData = Object.assign({
         "id": id,
@@ -85,7 +93,7 @@ function list(db, msg, error, link) {
         "back-cover-photos": main.displayPhotos(db.photo),
         "no-photo": main.noPhotoSelected(),
         "pageName": `${main.toTitleCase(resourceName)}s`,
-        "formData": {"date": main.dateFormat(new Date())}
+        "formData": {"date": main.dateFormat(new Date()), "promotionStart": main.dateFormat(new Date())}
     };
 
     return Object.assign(main.addMessages(msg, error, link), resourceData);
@@ -93,13 +101,35 @@ function list(db, msg, error, link) {
 
 function listNoAuth(db) {
     var releases = main.objToArray(db[resourceName]).sort(main.sortByDateDesc);
+    var tzOffset = -4; // -4:00 for EDT;
+    var today = new Date();
+    today.setHours(tzOffset, 0, 0, 0);
+    releases = releases.filter(r => {
+        var startPromotion = r.date;
+        if (r.promotionStart) {
+            startPromotion = r.promotionStart;
+        }
+        startPromotion = new Date(startPromotion);
+        startPromotion.setHours(24 + tzOffset, 0, 0, 0);
+        return +today - +startPromotion >= 0;
+    });
+
     releases = releases.map(r => {
+        var startPromotion;
+        if (r.promotionStart) {
+            startPromotion = new Date(r.date);
+            startPromotion.setHours(24 + tzOffset, 0, 0, 0);
+            if (+today - +startPromotion < 0) {
+                r.upcomingRelease = true;
+            } else {
+                r.releaseLink = songLink(db, r.id);
+            }
+        } else {
+            r.releaseLink = songLink(db, r.id);
+        }
+
         r.pageName = pageName(db, r.id);
         r.descHtml = converter.makeHtml(r.desc);
-        r.releaseLink = r.audio.spotify;
-        if (!r.audio.spotify) {
-            r.releaseLink = db.song[r.songs[0]].audio.spotify;
-        }
         return r;
     });
     var resourceData = {
@@ -131,7 +161,17 @@ function addSongData(release, db) {
 }
 
 function listData(db) {
-    return main.objToArray(db[resourceName]).sort(main.sortByDateDesc).map(r => {
+    var releases = main.objToArray(db[resourceName]).sort(main.sortByDateDesc);
+    var tzOffset = -4; // -4:00 for EDT;
+    var today = new Date();
+    today.setHours(tzOffset, 0, 0, 0);
+    releases = releases.filter(r => {
+        // remove any before pormo date
+        if (r) {
+            return true;
+        }
+    });
+    return releases.map(r => {
         return addSongData(r, db);
     });
 }
@@ -148,8 +188,8 @@ function isUpdateInvalid(formData, db, id) {
         msg.push('Date is required.');
     }
 
-    if (!formData.name && !formData.desc && !hasSong) {
-        msg.push('You must give your release a name, description, or one song.');
+    if (!formData.name && !hasSong) {
+        msg.push('You must give your release a title or a song.');
     }
 
     return msg;
@@ -185,6 +225,7 @@ function isReorderInvalid(formData, db, id) {
 function updateResource(id, formData, db, save) {
     db[resourceName][id].name = formData.name;
     db[resourceName][id].date = formData.date;
+    db[resourceName][id].promotionStart = formData.promotionStart;
     db[resourceName][id].desc = formData.desc;
     db[resourceName][id].credits = formData.credits;
 

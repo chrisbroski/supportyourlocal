@@ -13,13 +13,21 @@
 
 {{#release}}
 <section class="release">
+{{#upcomingRelease}}
+<h2>{{pageName}}</h2>
+<h3>Releasing on {{date}}</h3>
+{{/upcomingRelease}}
+{{^upcomingRelease}}
 <h2><a href="{{API_DIR}}/{{resourceName}}/{{id}}">{{pageName}}</a></h2>
+<h3>{{date}}</h3>
+{{/upcomingRelease}}
 {{#cover-front}}
 <img src="/photo/{{cover-front}}" alt="Front cover">
 {{/cover-front}}
-<h3>{{date}}</h3>
 {{{descHtml}}}
-<p><a href="{{releaseLink}}" target="_music">Listen</a></p>
+{{#releaseLink}}
+<p><a href="{{.}}" target="_music">Listen</a></p>
+{{/releaseLink}}
 </section>
 {{/release}}
 

@@ -16,11 +16,15 @@
 <section>
 <form method="POST" action="{{API_DIR}}/{{resourceName}}/">
 
-<p><label>Name</label><br>
+<p><label>Title</label><br>
     <input type="text" name="name" autofocus="autofocus" value="{{formData.name}}">
 
 <p><label>Release Date</label>*<br>
-    <input type="date" name="date" required="required" value="{{formData.date}}">
+    <input type="date" name="date" required="required" value="{{formData.date}}" required="required">
+
+<p><label>Start Promotion On</label><br>
+    (Show title, release date, front cover, and description only)<br>
+    <input type="date" name="promotionStart" value="{{formData.promotionStart}}">
 
 <h3>Front Cover</h3>
 <div class="photos">
@@ -51,7 +55,8 @@
 {{/songlist}}
 </select>
 
-<h2>Album Links <span>(if not a single)</span></h2>
+<h2>Album Links</h2>
+<p>If you are releasing a single, you dont need this part.</p>
 <h3>Audio</h3>
 <p><label>Spotify</label><br>
     <input type="text" name="spotify" value="{{formData.spotify}}">

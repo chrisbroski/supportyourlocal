@@ -52,8 +52,20 @@ function list(db, msg, error, link) {
 }
 
 function listNoAuth(db) {
+    var tzOffset = -4; // -4:00 for EDT;
+    var today = new Date();
+    today.setHours(tzOffset, 0, 0, 0);
+    var songs = main.objToArray(db[resourceName]).filter(s => {
+        var releaseDate;
+        if (!s.releaseDate) {
+            return true;
+        }
+        releaseDate = new Date(s.releaseDate);
+        releaseDate.setHours(24 + tzOffset, 0, 0, 0);
+        return (+today - +releaseDate >= 0);
+    });
     var resourceData = {
-        [resourceName]: main.objToArray(db[resourceName]).sort(main.sortByName),
+        [resourceName]: songs.sort(main.sortByName),
         "today": main.dateFormat(new Date()),
         "resourceName": resourceName,
         "genres": main.genre(),
@@ -84,6 +96,20 @@ function singleData(db, id) {
 
 function listData(db, qs) {
     var songData = main.objToArray(db[resourceName]).sort(main.sortByName);
+    var tzOffset = -4; // -4:00 for EDT;
+    var today = new Date();
+    today.setHours(tzOffset, 0, 0, 0);
+        // filter out unrelased songs
+    songData = songData.filter(s => {
+        var releaseDate;
+        if (!s.releaseDate) {
+            return true;
+        }
+        releaseDate = new Date(s.releaseDate);
+        releaseDate.setHours(24 + tzOffset, 0, 0, 0);
+        return (+today - +releaseDate >= 0);
+    });
+
     if (qs.type === "cover") {
         songData = songData.filter(song => {
             return song.artist && song.artist !== db.band.name;
@@ -128,6 +154,8 @@ function updateResource(id, formData, db, save) {
     db[resourceName][id].genre1 = formData.genre1;
     db[resourceName][id].genre2 = formData.genre2;
     db[resourceName][id].genre3 = formData.genre3;
+
+    db[resourceName][id].releaseDate = formData.releaseDate;
 
     db[resourceName][id]["cover-front"] = formData["cover-front"];
     db[resourceName][id]["cover-back"] = formData["cover-back"];

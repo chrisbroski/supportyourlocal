@@ -54,20 +54,7 @@ Admin key in .env (for backups and troubleshooting)
 
 All https
 
-### Image upload
-
-* optimization
-* resize: thumbnail, medium, large, and original
-* Monitor max storage
-* Add to photo data: size and dimensions
-
-X Photo upload, delete, and monitor max storage for next release. Others photo features for later.
-
-X Add payment options to band page: venmo, paypal, cashapp, Patreon
-
-X Get rid of the "header" include crap, but add a "head" include crap with Title and other meta-data. (To support front-end feature.)
-
-X Remove "url" library - replace with native
+Add release with promotion start date
 
 ### Sub-Array Data
 
@@ -77,6 +64,12 @@ Song media should be an array that includes media type (Spotify, mp3, etc.) a UR
 
 Add 0 to infinite media - audio, video to songs and releases. Add 0 to infinte album art to a release.
 
+### Central Site
+
+* Home Page
+* Blog
+* Form to sign up for beta
+
 ### Tests
 
 Songs partially done. The rest, not at all
@@ -85,17 +78,19 @@ Songs partially done. The rest, not at all
 
 * Updates don't persist new form data after 400
 * Deletion can cause invalid state
-* Can't log out in prod
 
 ## Features for next next version
+
+### Image upload
+
+* optimization
+* resize: thumbnail, medium, large, and original
 
 Custom fonts - Upload and make available in style guide.
 
 Style guide page. Populate drop-down from guide colors.
 
 I don't think *Site* is the proper resource name. It should probably be *Style* and be displayed as a proper style guide. Have up to 6 colors (or infinite?) and make the top 2 the web site ones. Should there be shades of color? Maybe.
-
-Central Site
 
 Get local features working with member cities. "Check in" on mobile when at open mics, etc.
 

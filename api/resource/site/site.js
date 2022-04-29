@@ -303,13 +303,25 @@ function homeNoAuth(db) {
 
     // releases
     data = main.objToArray(db.release).sort(main.sortByDateDesc);
+    // Filter out future releases if promotionStart after today
+    var idx = 0;
     if (data.length > 0) {
         homeData.latestRelease = {};
-        homeData.latestRelease.name = data[0].name || db.song[data[0].songs[0]].name;
-        homeData.latestRelease.date = data[0].date;
+        homeData.releaseTitle = "Next Release";
+        homeData.latestRelease.name = data[idx].name || db.song[data[idx].songs[0]].name;
+        homeData.latestRelease.date = data[idx].date;
         homeData.latestRelease.frontCover = data[0]["cover-front"];
-        homeData.latestRelease.desc = converter.makeHtml(data[0].desc);
-        homeData.latestRelease.spotifyUrl = data[0].audio.spotify || db.song[data[0].songs[0]].audio.spotify;
+        homeData.latestRelease.desc = converter.makeHtml(data[idx].desc);
+        homeData.latestRelease.spotifyUrl = "";
+        if (data[idx].audio) {
+            if (data[idx].audio.spotify) {
+                homeData.latestRelease.spotifyUrl = data[idx].audio.spotify;
+            } else {
+                if (data[idx].songs.length) {
+                    homeData.latestRelease.spotifyUrl = db.song[data[idx].songs[0]].audio.spotify;
+                }
+            }
+        }
     }
     if (data.length > 1) {
         homeData.moreReleases = true;
