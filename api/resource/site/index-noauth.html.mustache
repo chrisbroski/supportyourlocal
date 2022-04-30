@@ -42,11 +42,13 @@
 <section>
     <h2>{{releaseTitle}}</h2>
     <h3>{{name}}</h3>
-    <h5>{{date}}</h5>
+    <h5>{{#upcomingRelease}}Releasing on {{/upcomingRelease}}{{date}}</h5>
     {{#frontCover}}<p><img src="/photo/{{frontCover}}"></p>{{/frontCover}}
     {{{desc}}}
 
+    {{^upcomingRelease}}
     <h5><a href="{{spotifyUrl}}" target="_spotify">{{name}}</a></h5>
+    {{/upcomingRelease}}
     {{#moreReleases}}<h5><a href="{{{API_DIR}}}/release">More Releases</a></h5>{{/moreReleases}}
 </section>
 {{/latestRelease}}

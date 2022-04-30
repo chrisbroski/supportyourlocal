@@ -9,19 +9,28 @@
 <article>
 <h1>{{pageName}}</h1>
 
-<h5><a href="{{API_DIR}}/">Home</a> &gt; <a href="{{{API_DIR}}}/{{resourceName}}">{{resourceName}}s</a> &gt; {{pageName}}</h5>
+<h5><a href="{{API_DIR}}/">Home</a> {{#resourceName}}&gt; <a href="{{{API_DIR}}}/{{.}}">{{.}}s</a>{{/resourceName}} {{#pageName}}&gt; {{.}}{{/pageName}}</h5>
 
 <section class="release">
-<h2>{{name}}</h2>
+{{#upcomingRelease}}
+<h2>{{pageName}}</h2>
+<h3>Releasing on {{date}}</h3>
 {{#cover-front}}
 <img src="/photo/{{cover-front}}" alt="Front cover">
 {{/cover-front}}
+{{/upcomingRelease}}
+
+{{^upcomingRelease}}
+<h2>{{pageName}}</h2>
 {{#cover-back}}
 <img src="/photo/{{cover-back}}" alt="Back cover">
 {{/cover-back}}
 <h3>{{date}}</h3>
 {{{descHtml}}}
-<p><a href="{{releaseLink}}" target="_music">Listen</a></p>
+{{#releaseLink}}
+<p><a href="{{.}}" target="_music">Listen</a></p>
+{{/releaseLink}}
+{{/upcomingRelease}}
 </section>
 
 {{#hasAlbumList}}

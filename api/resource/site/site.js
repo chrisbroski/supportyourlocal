@@ -5,6 +5,34 @@ const main = require('../../inc/main.js');
 
 const resourceName = 'site';
 const template = {};
+var tzOffset = -4; // -4:00 for EDT;
+
+function timestampToday() {
+    var today = new Date();
+    today.setHours(tzOffset, 0, 0, 0);
+    return +today;
+}
+
+function canBeShown(release, targetTimestamp) {
+    var startShowingOn = new Date(release.date);
+    startShowingOn.setHours(24 + tzOffset, 0, 0, 0);
+    var promoDate;
+
+    // If a promotionStart date is present
+    if (release.promotionStart) {
+        promoDate = new Date(release.promotionStart);
+        promoDate.setHours(24 + tzOffset, 0, 0, 0);
+        // And promotionStart is sooner than the release date
+        if (+promoDate < +startShowingOn) {
+            startShowingOn = promoDate;
+        }
+    }
+    return +startShowingOn - targetTimestamp <= 0;
+}
+
+function releaseAfterThis(r) {
+    return canBeShown(r, this);
+}
 
 function single(db, msg, error) {
     var headerFontNormal = ' checked="checked"';
@@ -304,21 +332,39 @@ function homeNoAuth(db) {
     // releases
     data = main.objToArray(db.release).sort(main.sortByDateDesc);
     // Filter out future releases if promotionStart after today
-    var idx = 0;
+    // var releases = main.objToArray(db[resourceName]).sort(main.sortByDateDesc);
+    var tsToday = timestampToday();
+
+    data = data.filter(releaseAfterThis, tsToday);
+    data = data.map(r => {
+        var releaseDate = new Date(r.date);
+        releaseDate.setHours(24 + tzOffset, 0, 0, 0);
+        if (+releaseDate - tsToday >= 0) {
+            r.upcomingRelease = true;
+            r["cover-back"] = "";
+            r.credits = "";
+            r.audio = {};
+            r.video = {};
+            r.songs.length = 0;
+        }
+        return r;
+    });
+
     if (data.length > 0) {
         homeData.latestRelease = {};
         homeData.releaseTitle = "Next Release";
-        homeData.latestRelease.name = data[idx].name || db.song[data[idx].songs[0]].name;
-        homeData.latestRelease.date = data[idx].date;
+        homeData.upcomingRelease = data[0].upcomingRelease;
+        homeData.latestRelease.name = data[0].name || db.song[data[0].songs[0]].name;
+        homeData.latestRelease.date = data[0].date;
         homeData.latestRelease.frontCover = data[0]["cover-front"];
-        homeData.latestRelease.desc = converter.makeHtml(data[idx].desc);
+        homeData.latestRelease.desc = converter.makeHtml(data[0].desc);
         homeData.latestRelease.spotifyUrl = "";
-        if (data[idx].audio) {
-            if (data[idx].audio.spotify) {
-                homeData.latestRelease.spotifyUrl = data[idx].audio.spotify;
+        if (data[0].audio) {
+            if (data[0].audio.spotify) {
+                homeData.latestRelease.spotifyUrl = data[0].audio.spotify;
             } else {
-                if (data[idx].songs.length) {
-                    homeData.latestRelease.spotifyUrl = db.song[data[idx].songs[0]].audio.spotify;
+                if (data[0].songs.length) {
+                    homeData.latestRelease.spotifyUrl = db.song[data[0].songs[0]].audio.spotify;
                 }
             }
         }

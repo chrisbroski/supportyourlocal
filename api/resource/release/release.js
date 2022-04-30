@@ -5,6 +5,34 @@ const main = require('../../inc/main.js');
 
 const resourceName = 'release';
 const template = {};
+var tzOffset = -4; // -4:00 for EDT;
+
+function timestampToday() {
+    var today = new Date();
+    today.setHours(tzOffset, 0, 0, 0);
+    return +today;
+}
+
+function canBeShown(release, targetTimestamp) {
+    var startShowingOn = new Date(release.date);
+    startShowingOn.setHours(24 + tzOffset, 0, 0, 0);
+    var promoDate;
+
+    // If a promotionStart date is present
+    if (release.promotionStart) {
+        promoDate = new Date(release.promotionStart);
+        promoDate.setHours(24 + tzOffset, 0, 0, 0);
+        // And promotionStart is sooner than the release date
+        if (+promoDate < +startShowingOn) {
+            startShowingOn = promoDate;
+        }
+    }
+    return +startShowingOn - targetTimestamp <= 0;
+}
+
+function releaseAfterThis(r) {
+    return canBeShown(r, this);
+}
 
 function songList(songs, id) {
     return songs.map(s => {
@@ -75,6 +103,28 @@ function singleNoAuth(db, id) {
         "hasVideo": (db[resourceName][id].video && (db[resourceName][id].video.fb || db[resourceName][id].video.youtube))
     }, db[resourceName][id]);
 
+    var tsToday = timestampToday();
+    // if not released or promoted, return {}
+    if (!canBeShown(db[resourceName][id], tsToday)) {
+        return {};
+    }
+    // if promoted but note released, return partial data
+    var releaseDate = new Date(db[resourceName][id].date);
+    releaseDate.setHours(24 + tzOffset, 0, 0, 0);
+    if (+releaseDate - tsToday >= 0) {
+        resourceData.upcomingRelease = true;
+        resourceData["cover-back"] = "";
+        resourceData.credits = "";
+        resourceData.audio = {};
+        resourceData.video = {};
+        resourceData.songs.length = 0;
+
+        resourceData.releaseLink = "";
+        resourceData.hasAlbumList = false;
+        resourceData.hasVideo = false;
+        return resourceData;
+    }
+
     return resourceData;
 }
 
@@ -101,29 +151,17 @@ function list(db, msg, error, link) {
 
 function listNoAuth(db) {
     var releases = main.objToArray(db[resourceName]).sort(main.sortByDateDesc);
-    var tzOffset = -4; // -4:00 for EDT;
-    var today = new Date();
-    today.setHours(tzOffset, 0, 0, 0);
-    releases = releases.filter(r => {
-        var startPromotion = r.date;
-        if (r.promotionStart) {
-            startPromotion = r.promotionStart;
-        }
-        startPromotion = new Date(startPromotion);
-        startPromotion.setHours(24 + tzOffset, 0, 0, 0);
-        return +today - +startPromotion >= 0;
-    });
+    var tsToday = timestampToday();
 
+    // Remove releases with a promoStart or release date (whichever is sooner) later than today.
+    releases = releases.filter(releaseAfterThis, tsToday);
+
+    // If release date has not happened yet, leave off song link
     releases = releases.map(r => {
-        var startPromotion;
-        if (r.promotionStart) {
-            startPromotion = new Date(r.date);
-            startPromotion.setHours(24 + tzOffset, 0, 0, 0);
-            if (+today - +startPromotion < 0) {
-                r.upcomingRelease = true;
-            } else {
-                r.releaseLink = songLink(db, r.id);
-            }
+        var releaseDate = new Date(r.date);
+        releaseDate.setHours(24 + tzOffset, 0, 0, 0);
+        if (+releaseDate - tsToday >= 0) {
+            r.upcomingRelease = true;
         } else {
             r.releaseLink = songLink(db, r.id);
         }
@@ -132,21 +170,36 @@ function listNoAuth(db) {
         r.descHtml = converter.makeHtml(r.desc);
         return r;
     });
-    var resourceData = {
+
+    return {
         [resourceName]: releases,
-        // "today": main.dateFormat(new Date()),
         "resourceName": resourceName,
         "songlist": songList(main.objToArray(db.song)),
         "photos": db.photo,
         "no-photo": main.noPhotoSelected(),
         "pageName": `${main.toTitleCase(resourceName)}s`
     };
-
-    return resourceData;
 }
 
 function singleData(db, id) {
     var release = Object.assign({"resourceName": resourceName}, db[resourceName][id]);
+    var tsToday = timestampToday();
+    // if not released or promoted, return {}
+    if (!canBeShown(release, tsToday)) {
+        return {};
+    }
+    // if promoted but note released, return partial data
+    var releaseDate = new Date(release.date);
+    releaseDate.setHours(24 + tzOffset, 0, 0, 0);
+    if (+releaseDate - tsToday >= 0) {
+        release["cover-back"] = "";
+        release.credits = "";
+        release.audio = {};
+        release.video = {};
+        release.songs.length = 0;
+        return release;
+    }
+
     release.songs = release.songs.map(s => {
         return Object.assign({"id": s}, db.song[s]);
     });
@@ -162,16 +215,21 @@ function addSongData(release, db) {
 
 function listData(db) {
     var releases = main.objToArray(db[resourceName]).sort(main.sortByDateDesc);
-    var tzOffset = -4; // -4:00 for EDT;
-    var today = new Date();
-    today.setHours(tzOffset, 0, 0, 0);
-    releases = releases.filter(r => {
-        // remove any before pormo date
-        if (r) {
-            return true;
-        }
-    });
+    var tsToday = timestampToday();
+
+    releases = releases.filter(releaseAfterThis, tsToday);
+
     return releases.map(r => {
+        var releaseDate = new Date(r.date);
+        releaseDate.setHours(24 + tzOffset, 0, 0, 0);
+        if (+releaseDate - tsToday >= 0) {
+            // r.upcomingRelease = true;
+            r["cover-back"] = "";
+            r.credits = "";
+            r.audio = {};
+            r.video = {};
+            r.songs.length = 0;
+        }
         return addSongData(r, db);
     });
 }
