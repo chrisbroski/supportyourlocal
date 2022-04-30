@@ -54,7 +54,7 @@ Admin key in .env (for backups and troubleshooting)
 
 All https
 
-Add release with promotion start date
+Add facebook event link to gig
 
 ### Sub-Array Data
 
@@ -82,6 +82,10 @@ Songs partially done. The rest, not at all
 ## Features for next next version
 
 ### Image upload
+
+Have login from side nav to you to teh page you are on.
+
+After creating a resource, should it redirect you to that resource?
 
 * optimization
 * resize: thumbnail, medium, large, and original

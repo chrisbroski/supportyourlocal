@@ -34,10 +34,13 @@
         {{/venues}}
     </select>
 
-<p><label>Description<br><textarea name="desc">{{formData.desc}}</textarea></p>
-
 <p><label>Gig Name</label><br>
     <input type="text" name="title" value="{{formData.title}}">
+
+<p><label>Facebook Event</label><br>
+    <input type="url" name="fbEvent" value="{{formData.fbEvent}}">
+
+<p><label>Description<br><textarea name="desc">{{formData.desc}}</textarea></p>
 
 <footer><p><button>Create {{resourceName}}</button></footer>
 </form>

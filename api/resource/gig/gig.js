@@ -69,6 +69,7 @@ function updateResource(id, formData, db, save) {
     db[resourceName][id].durationM = formData.durationM;
     db[resourceName][id].venue = formData.venue;
     db[resourceName][id].desc = formData.desc;
+    db[resourceName][id].fbEvent = formData.fbEvent;
     save();
 }
 
