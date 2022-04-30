@@ -1,5 +1,13 @@
 # Release Notes
 
+## 1.2.2 - Released 2022-04-30
+
+### Upcoming Releases
+
+You can now set the releases date for songs and releases in the future and they will be hidden from public until that date.
+
+Releases can have a "promotion start" start that will cause it to show partially starting on that date before the full release date.
+
 ## 1.2.1 - Released 2022-04-25
 
 ### Version Information

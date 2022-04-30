@@ -192,6 +192,7 @@ function singleData(db, id) {
     var releaseDate = new Date(release.date);
     releaseDate.setHours(24 + tzOffset, 0, 0, 0);
     if (+releaseDate - tsToday >= 0) {
+        release.upcomingRelease = true;
         release["cover-back"] = "";
         release.credits = "";
         release.audio = {};
@@ -223,7 +224,7 @@ function listData(db) {
         var releaseDate = new Date(r.date);
         releaseDate.setHours(24 + tzOffset, 0, 0, 0);
         if (+releaseDate - tsToday >= 0) {
-            // r.upcomingRelease = true;
+            r.upcomingRelease = true;
             r["cover-back"] = "";
             r.credits = "";
             r.audio = {};
