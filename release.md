@@ -1,5 +1,9 @@
 # Release Notes
 
+## 1.2.3 - Released 2022-04-30
+
+### Facebook event link for gigs
+
 ## 1.2.2 - Released 2022-04-30
 
 ### Upcoming Releases
