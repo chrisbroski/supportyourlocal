@@ -157,7 +157,6 @@ function login(req, rsp, body, db) {
 
     var redirectUrl = `${process.env.SUBDIR}/site`;
     var refererPath = pathFromFullUrl(req.headers.referer);
-    console.log(refererPath);
     if (refererPath.host === req.headers.host && refererPath.path !== `${process.env.SUBDIR}/login`) {
         redirectUrl = refererPath.path;
     }
@@ -282,6 +281,13 @@ this.update = function (req, rsp, id, formData, db, save) {
 this.get = function (req, rsp, db) {
     if (req.headers.accept === 'application/json') {
         return main.returnJson(rsp, {});
+    }
+
+    // check if already logged in. If so, redirect to home. (With message?)
+    if (main.isLoggedIn(req, db.user)) {
+        rsp.writeHead(303, {'Content-Type': 'text/html', "Location": `${process.env.SUBDIR}/`});
+        rsp.end(main.renderPage(req, null, {"msg": ["Already logged in"], "title": `Logged in`, "link": `${process.env.SUBDIR}/`}, db));
+        return;
     }
 
     rsp.writeHead(200, {'Content-Type': 'text/html'});
