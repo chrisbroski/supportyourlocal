@@ -143,10 +143,24 @@ function setLoginCookie(rsp, userData, userId) {
     ]);
 }
 
+function pathFromFullUrl(url) {
+    var parsedUrl = {};
+    parsedUrl.host = url.slice(url.indexOf("://") + 3, url.indexOf("/", 8));
+    parsedUrl.path = url.slice(url.indexOf(parsedUrl.host) + parsedUrl.host.length);
+    return parsedUrl;
+}
+
 function login(req, rsp, body, db) {
     var lockoutDuration;
     var userId;
     var userData;
+
+    var redirectUrl = `${process.env.SUBDIR}/site`;
+    var refererPath = pathFromFullUrl(req.headers.referer);
+    console.log(refererPath);
+    if (refererPath.host === req.headers.host && refererPath.path !== `${process.env.SUBDIR}/login`) {
+        redirectUrl = refererPath.path;
+    }
 
     if (!body.username) {
         return fail(req, rsp, `User email required.`, db);
@@ -175,7 +189,7 @@ function login(req, rsp, body, db) {
 
     if (userData.hash === main.hash(body.password, userData.salt)) {
         setLoginCookie(rsp, userData, userId);
-        rsp.writeHead(303, {'Content-Type': 'text/html', "Location": `${process.env.SUBDIR}/site`});
+        rsp.writeHead(303, {'Content-Type': 'text/html', "Location": redirectUrl});
         rsp.end(main.renderPage(req, null, {"msg": ["Logged in"], "title": `Logged in`, "link": `${process.env.SUBDIR}/`}, db));
         return true;
     }

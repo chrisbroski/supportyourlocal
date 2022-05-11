@@ -62,7 +62,7 @@ Make separate page for sub-arrays (like track listing) Adding URL media links sh
 
 Song media should be an array that includes media type (Spotify, mp3, etc.) a URL, description, and credits.
 
-Add 0 to infinite media - audio, video to songs and releases. Add 0 to infinte album art to a release.
+Add 0 to infinite media - audio, video to songs and releases.
 
 ### Central Site
 
@@ -81,12 +81,9 @@ Songs partially done. The rest, not at all
 
 ## Features for next next version
 
-### Image upload
-
-Have login from side nav to you to teh page you are on.
-
 After creating a resource, should it redirect you to that resource?
 
+### Image upload
 * optimization
 * resize: thumbnail, medium, large, and original
 
