@@ -63,9 +63,9 @@
 <p><a class="button" href="{{{API_DIR}}}/delete?resource={{resourceName}}&id={{id}}">Delete {{resourceName}}</a></p>
 </section>
 
-<section>
+<section id="tracks">
 <h2>Tracks</h2>
-<form method="POST" action="{{{API_DIR}}}/{{resourceName}}/{{id}}">
+<form method="POST" action="{{{API_DIR}}}/{{resourceName}}/{{id}}#tracks">
     <p><select name="song-id">
         <option value="">Select Song</option>
         {{#songlist}}
@@ -76,25 +76,57 @@
 </form>
 
 <h3>Album Order</h3>
+<table>
 {{#albumList}}
-<div class="songlist">
-<p>
-<form method="POST" action="{{{API_DIR}}}/{{resourceName}}/{{id}}">
+<tr>
+{{^song-top}}
+<td>
+<form method="POST" action="{{{API_DIR}}}/{{resourceName}}/{{id}}#tracks">
     <input type="hidden" name="method" value="PATCH">
     <input type="hidden" name="index" value="0">
     <input type="hidden" name="song-id" value="{{song-id}}">
+    <button>Move to Top</button>
+</form>
+</td>
+<td>
+<form method="POST" action="{{{API_DIR}}}/{{resourceName}}/{{id}}#tracks">
+    <input type="hidden" name="method" value="PATCH">
+    <input type="hidden" name="index" value="{{song-up}}">
+    <input type="hidden" name="song-id" value="{{song-id}}">
     <button>↑</button>
 </form>
-{{song-name}}
-<form method="POST" action="{{{API_DIR}}}/{{resourceName}}/{{id}}">
+</td>
+{{/song-top}}
+{{#song-top}}
+<td></td><td></td>
+{{/song-top}}
+{{^song-bottom}}
+<td>
+<form method="POST" action="{{{API_DIR}}}/{{resourceName}}/{{id}}#tracks">
+    <input type="hidden" name="method" value="PATCH">
+    <input type="hidden" name="index" value="{{song-down}}">
+    <input type="hidden" name="song-id" value="{{song-id}}">
+    <button>↓</button>
+</form>
+</td>
+{{/song-bottom}}
+{{#song-bottom}}
+<td></td>
+{{/song-bottom}}
+
+<th>{{song-name}}</th>
+
+<td>
+<form method="POST" action="{{{API_DIR}}}/{{resourceName}}/{{id}}#tracks">
     <input type="hidden" name="method" value="PATCH">
     <input type="hidden" name="index" value="-1">
     <input type="hidden" name="song-id" value="{{song-id}}">
     <button>×</button>
 </form>
-</p>
-</div>
+</td>
+</tr>
 {{/albumList}}
+</table>
 </section>
 
 <section class="list">

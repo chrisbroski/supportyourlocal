@@ -46,10 +46,15 @@ function songList(songs, id) {
 }
 
 function albumList(songs, db) {
-    return songs.map(s => {
+    return songs.map((s, i) => {
         return {
             "song-id": s,
-            "song-name": db.song[s].name
+            "song-name": db.song[s].name,
+            "song-order": i,
+            "song-up": i - 1,
+            "song-down": i + 1,
+            "song-top": i === 0,
+            "song-bottom": i >= songs.length - 1
         };
     });
 }
