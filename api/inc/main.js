@@ -130,6 +130,20 @@ function country(selected) {
 }
 this.country = country;
 
+function getMediumUrl(media, domain, type) {
+    var filteredMedia = media.filter(m => {
+        return m.type === type && m.url.indexOf(domain) > -1;
+    });
+
+    var spotifyMedium = "";
+    if (filteredMedia.length > 0) {
+        spotifyMedium = filteredMedia[0].url;
+    }
+
+    return spotifyMedium;
+}
+this.getMediumUrl = getMediumUrl;
+
 function displayPhotos(photos, selected) {
     var photoData = [];
     var selectedIdx;

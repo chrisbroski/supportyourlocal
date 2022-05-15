@@ -57,23 +57,10 @@ function list(db, msg, error, link) {
     return Object.assign(main.addMessages(msg, error, link), returnData);
 }
 
-function getSpotifyUrl(db, id) {
-    var spotifyMedia = db.song[db[resourceName][id].song].media.filter(m => {
-        return m.type === "audio" && m.url.indexOf("spotify.com") > -1;
-    });
-
-    var spotifyMedium = "";
-    if (spotifyMedia.length > 0) {
-        spotifyMedium = spotifyMedia[0].url;
-    }
-
-    return spotifyMedium;
-}
-
 function singleData(db, id) {
     return Object.assign({
         "resourceName": resourceName,
-        "spotifyTrackId": main.extractSpotifyTrackId(getSpotifyUrl(db, id))
+        "spotifyTrackId": main.extractSpotifyTrackId(main.getMediumUrl(db.song[db[resourceName][id].song].media, "spotify.com", "audio"))
     }, db[resourceName][id]);
 }
 
@@ -86,7 +73,7 @@ function listData(db, req) {
     announcementData.announcements.forEach(a => {
         var spotifyTrackId;
         if (a.song && db.song[a.song]) {
-            spotifyTrackId = main.extractSpotifyTrackId(getSpotifyUrl(db, a.id));
+            spotifyTrackId = main.extractSpotifyTrackId(main.getMediumUrl(db.song[a.song].media, "spotify.com", "audio"));
             if (spotifyTrackId) {
                 a.spotifyTrackId = spotifyTrackId;
             }

@@ -136,7 +136,12 @@ function singleData(db, id) {
     // add release info
     return Object.assign({
         "resourceName": resourceName,
-        "releases": releases
+        "releases": releases,
+        "audio": {"spotify": main.getMediumUrl(db[resourceName][id].media, "spotify.com", "audio")},
+        "video": {
+            "youtube": main.getMediumUrl(db[resourceName][id].media, "youtu", "video"),
+            "fb": main.getMediumUrl(db[resourceName][id].media, "facebook.com", "video")
+        }
     }, db[resourceName][id]);
 }
 
@@ -145,7 +150,8 @@ function listData(db, qs) {
     var tzOffset = -4; // -4:00 for EDT;
     var today = new Date();
     today.setHours(tzOffset, 0, 0, 0);
-        // filter out unrelased songs
+
+    // filter out unrelased songs
     songData = songData.filter(s => {
         var releaseDate;
         if (!s.releaseDate) {
@@ -166,6 +172,14 @@ function listData(db, qs) {
             return !song.artist || song.artist === db.band.name;
         });
     }
+    songData = songData.map(s => {
+        s.audio = {"spotify": main.getMediumUrl(s.media, "spotify.com", "audio")};
+        s.video = {
+            "youtube": main.getMediumUrl(s.media, "youtu", "video"),
+            "fb": main.getMediumUrl(s.media, "facebook.com", "video")
+        };
+        return s;
+    });
 
     return songData;
 }
