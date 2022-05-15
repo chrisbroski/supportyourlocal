@@ -57,10 +57,23 @@ function list(db, msg, error, link) {
     return Object.assign(main.addMessages(msg, error, link), returnData);
 }
 
+function getSpotifyUrl(db, id) {
+    var spotifyMedia = db.song[db[resourceName][id].song].media.filter(m => {
+        return m.type === "audio" && m.url.indexOf("spotify.com") > -1;
+    });
+
+    var spotifyMedium = "";
+    if (spotifyMedia.length > 0) {
+        spotifyMedium = spotifyMedia[0].url;
+    }
+
+    return spotifyMedium;
+}
+
 function singleData(db, id) {
     return Object.assign({
         "resourceName": resourceName,
-        "spotifyTrackId": main.extractSpotifyTrackId(db.song[db[resourceName][id].song].audio.spotify)
+        "spotifyTrackId": main.extractSpotifyTrackId(getSpotifyUrl(db, id))
     }, db[resourceName][id]);
 }
 
@@ -71,8 +84,12 @@ function listData(db, req) {
     announcementData.announcements = main.objToArray(db[resourceName]).sort(main.sortByDateDesc);
     announcementData.resourceName = resourceName;
     announcementData.announcements.forEach(a => {
-        if (a.song && db.song[a.song] && db.song[a.song].audio && db.song[a.song].audio.spotify) {
-            a.spotifyTrackId = main.extractSpotifyTrackId(db.song[a.song].audio.spotify);
+        var spotifyTrackId;
+        if (a.song && db.song[a.song]) {
+            spotifyTrackId = main.extractSpotifyTrackId(getSpotifyUrl(db, a.id));
+            if (spotifyTrackId) {
+                a.spotifyTrackId = spotifyTrackId;
+            }
         }
     });
 
