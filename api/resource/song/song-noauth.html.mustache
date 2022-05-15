@@ -13,7 +13,10 @@
 
 <section>
 {{descHtml}}
-{{#audio.spotify}}
+{{#mediaLinks}}
+<p><a href="{{url}}">{{action}} on {{domain}}</a></p>
+{{/mediaLinks}}
+<!-- {{#audio.spotify}}
 <p><a href="{{.}}">Listen on Spotify</a></p>
 {{/audio.spotify}}
 {{#audio.youtube}}
@@ -31,7 +34,7 @@
 <p><a href="{{video.fb}}">Watch on Facebook</a></p>
 {{/video.fb}}
 </section>
-{{/hasVideo}}
+{{/hasVideo}} -->
 
 {{#lyrics}}
 <section>

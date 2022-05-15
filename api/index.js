@@ -132,7 +132,11 @@ function rspPost(req, rsp, path, body) {
     }
 
     if (path.resource === 'song') {
-        return song.create(req, rsp, body, db, endure.save);
+        if (path.id) {
+            return song.addMedia(req, rsp, path.id, body, db, endure.save);
+        } else {
+            return song.create(req, rsp, body, db, endure.save);
+        }
     }
 
     if (path.resource === 'announcement') {
@@ -233,6 +237,9 @@ function rspDelete(req, rsp, path) {
 function rspPatch(req, rsp, path, body) {
     if (path.resource === 'release') {
         return release.reorderSong(req, rsp, path.id, body, db, endure.save);
+    }
+    if (path.resource === 'song') {
+        return song.reorderMedia(req, rsp, path.id, body, db, endure.save);
     }
 
     return main.notFound(rsp, req.url, 'PUT', req, db);
@@ -548,6 +555,66 @@ function init() {
 var cssStat;
 async function loadData() {
     db = await endure.load(`${__dirname}/../data`);
+
+    // migrate data, if needed
+    Object.keys(db.song).forEach(s => {
+        // if no media array exists, create it
+        if (!db.song[s].media) {
+            db.song[s].media = [];
+        }
+        // copy urls to media array
+        if (db.song[s].audio) {
+            if (db.song[s].audio.spotify) {
+                db.song[s].media.push({
+                    "url": db.song[s].audio.spotify,
+                    "type": "audio"
+                });
+            }
+            if (db.song[s].audio.apple) {
+                db.song[s].media.push({
+                    "url": db.song[s].audio.apple,
+                    "type": "audio"
+                });
+            }
+            if (db.song[s].audio.amazon) {
+                db.song[s].media.push({
+                    "url": db.song[s].audio.amazon,
+                    "type": "audio"
+                });
+            }
+            if (db.song[s].audio.youtube) {
+                db.song[s].media.push({
+                    "url": db.song[s].audio.youtube,
+                    "type": "audio"
+                });
+            }
+            if (db.song[s].audio.cdbaby) {
+                db.song[s].media.push({
+                    "url": db.song[s].audio.cdbaby,
+                    "type": "audio"
+                });
+            }
+            delete db.song[s].audio;
+        }
+
+        if (db.song[s].video) {
+            if (db.song[s].video.youtube) {
+                db.song[s].media.push({
+                    "url": db.song[s].video.youtube,
+                    "type": "video"
+                });
+            }
+            if (db.song[s].video.fb) {
+                db.song[s].media.push({
+                    "url": db.song[s].video.fb,
+                    "type": "video"
+                });
+            }
+            delete db.song[s].video;
+        }
+    });
+    endure.save();
+
     if (process.env.PHOTO_PATH) {
         db.photo = await photo.fromFiles(process.env.PHOTO_PATH);
     }

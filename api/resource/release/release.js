@@ -271,6 +271,7 @@ function isSongInvalid(formData) {
     return msg;
 }
 
+
 function isReorderInvalid(formData, db, id) {
     var msg = [];
 
@@ -335,6 +336,7 @@ function patchResource(id, formData, db, save) {
     save();
 }
 
+// Album track errors should display in the lower section
 this.addSong = function (req, rsp, id, formData, db, save) {
     // if (isSongInvalid(req, rsp, id, formData, db)) {
     //     return;
@@ -390,7 +392,7 @@ this.reorderSong = function(req, rsp, id, formData, db, save) {
     }
 
     rsp.writeHead(200, {'Content-Type': 'text/html'});
-    rsp.end(main.renderPage(req, template.single, single(db, id, [`${resourceName} id ${id} songs updated.`]), db));
+    rsp.end(main.renderPage(req, template.single, single(db, id, [`${resourceName} id ${id} media updated.`]), db));
 };
 
 this.create = function (req, rsp, formData, db, save) {

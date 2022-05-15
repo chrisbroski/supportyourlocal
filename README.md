@@ -48,27 +48,19 @@ Advertise for local venues and bands.
 
 Endure backup and parse test. (In case of catastrophic failure.)
 
-Admin key in .env (for backups and troubleshooting)
-
 ## Features for next version
 
 All https
 
-Add facebook event link to gig
+Admin key in .env (for data download and future executive feature)
 
 ### Sub-Array Data
 
-Make separate page for sub-arrays (like track listing) Adding URL media links should end up working the same way.
-
-Song media should be an array that includes media type (Spotify, mp3, etc.) a URL, description, and credits.
-
-Add 0 to infinite media - audio, video to songs and releases.
+* Fix both front-ends to handle new way (maybe make it back-compat for now too)
 
 ### Central Site
 
-* Home Page
-* Blog
-* Form to sign up for beta
+* Blog articles
 
 ### Tests
 
@@ -81,10 +73,9 @@ Songs partially done. The rest, not at all
 
 ## Features for next next version
 
-After creating a resource, should it redirect you to that resource?
-
 ### Image upload
-* optimization
+
+* PNG and JPG optimization
 * resize: thumbnail, medium, large, and original
 
 Custom fonts - Upload and make available in style guide.

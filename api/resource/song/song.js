@@ -13,6 +13,7 @@ function single(db, id, msg, error) {
         "pageName": db[resourceName][id].name,
         "genres": main.genre(db[resourceName][id].genre1),
         "songs": main.objToArray(db[resourceName]).sort(main.sortByName),
+        "mediaList": mediaList(db[resourceName][id].media),
         "formData": {
             "durationM": 0,
             "durationS": 0
@@ -22,6 +23,43 @@ function single(db, id, msg, error) {
     return Object.assign(main.addMessages(msg, error), resourceData);
 }
 
+function mediaList(media) {
+    if (!media) {
+        return [];
+    }
+    return media.map((s, i) => {
+        return {
+            "media-url": s.url,
+            "media-type": s.type,
+            "media-index": i
+        };
+    });
+}
+
+function domain(url) {
+    var reUrl = /.*\:\/\/([^\/]*)(\/|\?|$)/;
+    var results = reUrl.exec(url);
+    if (!results) {
+        return "";
+    }
+    var domain = results[1];
+    // remove any sub-domains
+    var hasSubDomains = domain.lastIndexOf(".", domain.lastIndexOf(".") - 1);
+    if (hasSubDomains > -1) {
+        domain = domain.slice(hasSubDomains + 1);
+    }
+    return domain.charAt(0).toUpperCase() + domain.substr(1);
+}
+
+function mediaAction(type) {
+    var actions = {
+        "audio": "Listen",
+        "video": "Watch",
+        "article": "Read"
+    };
+    return actions[type];
+}
+
 function singleNoAuth(db, id, msg, error) {
     var resourceData = Object.assign({
         "id": id,
@@ -29,7 +67,14 @@ function singleNoAuth(db, id, msg, error) {
         "pageName": db[resourceName][id].name,
         "genres": main.genre(db[resourceName][id].genre1),
         "descHtml": converter.makeHtml(db[resourceName][id].desc),
-        "hasVideo": (db[resourceName][id].video && (db[resourceName][id].video.fb || db[resourceName][id].video.youtube))
+        "mediaLinks": db[resourceName][id].media.map(m => {
+            return {
+                "url": m.url,
+                "domain": domain(m.url),
+                "action": mediaAction(m.type)
+            };
+        })
+        // "hasVideo": (db[resourceName][id].video && (db[resourceName][id].video.fb || db[resourceName][id].video.youtube))
     }, db[resourceName][id]);
 
     return Object.assign(main.addMessages(msg, error), resourceData);
@@ -41,6 +86,7 @@ function list(db, msg, error, link) {
         "today": main.dateFormat(new Date()),
         "resourceName": resourceName,
         "genres": main.genre(),
+        "media": main.media(),
         "pageName": `${main.toTitleCase(resourceName)}s`,
         "formData": {
             "durationM": 0,
@@ -124,6 +170,77 @@ function listData(db, qs) {
     return songData;
 }
 
+function isReorderInvalid(formData) {
+    var msg = [];
+
+    if (!formData["media-index"]) {
+        msg.push('Media index is required.');
+    }
+    if (!formData.index) {
+        msg.push('New index is required.');
+    }
+    return msg;
+}
+
+function patchResource(id, formData, db, save) {
+    var currentIndex = formData["media-index"];
+    var newIndex = formData.index;
+    if (newIndex >= db[resourceName][id].media.length) {
+        newIndex = db[resourceName][id].media.length - 1;
+    }
+    var removedMedium = db[resourceName][id].media.splice(currentIndex, 1);
+    if (parseInt(formData.index) > -1) {
+        db[resourceName][id].media.splice(newIndex, 0, removedMedium);
+    }
+
+    save();
+}
+
+this.reorderMedia = function(req, rsp, id, formData, db, save) {
+    if (!db[resourceName][id]) {
+        return main.notFound(rsp, req.url, 'PATCH', req, db);
+    }
+
+    var error = isReorderInvalid(formData, db, id);
+    if (error.length) {
+        rsp.writeHead(400, {'Content-Type': 'text/html'});
+        rsp.end(main.renderPage(req, template.single, single(db, id, "", error), db));
+        return;
+    }
+
+    patchResource(id, formData, db, save);
+    var returnData = main.responseData(id, resourceName, db, "Updated");
+
+    if (req.headers.accept === 'application/json') {
+        return main.returnJson(rsp, returnData);
+    }
+
+    rsp.writeHead(200, {'Content-Type': 'text/html'});
+    rsp.end(main.renderPage(req, template.single, single(db, id, [`${resourceName} id ${id} songs updated.`]), db));
+};
+
+function isMediaInvalid(formData) {
+    var msg = [];
+    // var durationM = formData.durationM || 0;
+    // durationM = parseInt(durationM);
+    // var durationS = formData.durationS || 0;
+    // durationS = parseInt(durationS);
+
+    if (!formData.media) {
+        msg.push('Media URL is required.');
+    }
+
+    if (!formData.type) {
+        msg.push('Media type is required.');
+    }
+
+    // if (durationM + durationS < 1) {
+    //     msg.push('Duration is required.');
+    // }
+
+    return msg;
+}
+
 // Form validation
 function isUpdateInvalid(req, rsp, formData) {
     var msg = [];
@@ -160,23 +277,49 @@ function updateResource(id, formData, db, save) {
     db[resourceName][id]["cover-front"] = formData["cover-front"];
     db[resourceName][id]["cover-back"] = formData["cover-back"];
 
-    if (!db[resourceName][id].audio) {
-        db[resourceName][id].audio = {};
+    // maybe add one media to start?
+    if (!db[resourceName][id].media) {
+        db[resourceName][id].media = [];
     }
-    db[resourceName][id].audio.spotify = formData.spotify;
-    // db[resourceName][id].audio.apple = formData.apple;
-    // db[resourceName][id].audio.amazon = formData.amazon;
-    // db[resourceName][id].audio.youtube = formData.youtube;
-    // db[resourceName][id].audio.cdbaby = formData.cdbaby;
-
-    if (!db[resourceName][id].video) {
-        db[resourceName][id].video = {};
+    if (formData.media) {
+        db[resourceName][id].media.push({
+            "url": formData.media,
+            "type": formData.type || "audio"
+        });
     }
-    db[resourceName][id].video.youtube = formData["video-youtube"];
-    db[resourceName][id].video.fb = formData["video-fb"];
 
     save();
 }
+
+this.addMedia = function (req, rsp, id, formData, db, save) {
+    var error = isMediaInvalid(formData);
+    if (error.length) {
+        rsp.writeHead(400, {'Content-Type': 'text/html'});
+        rsp.end(main.renderPage(req, template.list, Object.assign({
+            "hasError": true,
+            "error": error,
+            "formData": formData
+        }, list(db)), db));
+        return;
+    }
+    if (!db[resourceName][id].media) {
+        db[resourceName][id].media = [];
+    }
+    db[resourceName][id].media.unshift({
+        "url": formData.media,
+        "type": formData.type
+    });
+    save();
+
+    if (req.headers.accept === 'application/json') {
+        rsp.setHeader("Location", `${process.env.SUBDIR}/${resourceName}/${id}`);
+        return main.returnJson(rsp, {}, 201);
+    }
+
+    // returnData.back = req.headers.referer;
+    rsp.writeHead(201, {'Content-Type': 'text/html'});
+    rsp.end(main.renderPage(req, template.single, single(db, id, ["Media added"]), db));
+};
 
 this.create = function (req, rsp, formData, db, save) {
     var error = isUpdateInvalid(req, rsp, formData);
@@ -188,6 +331,7 @@ this.create = function (req, rsp, formData, db, save) {
         }, list(db));
         returnData.formData = formData;
         returnData.genres = main.genre(formData.genre1);
+        returnData.media = main.media(formData.media);
         rsp.writeHead(400, {'Content-Type': 'text/html'});
         rsp.end(main.renderPage(req, template.list, returnData, db));
         return;

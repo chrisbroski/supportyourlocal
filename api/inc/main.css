@@ -135,6 +135,12 @@ table td, table th {
     padding: 4px;
     text-align: left;
 }
+table th > div {
+    padding: 4px;
+    overflow: auto;
+    font-weight: normal;
+    background: #eee;
+}
 
 div.photos {
     height: 120px;
@@ -225,6 +231,11 @@ section.photolist > p > a > span {
     float: left;
     width: 150px;
 }
+
+#media select {
+    margin: 4px 0;
+    width: auto;
+}
 @keyframes fadeOutAfterLoad {
     0% {
         opacity: 1;
@@ -282,7 +293,7 @@ section.photolist > p > a > span {
     body > article {
         padding-right: 0;
     }
-    section.photolist {
+    section.list, section.photolist {
         position: static;
         top: 0; right: 0; bottom: 0;
         width: auto;

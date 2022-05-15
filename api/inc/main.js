@@ -5,6 +5,7 @@ const mustache = require("mustache");
 
 const countries = require('./countries.json');
 const genres = require('./genres.json');
+const mediums = require('./media.json');
 
 const TEMPLATE = {};
 
@@ -94,6 +95,22 @@ function genre(selected) {
     return displayGenres;
 }
 this.genre = genre;
+
+function media(selected) {
+    var displayMedia = [];
+    mediums.forEach(g => {
+        var sel = "";
+        if (selected === g) {
+            sel = ' selected="selected"';
+        }
+        displayMedia.push({
+            "name": g,
+            "selected": sel
+        });
+    });
+    return displayMedia;
+}
+this.media = media;
 
 function country(selected) {
     var displayCountries = [];

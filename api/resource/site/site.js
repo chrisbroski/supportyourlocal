@@ -276,6 +276,13 @@ ${nav}
 `);
 };
 
+function getAnnouncementSong(songId, db) {
+    var audio = db.song[songId].media.filter(m => {
+        return m.type === "audio";
+    });
+    return audio[0].url;
+}
+
 function homeNoAuth(db) {
     var now = new Date();
     var homeData = {
@@ -292,7 +299,7 @@ function homeNoAuth(db) {
             announcement.announcement = converter.makeHtml(db.announcement[id].copy);
             if (db.announcement[id].song) {
                 announcement.songLink = {};
-                announcement.songLink.url = db.song[db.announcement[id].song].audio.spotify;
+                announcement.songLink.url = getAnnouncementSong(db.announcement[id].song, db);
                 announcement.songLink.text = db.song[db.announcement[id].song].name;
             }
             homeData.announcements.push(announcement);

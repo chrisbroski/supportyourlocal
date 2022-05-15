@@ -47,29 +47,41 @@
 <p><label>Story<br>
     <textarea name="desc">{{story}}</textarea></p>
 
-<h3>Audio</h3>
-<p><label>Spotify</label><br>
-    <input type="url" name="spotify" value="{{audio.spotify}}">
-<!--<p><label>Apple Music</label><br>
-    <input type="url" name="apple" value="{{audio.apple}}">
-<p><label>Amazon Music</label><br>
-    <input type="url" name="amazon" value="{{audio.amazon}}">-->
-<!-- <p><label>YouTube Music</label><br>
-    <input type="url" name="youtube" value="{{audio.youtube}}"> -->
-<!--<p><label>CD Baby</label><br>
-    <input type="url" name="cdbaby" value="{{audio.cdbaby}}">-->
-
-<h3>Video</h3>
-<p><label>YouTube</label><br>
-    <input type="url" name="video-youtube" value="{{video.youtube}}">
-<p><label>Facebook</label><br>
-    <input type="url" name="video-fb" value="{{video.fb}}">
-
 <p><label>Lyrics<br>
     <textarea name="lyrics">{{lyrics}}</textarea></p>
 
 <footer><p><button>Update {{resourceName}}</button></footer>
 </form>
+</section>
+
+<section id="media">
+<h2>Media</h2>
+<form method="POST" action="{{{API_DIR}}}/{{resourceName}}/{{id}}#media">
+    <p><input type="url" name="media" value="">
+        <select name="type">
+            <option value="audio">Audio</option>
+            <option value="video">Video</option>
+            <option value="blog">Blog / Article</option>
+        </select>
+    <p><button>Add Media</button>
+</form>
+
+<table>
+{{#mediaList}}
+<tr>
+<th><div>{{media-url}}</div></th>
+<td>{{media-type}}</td>
+<td>
+<form method="POST" action="{{{API_DIR}}}/{{resourceName}}/{{id}}#media">
+    <input type="hidden" name="method" value="PATCH">
+    <input type="hidden" name="index" value="-1">
+    <input type="hidden" name="media-index" value="{{media-index}}">
+    <button>×</button>
+</form>
+</td>
+</tr>
+{{/mediaList}}
+</table>
 </section>
 
 <section>
