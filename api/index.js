@@ -615,6 +615,7 @@ async function loadData() {
             delete db.song[s].video;
         }
     });
+    delete db.photos;
 
     if (process.env.PHOTO_PATH) {
         db.photo = await photo.fromFiles(process.env.PHOTO_PATH);
