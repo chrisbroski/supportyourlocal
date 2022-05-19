@@ -66,8 +66,9 @@ function list(db, msg, error, link) {
     return Object.assign(main.addMessages(msg, error, link), resourceData);
 }
 
-function filteredUser(user) {
+function filteredUser(user, db) {
     var u = Object.assign({}, user);
+    u.photo = main.photoWeb(db, user.photo);
     delete u.hash;
     delete u.salt;
     delete u.token;
@@ -79,7 +80,7 @@ function singleData(db, id) {
 }
 
 function listData(db) {
-    return main.objToArray(db[resourceName]).sort(main.sortByDateDesc).map(u => filteredUser(u));
+    return main.objToArray(db[resourceName]).sort(main.sortByDateDesc).map(u => filteredUser(u, db));
 }
 
 function checkEmailExists(email, users) {

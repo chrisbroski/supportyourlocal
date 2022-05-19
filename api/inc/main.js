@@ -149,7 +149,7 @@ function photoWeb(db, photoId) {
         return photoId;
     }
     if (db.photo[photoId].web) {
-        return `${db.photo[photoId].name}_web${db.photo[photoId].web}`;
+        return `${db.photo[photoId].name}_web${db.photo[photoId].ext}`;
     }
     return photoId;
 }
