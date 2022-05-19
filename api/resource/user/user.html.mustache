@@ -39,9 +39,15 @@
 
 <h2>Photo</h2>
 <div class="photos">
-<input type="radio" name="photo" value="" id="photo-none"{{{no-photo}}}><label for="photo-none"><img src="{{API_DIR}}/nophoto" alt="No photo"></label>
+<label>
+    <input type="radio" name="photo" value=""{{{no-photo}}}>
+    <img src="{{API_DIR}}/nophoto" alt="No photo">
+</label>
 {{#photos}}
-<input type="radio" name="photo" value="{{file}}" id="photo-{{file}}"{{{selected}}}><label for="photo-{{file}}"><img src="/photo/{{thumb}}"></label>
+<label>
+    <input type="radio" name="photo" value="{{file}}"{{{selected}}}>
+    <img src="/photo/{{thumb}}">
+</label>
 {{/photos}}
 </div>
 

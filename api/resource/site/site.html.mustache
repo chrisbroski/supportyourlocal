@@ -62,17 +62,29 @@
 
 <h2>Background Photo</h2>
 <div class="photos">
-<input type="radio" name="background" value="" id="bg-none"{{{bg-no-photo}}}><label for="bg-none"><img src="{{API_DIR}}/nophoto" alt="No photo"></label>
+<label>
+    <input type="radio" name="background" value=""{{{bg-no-photo}}}>
+    <img src="{{API_DIR}}/nophoto" alt="No photo">
+</label>
 {{#bg-photos}}
-<input type="radio" name="background" value="{{file}}" id="bg-{{file}}"{{{selected}}}><label for="bg-{{file}}"><img src="/photo/{{thumb}}"></label>
+<label>
+    <input type="radio" name="background" value="{{file}}"{{{selected}}}>
+    <img src="/photo/{{thumb}}">
+</label>
 {{/bg-photos}}
 </div>
 
 <h2>Thumbnail Photo</h2>
 <div class="photos">
-<input type="radio" name="thumbnail" value="" id="thumb-none"{{{thumb-no-photo}}}><label for="thumb-none"><img src="{{API_DIR}}/nophoto" alt="No photo"></label>
+<label>
+    <input type="radio" name="thumbnail" value=""{{{thumb-no-photo}}}>
+    <img src="{{API_DIR}}/nophoto" alt="No photo">
+</label>
 {{#thumb-photos}}
-<input type="radio" name="thumbnail" value="{{file}}" id="thumb-{{file}}"{{{selected}}}><label for="thumb-{{file}}"><img src="/photo/{{thumb}}"></label>
+<label>
+    <input type="radio" name="thumbnail" value="{{file}}"{{{selected}}}>
+    <img src="/photo/{{thumb}}">
+</label>
 {{/thumb-photos}}
 </div>
 

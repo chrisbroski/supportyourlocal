@@ -26,21 +26,31 @@
     (Show title, release date, front cover, and description only)<br>
     <input type="date" name="promotionStart" value="{{formData.promotionStart}}">
 
-<h3>Front Cover</h3>
+<h2>Front Cover</h2>
 <div class="photos">
-<input type="radio" name="cover-front" value="" id="cover-front-none"{{{no-photo}}}>
-<label for="cover-front-none"><img src="{{API_DIR}}/nophoto" alt="No photo"></label>
+<label>
+    <input type="radio" name="cover-front" value=""{{{no-photo}}}>
+    <img src="{{API_DIR}}/nophoto" alt="No photo">
+</label>
 {{#front-cover-photos}}
-<input type="radio" name="cover-front" value="{{file}}" id="cover-front-{{file}}"{{{selected}}}><label for="cover-front-{{file}}"><img src="/photo/{{thumb}}"></label>
+<label>
+    <input type="radio" name="cover-front" value="{{file}}"{{{selected}}}>
+    <img src="/photo/{{thumb}}">
+</label>
 {{/front-cover-photos}}
 </div>
 
-<h3>Back Cover</h3>
+<h2>Back Cover</h2>
 <div class="photos">
-<input type="radio" name="cover-back" value="" id="cover-back-none"{{{no-photo}}}>
-<label for="cover-back-none"><img src="{{API_DIR}}/nophoto" alt="No photo"></label>
+<label>
+    <input type="radio" name="cover-back" value=""{{{no-photo}}}>
+    <img src="{{API_DIR}}/nophoto" alt="No photo">
+</label>
 {{#back-cover-photos}}
-<input type="radio" name="cover-back" value="{{file}}" id="cover-back-{{file}}"{{{selected}}}><label for="cover-back-{{file}}"><img src="/photo/{{thumb}}"></label>
+<label>
+    <input type="radio" name="cover-back" value="{{file}}"{{{selected}}}>
+    <img src="/photo/{{thumb}}">
+</label>
 {{/back-cover-photos}}
 </div>
 

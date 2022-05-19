@@ -152,6 +152,9 @@ div.photos {
     overflow: auto;
     white-space: nowrap;
 }
+div.photos label {
+    position: relative;
+}
 div.photos img {
     margin: 4px 0;
     padding: 6px;
@@ -166,7 +169,7 @@ div.photos input:checked {
     display: inline-block;
     position: absolute;
 }
-div.photos input:checked + label img {
+div.photos label input:checked + img {
     padding: 0;
     border: 1px solid rgb(var(--color2));
     box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.8);
