@@ -144,6 +144,17 @@ function getMediumUrl(media, domain, type) {
 }
 this.getMediumUrl = getMediumUrl;
 
+function photoWeb(db, photoId) {
+    if (!db.photo[photoId]) {
+        return photoId;
+    }
+    if (db.photo[photoId].web) {
+        return `${db.photo[photoId].name}_web${db.photo[photoId].web}`;
+    }
+    return photoId;
+}
+this.photoWeb = photoWeb;
+
 function displayPhotos(photos, selected) {
     var photoData = [];
     var selectedIdx;
@@ -156,7 +167,8 @@ function displayPhotos(photos, selected) {
         }
         photoData.push({
             "file": p,
-            "selected": sel
+            "selected": sel,
+            "thumb": `${photos[p].name}_thumb${photos[p].ext}`
         });
     });
     if (selectedIdx) {

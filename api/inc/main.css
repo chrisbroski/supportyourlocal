@@ -4,7 +4,7 @@
 html {padding: 0; font-family: var(--body-font); }
 body {margin: 0; padding-left: 240px; padding-bottom: 200px; }
 a {color: rgb(var(--color1))}
-a:visited {rgba(var(--color1), 0.9); }
+a:visited {color: rgba(var(--color1), 0.9); }
 pre {
     max-width: 580px;
     white-space: pre-wrap;
@@ -24,6 +24,11 @@ body > header a {
     margin: 4px; padding: 4px;
     text-decoration: none;
     color: white;
+}
+body > header a:visited {
+    margin: 4px; padding: 4px;
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.9);
 }
 body > header > p:first-child {
     display: none;
@@ -185,6 +190,9 @@ body > footer {
 body > footer a {
     color: white;
 }
+body > footer a:visited {
+    color: rgba(255, 255, 255, 0.9);
+}
 
 section > form > footer {
     padding-left: 12px;
@@ -200,18 +208,19 @@ section > img, section > p > img, section > p > a > img {
 }
 section.photolist > p {
     margin: 0;
-    width: 50%;
-    float: right;
+    /* width: 50%; */
+    float: left;
     position: relative;
     line-height: 1;
 }
 section.photolist > p > a {
+    display: block;
     color: white;
     text-decoration: none;
 }
 section.photolist > p > a > img {
     margin: 0; padding: 4px;
-    width: 100%;
+    width: 160px !important;
     float: none;
     color: white;
 }
@@ -223,13 +232,25 @@ section.photolist > p > a > span {
     font-size: 14px;
     line-height: 1;
 }
-#photo-noauth {
+/* #photo-noauth {
     padding: 4px;
 }
 #photo-noauth img {
     margin: 4px;
     float: left;
     width: 150px;
+} */
+#photo-info p {
+    position: relative;
+}
+#photo-info p a.button {
+    position: absolute;
+    right: 0;
+}
+#photo-info p img {
+    margin: 1em 0 0;
+    width: auto;
+    max-width: 100%;
 }
 
 #media select {

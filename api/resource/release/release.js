@@ -69,7 +69,9 @@ function pageName(db, id) {
 function songLink(db, id) {
     var link = db.release[id].audio.spotify;
     if (!link) {
-        link = db.song[db.release[id].songs[0]].audio.spotify;
+        link = db.song[db.release[id].songs[0]].media.filter(m => {
+            return m.type === "audio";
+        })[0].url;
     }
     return link;
 }
@@ -93,6 +95,13 @@ function single(db, id, msg, error) {
     return Object.assign(main.addMessages(msg, error), resourceData);
 }
 
+function expandPhotos(db, releaseData) {
+    var expandedReleaseData = Object.assign({}, releaseData);
+    expandedReleaseData["cover-front"] = main.photoWeb(db, expandedReleaseData["cover-front"]);
+    expandedReleaseData["cover-back"] = main.photoWeb(db, expandedReleaseData["cover-back"]);
+    return releaseData;
+}
+
 function singleNoAuth(db, id) {
     var resourceData = Object.assign({
         "id": id,
@@ -101,12 +110,12 @@ function singleNoAuth(db, id) {
         "songlist": songList(main.objToArray(db.song)),
         "hasAlbumList": db[resourceName][id].songs.length > 1,
         "albumList": albumList(db[resourceName][id].songs, db),
-        "front-cover-photos": main.displayPhotos(db.photo, db[resourceName][id]["cover-front"]),
-        "back-cover-photos": main.displayPhotos(db.photo, db[resourceName][id]["cover-back"]),
+        // "front-cover-photos": main.displayPhotos(db.photo, db[resourceName][id]["cover-front"]),
+        // "back-cover-photos": main.displayPhotos(db.photo, db[resourceName][id]["cover-back"]),
         "releaseLink": db[resourceName][id].audio.spotify || db.song[db[resourceName][id].songs[0]].audio.spotify,
         "descHtml": converter.makeHtml(db[resourceName][id].desc),
         "hasVideo": (db[resourceName][id].video && (db[resourceName][id].video.fb || db[resourceName][id].video.youtube))
-    }, db[resourceName][id]);
+    }, expandPhotos(db, db[resourceName][id]));
 
     var tsToday = timestampToday();
     // if not released or promoted, return {}

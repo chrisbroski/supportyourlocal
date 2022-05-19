@@ -44,6 +44,8 @@ Custom domain, more storage space (for photos.)
 
 Advertise for local venues and bands.
 
+Add "powered by yourlocal.band" on site.
+
 ## API Style
 
 Endure backup and parse test. (In case of catastrophic failure.)
@@ -53,10 +55,6 @@ Endure backup and parse test. (In case of catastrophic failure.)
 All https
 
 Admin key in .env (for data download and future executive feature)
-
-### Sub-Array Data
-
-* Fix both front-ends to handle new way (maybe make it back-compat for now too)
 
 ### Central Site
 
@@ -77,6 +75,8 @@ Songs partially done. The rest, not at all
 
 * PNG and JPG optimization
 * resize: thumbnail, medium, large, and original
+    * on upload and initial load (for backward compat)
+    * make sure to delete all versions (thumb and web size)
 
 Custom fonts - Upload and make available in style guide.
 

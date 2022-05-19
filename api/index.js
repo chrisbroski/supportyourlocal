@@ -10,7 +10,9 @@ require('dotenv').config();
 const PORT = process.env.PORT || 29170;
 process.env.SUBDIR = process.env.API_DIR || "/api";
 const MAP_KEY = process.env.MAP_KEY || "";
-process.env.PHOTO_STORAGE_LIMIT = process.env.PHOTO_STORAGE_LIMIT || 0;
+process.env.PHOTO_STORAGE_LIMIT = process.env.PHOTO_STORAGE_LIMIT || 500000000;
+process.env.PHOTO_SIZE_LIMIT = process.env.PHOTO_SIZE_LIMIT || 2000;
+process.env.PHOTO_WEB_SIZE = process.env.PHOTO_WEB_SIZE || 1200;
 
 // Custom libs
 const main = require('./inc/main.js');
@@ -613,11 +615,11 @@ async function loadData() {
             delete db.song[s].video;
         }
     });
-    endure.save();
 
     if (process.env.PHOTO_PATH) {
         db.photo = await photo.fromFiles(process.env.PHOTO_PATH);
     }
+    endure.save();
     if (process.env.CSS_FRONT) {
         cssStat = await fs.stat(process.env.CSS_FRONT);
     }

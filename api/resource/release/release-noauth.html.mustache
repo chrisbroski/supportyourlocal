@@ -22,6 +22,9 @@
 
 {{^upcomingRelease}}
 <h2>{{pageName}}</h2>
+{{#cover-front}}
+<img src="/photo/{{cover-front}}" alt="Front cover">
+{{/cover-front}}
 {{#cover-back}}
 <img src="/photo/{{cover-back}}" alt="Back cover">
 {{/cover-back}}
@@ -45,10 +48,10 @@
 {{#hasVideo}}
 <section>
 {{#video.fb}}
-<p><a href="{{.}}">Facebook Video</a></p>
+<p><a href="{{.}}">Watch Facebook Video</a></p>
 {{/video.fb}}
 {{#video.youtube}}
-<p><a href="{{.}}">YouTube Video</a></p>
+<p><a href="{{.}}">Watch YouTube Video</a></p>
 {{/video.youtube}}
 </section>
 {{/hasVideo}}
