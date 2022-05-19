@@ -71,13 +71,6 @@ Songs partially done. The rest, not at all
 
 ## Features for next next version
 
-### Image upload
-
-* PNG and JPG optimization
-* resize: thumbnail, medium, large, and original
-    * on upload and initial load (for backward compat)
-    * make sure to delete all versions (thumb and web size)
-
 Custom fonts - Upload and make available in style guide.
 
 Style guide page. Populate drop-down from guide colors.
