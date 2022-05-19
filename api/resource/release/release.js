@@ -202,6 +202,8 @@ function singleData(db, id) {
     if (!canBeShown(release, tsToday)) {
         return {};
     }
+    release["cover-front"] = main.photoWeb(db, release["cover-front"]);
+    release["cover-back"] = main.photoWeb(db, release["cover-back"]);
     // if promoted but note released, return partial data
     var releaseDate = new Date(release.date);
     releaseDate.setHours(24 + tzOffset, 0, 0, 0);
@@ -237,6 +239,10 @@ function listData(db) {
     return releases.map(r => {
         var releaseDate = new Date(r.date);
         releaseDate.setHours(24 + tzOffset, 0, 0, 0);
+
+        r["cover-front"] = main.photoWeb(db, r["cover-front"]);
+        r["cover-back"] = main.photoWeb(db, r["cover-back"]);
+
         if (+releaseDate - tsToday >= 0) {
             r.upcomingRelease = true;
             r["cover-back"] = "";
