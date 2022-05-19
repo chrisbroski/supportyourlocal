@@ -101,14 +101,15 @@ function hasWeb(webs, fileName, ext) {
 }
 
 function isThumb(fileName, ext) {
-    // console.log(fileName, ext);
     var suffixPosition = fileName.length - `_thumb${ext}`.length;
-    return fileName.indexOf(`_thumb${ext}`) === suffixPosition;
+    var suffixFound = fileName.indexOf(`_thumb${ext}`);
+    return suffixFound === suffixPosition && suffixFound > -1;
 }
 
 function isWeb(fileName, ext) {
     var suffixPosition = fileName.length - `_web${ext}`.length;
-    return fileName.indexOf(`_web${ext}`) === suffixPosition;
+    var suffixFound = fileName.indexOf(`_web${ext}`);
+    return suffixFound === suffixPosition && suffixFound > -1;
 }
 
 this.fromFiles = async function (path) {
