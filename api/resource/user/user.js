@@ -76,7 +76,7 @@ function filteredUser(user, db) {
 }
 
 function singleData(db, id) {
-    return Object.assign({"resourceName": resourceName}, filteredUser(db[resourceName][id]));
+    return Object.assign({"resourceName": resourceName}, filteredUser(db[resourceName][id], db));
 }
 
 function listData(db) {
