@@ -68,6 +68,7 @@ Songs partially done. The rest, not at all
 
 * Updates don't persist new form data after 400
 * Deletion can cause invalid state
+* Small photos might create thumbnails larger than themselves.
 
 ## Features for next next version
 

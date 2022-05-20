@@ -215,7 +215,17 @@ function singleData(db, id) {
 
 function addSongData(release, db) {
     release.songs = release.songs.map(s => {
-        return Object.assign({"id": s}, db.song[s]);
+        var songData = Object.assign({"id": s}, db.song[s]);
+        // for backward compat
+        var songMedia = db.song[s].media.filter(m => {
+            return m.type === "audio";
+        });
+        songData.audio = {};
+        songData.audio.spotify = "";
+        if (songMedia.length > 0) {
+            songData.audio.spotify = songMedia[0].url;
+        }
+        return songData;
     });
     return release;
 }
