@@ -25,6 +25,11 @@ body > header a {
     text-decoration: none;
     color: white;
 }
+body > a:first-child {
+    margin: 0; padding: 0;
+    position: absolute;
+    top: 4px; left: 4px;
+}
 body > header a:visited {
     margin: 4px; padding: 4px;
     text-decoration: none;
