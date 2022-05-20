@@ -363,7 +363,7 @@ function homeNoAuth(db) {
         homeData.upcomingRelease = data[0].upcomingRelease;
         homeData.latestRelease.name = data[0].name || db.song[data[0].songs[0]].name;
         homeData.latestRelease.date = data[0].date;
-        homeData.latestRelease.frontCover = data[0]["cover-front"];
+        homeData.latestRelease.frontCover = main.photoWeb(db, data[0]["cover-front"]);
         homeData.latestRelease.desc = converter.makeHtml(data[0].desc);
         homeData.latestRelease.spotifyUrl = "";
         if (data[0].audio) {
@@ -371,7 +371,7 @@ function homeNoAuth(db) {
                 homeData.latestRelease.spotifyUrl = data[0].audio.spotify;
             } else {
                 if (data[0].songs.length) {
-                    homeData.latestRelease.spotifyUrl = db.song[data[0].songs[0]].audio.spotify;
+                    homeData.latestRelease.spotifyUrl = main.songLink(db, data[0].id);
                 }
             }
         }

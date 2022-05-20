@@ -288,9 +288,6 @@ function updateResource(id, formData, db, save) {
 
     db[resourceName][id].releaseDate = formData.releaseDate;
 
-    db[resourceName][id]["cover-front"] = formData["cover-front"];
-    db[resourceName][id]["cover-back"] = formData["cover-back"];
-
     // maybe add one media to start?
     if (!db[resourceName][id].media) {
         db[resourceName][id].media = [];

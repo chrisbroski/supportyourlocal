@@ -188,6 +188,20 @@ function noPhotoSelected(photoValue) {
 }
 this.noPhotoSelected = noPhotoSelected;
 
+function songLink(db, releaseId) {
+    var link = "";
+    if (db.release[releaseId].audio) {
+        link = db.release[releaseId].audio.spotify;
+    }
+    if (!link) {
+        link = db.song[db.release[releaseId].songs[0]].media.filter(m => {
+            return m.type === "audio";
+        })[0].url;
+    }
+    return link;
+}
+this.songLink = songLink;
+
 const timeZones = {
     "EST": "-0500",
     "EDT": "-0400",

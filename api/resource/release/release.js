@@ -66,16 +66,6 @@ function pageName(db, id) {
     return db.song[db.release[id].songs[0]].name;
 }
 
-function songLink(db, id) {
-    var link = db.release[id].audio.spotify;
-    if (!link) {
-        link = db.song[db.release[id].songs[0]].media.filter(m => {
-            return m.type === "audio";
-        })[0].url;
-    }
-    return link;
-}
-
 function single(db, id, msg, error) {
     var resourceData = Object.assign({
         "id": id,
@@ -99,7 +89,7 @@ function expandPhotos(db, releaseData) {
     var expandedReleaseData = Object.assign({}, releaseData);
     expandedReleaseData["cover-front"] = main.photoWeb(db, expandedReleaseData["cover-front"]);
     expandedReleaseData["cover-back"] = main.photoWeb(db, expandedReleaseData["cover-back"]);
-    return releaseData;
+    return expandedReleaseData;
 }
 
 function singleNoAuth(db, id) {
@@ -110,9 +100,7 @@ function singleNoAuth(db, id) {
         "songlist": songList(main.objToArray(db.song)),
         "hasAlbumList": db[resourceName][id].songs.length > 1,
         "albumList": albumList(db[resourceName][id].songs, db),
-        // "front-cover-photos": main.displayPhotos(db.photo, db[resourceName][id]["cover-front"]),
-        // "back-cover-photos": main.displayPhotos(db.photo, db[resourceName][id]["cover-back"]),
-        "releaseLink": db[resourceName][id].audio.spotify || db.song[db[resourceName][id].songs[0]].audio.spotify,
+        "releaseLink": main.songLink(db, id),
         "descHtml": converter.makeHtml(db[resourceName][id].desc),
         "hasVideo": (db[resourceName][id].video && (db[resourceName][id].video.fb || db[resourceName][id].video.youtube))
     }, expandPhotos(db, db[resourceName][id]));
@@ -177,8 +165,10 @@ function listNoAuth(db) {
         if (+releaseDate - tsToday >= 0) {
             r.upcomingRelease = true;
         } else {
-            r.releaseLink = songLink(db, r.id);
+            r.releaseLink = main.songLink(db, r.id);
         }
+        r["cover-front"] = main.photoWeb(db, r["cover-front"]);
+        r["cover-back"] = main.photoWeb(db, r["cover-back"]);
 
         r.pageName = pageName(db, r.id);
         r.descHtml = converter.makeHtml(r.desc);
