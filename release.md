@@ -1,5 +1,27 @@
 # Release Notes
 
+## 1.3.0
+
+### Login Improvements
+
+If using the login form in the left nav on a page, it will redirect to the same page after successful login. If a user is logged in and navigates to the login page it will now automatically redirect to the home page.
+
+### Photo Management
+
+Photos will now create a thumbnail on upload to be used in photo lists and available for use elsewhere. For large files (over 2,000 px max width or height) a "web" version of max 1,200 px will be created that should be used instead of the original by default.
+
+Compressed PNG images with a color palette and JPG with level 70.
+
+Added size in kB of photos in the side list.
+
+### Media Array
+
+Songs and releases now have an unlimited number of audio, video, and article URLs.
+
+### Accessibility
+
+Added a skip nav link to the side bar.
+
 ## 1.2.3 - Released 2022-04-30
 
 ### Facebook event link for gigs

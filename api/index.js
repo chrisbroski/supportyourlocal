@@ -23,6 +23,7 @@ const auth = require('./resource/auth/auth.js');
 const gig = require('./resource/gig/gig.js');
 const venue = require('./resource/venue/venue.js');
 const band = require('./resource/band/band.js');
+const support = require('./resource/support/support.js');
 const song = require('./resource/song/song.js');
 const announcement = require('./resource/announcement/announcement.js');
 const user = require('./resource/user/user.js');
@@ -168,6 +169,9 @@ function rspPut(req, rsp, path, body) {
     if (path.resource === 'band') {
         return band.update(req, rsp, body, db, endure.save);
     }
+    if (path.resource === 'support') {
+        return support.update(req, rsp, body, db, endure.save);
+    }
     if (path.resource === 'user') {
         return user.update(req, rsp, path.id, body, db, endure.save);
     }
@@ -296,6 +300,9 @@ function rspGet(req, rsp, path) {
     }
     if (path.resource === 'band') {
         return band.get(req, rsp, db);
+    }
+    if (path.resource === 'support') {
+        return support.get(req, rsp, db);
     }
     if (path.path === '/logout') {
         return auth.logout(req, rsp, db);

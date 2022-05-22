@@ -52,9 +52,7 @@ function singleNoAuth(db) {
         "descHtml": converter.makeHtml(db.band.desc),
         "bioHtml": converter.makeHtml(db.band.bio),
         "contactHtml": converter.makeHtml(db.band.contact),
-        "members": members,
-        "hasSocialMedia": Object.keys(socials).some(s => !!socials[s]),
-        "hasPayment": Object.keys(payments).some(p => !!payments[p])
+        "members": members
     }, db[resourceName]);
 
     return resourceData;

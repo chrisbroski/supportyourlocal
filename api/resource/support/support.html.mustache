@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<title>{{pageName}} - API - {{homeName}}</title>
+{{{head}}}
+
+<body id="site-page">
+{{{header}}}
+
+<article id="main">
+<h1>{{pageName}}</h1>
+
+<h5><a href="{{API_DIR}}/">Home</a> &gt; {{pageName}}</h5>
+
+{{{message-display}}}
+
+<section>
+<form method="POST" action="{{API_DIR}}/support" enctype="application/x-www-form-urlencoded">
+<input type="hidden" name="method" value="PUT">
+<h3>Listen</h3>
+<p><label>Listen Copy</label><br>
+    <textarea name="releaseMd">{{releaseMd}}</textarea></p>
+<p><label>Promoted Release</label>
+    <select name="release">
+        <option value="">Auto-choose Latest</option>
+        {{#releases}}
+        <option value="{{id}}"{{{selected}}}>{{name}}</option>
+        {{/releases}}
+    </select>
+
+<h3>Donate</h3>
+<p><label>Donation Copy</label><br>
+    <textarea name="donationMd">{{donationMd}}</textarea></p>
+
+<h3>Subscribe</h3>
+<p><label>Subscribe Copy</label><br>
+    <textarea name="subscribeMd">{{subscribeMd}}</textarea></p>
+
+<footer><p><button>Update Support Information</button></footer>
+</form>
+</section>
+
+</article>

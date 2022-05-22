@@ -225,6 +225,42 @@ function songLink(db, releaseId) {
 }
 this.songLink = songLink;
 
+function songLinks(db, releaseId) {
+    var mediums;
+    if (!releaseId || !db.release[releaseId]) {
+        return [];
+    }
+    if (db.release[releaseId].media.length > 0) {
+        mediums = db.release[releaseId].media.filter(m => {
+            return m.type === "audio";
+        });
+        if (mediums.length > 0) {
+            return mediums.map(m => m.url);
+        }
+    }
+    if (db.release[releaseId].songs.length === 1) {
+        mediums = db.song[db.release[releaseId].songs[0]].media.filter(m => {
+            return m.type === "audio";
+        });
+        if (mediums.length > 0) {
+            return mediums.map(m => m.url);
+        }
+    }
+    return [];
+}
+this.songLinks = songLinks;
+
+function releaseName(db, releaseId) {
+    if (db.release[releaseId].name) {
+        return db.release[releaseId].name;
+    }
+    if (db.release[releaseId].songs.length > 0) {
+        return db.song[db.release[releaseId].songs].name;
+    }
+    return "";
+}
+this.releaseName = releaseName;
+
 const timeZones = {
     "EST": "-0500",
     "EDT": "-0400",

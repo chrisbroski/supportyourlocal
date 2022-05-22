@@ -59,18 +59,11 @@ function albumList(songs, db) {
     });
 }
 
-function pageName(db, id) {
-    if (db.release[id].name) {
-        return db.release[id].name;
-    }
-    return db.song[db.release[id].songs[0]].name;
-}
-
 function single(db, id, msg, error) {
     var resourceData = Object.assign({
         "id": id,
         "resourceName": resourceName,
-        "pageName": pageName(db, id),
+        "pageName": main.releaseName(db, id),
         "songlist": songList(main.objToArray(db.song)),
         "albumList": albumList(db[resourceName][id].songs, db),
         "front-cover-photos": main.displayPhotos(db.photo, db[resourceName][id]["cover-front"]),
@@ -78,7 +71,7 @@ function single(db, id, msg, error) {
         "no-photo": main.noPhotoSelected(db[resourceName][id].photo),
         "mediaList": main.mediaList(db[resourceName][id].media),
         "releases": main.objToArray(db[resourceName]).sort(main.sortByDateDesc).map(r => {
-            r.releaseName = r.name || db.song[r.songs[0]].name;
+            r.releaseName = main.releaseName(db, id);
             return r;
         })
     }, db[resourceName][id]);
@@ -97,7 +90,7 @@ function singleNoAuth(db, id) {
     var resourceData = Object.assign({
         "id": id,
         "resourceName": resourceName,
-        "pageName": pageName(db, id),
+        "pageName": main.pageName(db, id),
         "songlist": songList(main.objToArray(db.song)),
         "hasAlbumList": db[resourceName][id].songs.length > 1,
         "albumList": albumList(db[resourceName][id].songs, db),
@@ -134,7 +127,7 @@ function singleNoAuth(db, id) {
 function list(db, msg, error, link) {
     var releases = main.objToArray(db[resourceName]).sort(main.sortByDateDesc);
     releases = releases.map(r => {
-        r.pageName = pageName(db, r.id);
+        r.pageName = main.releaseName(db, r.id);
         return r;
     });
     var resourceData = {
@@ -172,7 +165,7 @@ function listNoAuth(db) {
         r["cover-front"] = main.photoWeb(db, r["cover-front"]);
         r["cover-back"] = main.photoWeb(db, r["cover-back"]);
 
-        r.pageName = pageName(db, r.id);
+        r.pageName = main.releaseName(db, r.id);
         r.descHtml = converter.makeHtml(r.desc);
         return r;
     });

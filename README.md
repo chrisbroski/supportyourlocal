@@ -56,10 +56,6 @@ All https
 
 Admin key in .env (for data download and future executive feature)
 
-### Central Site
-
-* Blog articles
-
 ### Tests
 
 Songs partially done. The rest, not at all
@@ -69,6 +65,7 @@ Songs partially done. The rest, not at all
 * Updates don't persist new form data after 400
 * Deletion can cause invalid state
 * Small photos might create thumbnails larger than themselves.
+* A "track" type Spotify link for release media breaks stuff on the front end.
 
 ## Features for next next version
 
@@ -80,7 +77,9 @@ I don't think *Site* is the proper resource name. It should probably be *Style* 
 
 Get local features working with member cities. "Check in" on mobile when at open mics, etc.
 
-Email list
+### Email List
+
+Export instructions to email them your damn self. Add phone number too for mass spam texting.
 
 EPK
 
@@ -88,12 +87,23 @@ Password recovery using email.
 
 More data validation
 
-#### Setup Agreement:
+## Onboarding:
 
 On setup, read and agree to rules:
 
 1. Do not libel or harrass other bands or their fandom.
 2. Make your city locations accurate and non-spammy.
 
-Also, setup need more work:
+Also, setup needs more work:
 * When you hit the front-end site it is weird
+* Write new site script and test
+
+## Central Site
+
+### Blog articles
+
+Funnel from QR code to persistent connection.
+
+## Before Next 10
+
+Onboarding process, https, password recovery via email, data tools (backup and restore data.json)
