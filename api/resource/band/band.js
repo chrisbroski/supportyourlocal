@@ -29,7 +29,11 @@ function singleNoAuth(db) {
             locSeparator = (db.user[u].city && db.user[u].state) ? ", " : "";
             memberData.location = `${db.user[u].city}${locSeparator}${db.user[u].state}`;
             memberData.bioHtml = converter.makeHtml(db.user[u].bio);
-            memberData.photo = db.user[u].photo;
+            if (db.photo[db.user[u].photo].web) {
+                memberData.photo = `${db.photo[db.user[u].photo].name}_web${db.photo[db.user[u].photo].ext}`;
+            } else {
+                memberData.photo = db.user[u].photo;
+            }
             members.push(memberData);
         }
     });
