@@ -359,7 +359,11 @@ function homeNoAuth(db) {
 
     if (data.length > 0) {
         homeData.latestRelease = {};
-        homeData.releaseTitle = "Next Release";
+        if (data[0].upcomingRelease) {
+            homeData.releaseTitle = "Next Release";
+        } else {
+            homeData.releaseTitle = "Latest Release";
+        }
         homeData.upcomingRelease = data[0].upcomingRelease;
         homeData.latestRelease.name = data[0].name || db.song[data[0].songs[0]].name;
         homeData.latestRelease.date = data[0].date;

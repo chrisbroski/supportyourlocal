@@ -47,7 +47,9 @@
     {{{desc}}}
 
     {{^upcomingRelease}}
-    <h5><a href="{{spotifyUrl}}" target="_spotify">{{name}}</a></h5>
+        {{#spotifyUrl}}
+            <h5><a href="{{spotifyUrl}}" target="_spotify">{{name}}</a></h5>
+        {{/spotifyUrl}}
     {{/upcomingRelease}}
     {{#moreReleases}}<h5><a href="{{{API_DIR}}}/release">More Releases</a></h5>{{/moreReleases}}
 </section>

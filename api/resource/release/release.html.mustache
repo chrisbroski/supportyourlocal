@@ -56,7 +56,7 @@
 <p><label>Description<br><textarea name="desc">{{desc}}</textarea></p>
 <p><label>Credits<br><textarea name="credits">{{credits}}</textarea></p>
 
-<h2>Album Links <span>(if not a single)</span></h2>
+<!-- <h2>Album Links <span>(if not a single)</span></h2>
 <h3>Audio</h3>
 <p><label>Spotify</label><br>
     <input type="text" name="spotify" value="{{audio.spotify}}">
@@ -65,14 +65,10 @@
 <p><label>YouTube</label><br>
     <input type="text" name="youtube" value="{{video.youtube}}">
 <p><label>Facebook</label><br>
-    <input type="text" name="fb" value="{{video.fb}}">
+    <input type="text" name="fb" value="{{video.fb}}">-->
 
 <footer><p><button>Update {{resourceName}}</button></footer>
 </form>
-</section>
-
-<section>
-<p><a class="button" href="{{{API_DIR}}}/delete?resource={{resourceName}}&id={{id}}">Delete {{resourceName}}</a></p>
 </section>
 
 <section id="tracks">
@@ -146,6 +142,39 @@
 {{#releases}}
 <p><a href="{{{API_DIR}}}/{{resourceName}}/{{id}}">{{releaseName}}</a></p>
 {{/releases}}
+</section>
+
+<section id="media">
+<h2>Album Media <span>(if not a single)</span></h2>
+<form method="POST" action="{{{API_DIR}}}/{{resourceName}}/{{id}}#media">
+    <p><input type="url" name="media" value="">
+        <select name="type">
+            <option value="audio">Audio</option>
+            <option value="video">Video</option>
+            <option value="blog">Blog / Article</option>
+        </select>
+    <p><button>Add Media</button>
+</form>
+
+<table class="media-table">
+{{#mediaList}}
+<tr>
+<th><pre>{{media-url}}</pre></th>
+<td>{{media-type}}
+<form method="POST" action="{{{API_DIR}}}/{{resourceName}}/{{id}}#media">
+    <input type="hidden" name="method" value="PATCH">
+    <input type="hidden" name="index" value="-1">
+    <input type="hidden" name="media-index" value="{{media-index}}">
+    <button>×</button>
+</form>
+</td>
+</tr>
+{{/mediaList}}
+</table>
+</section>
+
+<section>
+<p><a class="button" href="{{{API_DIR}}}/delete?resource={{resourceName}}&id={{id}}">Delete {{resourceName}}</a></p>
 </section>
 
 </article>

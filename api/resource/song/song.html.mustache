@@ -66,12 +66,11 @@
     <p><button>Add Media</button>
 </form>
 
-<table>
+<table class="media-table">
 {{#mediaList}}
 <tr>
-<th><div>{{media-url}}</div></th>
-<td>{{media-type}}</td>
-<td>
+<th><pre>{{media-url}}</pre></th>
+<td>{{media-type}}
 <form method="POST" action="{{{API_DIR}}}/{{resourceName}}/{{id}}#media">
     <input type="hidden" name="method" value="PATCH">
     <input type="hidden" name="index" value="-1">

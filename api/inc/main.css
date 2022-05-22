@@ -87,7 +87,7 @@ h1 span, h2 span, h3 span, h4 span, h5 span, h6 span {
     color: black;
     font-family: var(--body-font);
     font-weight: normal;
-    font-size: smaller;
+    font-size: 50%;
 }
 input, select {font-size: 17px; }
 input[type="text"], input[type="email"], input[type="password"], input[type="url"], select {
@@ -145,11 +145,32 @@ table td, table th {
     padding: 4px;
     text-align: left;
 }
-table th > div {
-    padding: 4px;
-    overflow: auto;
+table pre {
+    margin: 0; padding: 8px 4px;
     font-weight: normal;
     background: #eee;
+    overflow: auto;
+    white-space: nowrap;
+    max-width: none;
+}
+table.media-table {
+    table-layout: fixed;
+    width: 100%;
+}
+table.media-table tr td:first-child, table.media-table tr th:first-child {
+    padding-left: 0;
+}
+table.media-table tr td:last-child, table.media-table tr th:last-child {
+    padding-right: 0;
+}
+table.media-table td {
+    width: 6em;
+}
+table.media-table td form {
+    display: inline;
+}
+table.media-table td button {
+    width: 2em;
 }
 
 div.photos {

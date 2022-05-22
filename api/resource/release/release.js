@@ -76,6 +76,7 @@ function single(db, id, msg, error) {
         "front-cover-photos": main.displayPhotos(db.photo, db[resourceName][id]["cover-front"]),
         "back-cover-photos": main.displayPhotos(db.photo, db[resourceName][id]["cover-back"]),
         "no-photo": main.noPhotoSelected(db[resourceName][id].photo),
+        "mediaList": main.mediaList(db[resourceName][id].media),
         "releases": main.objToArray(db[resourceName]).sort(main.sortByDateDesc).map(r => {
             r.releaseName = r.name || db.song[r.songs[0]].name;
             return r;
@@ -145,6 +146,7 @@ function list(db, msg, error, link) {
         "back-cover-photos": main.displayPhotos(db.photo),
         "no-photo": main.noPhotoSelected(),
         "pageName": `${main.toTitleCase(resourceName)}s`,
+        "media": main.media(),
         "formData": {"date": main.dateFormat(new Date()), "promotionStart": main.dateFormat(new Date())}
     };
 
@@ -243,6 +245,15 @@ function listData(db) {
         r["cover-front"] = main.photoWeb(db, r["cover-front"]);
         r["cover-back"] = main.photoWeb(db, r["cover-back"]);
 
+        var mediums = r.media.filter(m => {
+            return m.type === "audio";
+        });
+        if (mediums.length > 0) {
+            r.audio = {"spotify": mediums[0].url};
+        } else {
+            r.audio = {"spotify": ""};
+        }
+
         if (+releaseDate - tsToday >= 0) {
             r.upcomingRelease = true;
             r["cover-back"] = "";
@@ -286,17 +297,42 @@ function isSongInvalid(formData) {
     return msg;
 }
 
+function isAddInvalid(formData) {
+    var msg = [];
+
+    if (!formData["song-id"] && !formData.media) {
+        msg.push('Song or media id is required.');
+    }
+    // Make sure it is not a duplicate song
+    // maybe check that the song id is valid too
+
+    return msg;
+}
+
+function isMediaInvalid(formData) {
+    var msg = [];
+
+    if (!formData.media) {
+        msg.push('Media URL is required.');
+    }
+
+    if (!formData.type) {
+        msg.push('Media type is required.');
+    }
+
+    return msg;
+}
 
 function isReorderInvalid(formData, db, id) {
     var msg = [];
 
-    if (!formData["song-id"]) {
-        msg.push('Song is required.');
+    if (!formData["song-id"] && !formData["media-index"]) {
+        msg.push('Song or Media index is required.');
     }
     if (!formData.index) {
         msg.push('New index is required.');
     }
-    if (db.release[id].songs.indexOf(formData["song-id"]) < 0) {
+    if (formData["song-id"] && db.release[id].songs.indexOf(formData["song-id"]) < 0) {
         msg.push('Song not found in release.');
     }
     return msg;
@@ -312,20 +348,20 @@ function updateResource(id, formData, db, save) {
     db[resourceName][id]["cover-front"] = formData["cover-front"];
     db[resourceName][id]["cover-back"] = formData["cover-back"];
 
-    if (!db[resourceName][id].audio) {
-        db[resourceName][id].audio = {};
-    }
-    db[resourceName][id].audio.spotify = formData.spotify;
+    // if (!db[resourceName][id].audio) {
+    //     db[resourceName][id].audio = {};
+    // }
+    // db[resourceName][id].audio.spotify = formData.spotify;
     // db[resourceName][id].audio.apple = formData.apple;
     // db[resourceName][id].audio.amazon = formData.amazon;
     // db[resourceName][id].audio.youtube = formData.youtube;
     // db[resourceName][id].audio.cdbaby = formData.cdbaby;
 
-    if (!db[resourceName][id].video) {
-        db[resourceName][id].video = {};
-    }
-    db[resourceName][id].video.youtube = formData.youtube;
-    db[resourceName][id].video.fb = formData.fb;
+    // if (!db[resourceName][id].video) {
+    //     db[resourceName][id].video = {};
+    // }
+    // db[resourceName][id].video.youtube = formData.youtube;
+    // db[resourceName][id].video.fb = formData.fb;
 
     if (!db[resourceName][id].songs) {
         db[resourceName][id].songs = [];
@@ -334,10 +370,42 @@ function updateResource(id, formData, db, save) {
         db[resourceName][id].songs.push(formData["initial-song"]);
     }
 
+    if (!db[resourceName][id].media) {
+        db[resourceName][id].media = [];
+    }
+    if (formData.media) {
+        db[resourceName][id].media.push({
+            "url": formData.media,
+            "type": formData.type || "audio"
+        });
+    }
+
     save();
 }
 
 function patchResource(id, formData, db, save) {
+    if (formData["song-id"]) {
+        patchSong(id, formData, db, save);
+    } else {
+        patchMedia(id, formData, db, save);
+    }
+}
+
+function patchMedia(id, formData, db, save) {
+    var currentIndex = formData["media-index"];
+    var newIndex = formData.index;
+    if (newIndex >= db[resourceName][id].media.length) {
+        newIndex = db[resourceName][id].media.length - 1;
+    }
+    var removedMedium = db[resourceName][id].media.splice(currentIndex, 1);
+    if (parseInt(formData.index) > -1) {
+        db[resourceName][id].media.splice(newIndex, 0, removedMedium);
+    }
+
+    save();
+}
+
+function patchSong(id, formData, db, save) {
     var currentIndex = db.release[id].songs.indexOf(formData["song-id"]);
     var newIndex = formData.index;
     if (newIndex >= db.release[id].songs.length) {
@@ -351,8 +419,59 @@ function patchResource(id, formData, db, save) {
     save();
 }
 
+function addMedia(req, rsp, id, formData, db, save) {
+    var error = isMediaInvalid(formData);
+
+    // this can be called from either the single or list page.
+    // Figure out proper error redirect
+    if (error.length) {
+        rsp.writeHead(400, {'Content-Type': 'text/html'});
+        rsp.end(main.renderPage(req, template.single, Object.assign({
+            "hasError": true,
+            "error": error,
+            "formData": formData
+        }, single(db, id)), db));
+        return;
+    }
+    if (!db[resourceName][id].media) {
+        db[resourceName][id].media = [];
+    }
+    db[resourceName][id].media.unshift({
+        "url": formData.media,
+        "type": formData.type
+    });
+    save();
+
+    if (req.headers.accept === 'application/json') {
+        rsp.setHeader("Location", `${process.env.SUBDIR}/${resourceName}/${id}`);
+        return main.returnJson(rsp, {}, 201);
+    }
+
+    rsp.writeHead(201, {'Content-Type': 'text/html'});
+    rsp.end(main.renderPage(req, template.single, single(db, id, ["Media added"]), db));
+}
+
+this.addItem  = function (req, rsp, id, formData, db, save) {
+    var error = isAddInvalid(formData);
+    if (error.length) {
+        rsp.writeHead(400, {'Content-Type': 'text/html'});
+        rsp.end(main.renderPage(req, template.single, Object.assign({
+            "hasError": true,
+            "error": error,
+            "formData": formData
+        }, single(db, id)), db));
+        // ^ this needs selected values too
+        return;
+    }
+    if (formData["song-id"]) {
+        addSong(req, rsp, id, formData, db, save);
+    } else {
+        addMedia(req, rsp, id, formData, db, save);
+    }
+};
+
 // Album track errors should display in the lower section
-this.addSong = function (req, rsp, id, formData, db, save) {
+function addSong(req, rsp, id, formData, db, save) {
     // if (isSongInvalid(req, rsp, id, formData, db)) {
     //     return;
     // }
@@ -360,18 +479,20 @@ this.addSong = function (req, rsp, id, formData, db, save) {
     // var id = main.createResource(formData, db, save, resourceName, updateResource);
     // var returnData = main.responseData(id, resourceName, db, "Song Added", ["Song added"]);
     var error = isSongInvalid(formData);
+
+    // this can be called from either the single or list page.
+    // Figure out proper error redirect
     if (error.length) {
         rsp.writeHead(400, {'Content-Type': 'text/html'});
-        rsp.end(main.renderPage(req, template.list, Object.assign({
+        rsp.end(main.renderPage(req, template.single, Object.assign({
             "hasError": true,
             "error": error,
             "formData": formData
-        }, list(db)), db));
+        }, single(db, id)), db));
         // ^ this needs selected values too
         return;
     }
-    // var id = main.createResource(formData, db, save, resourceName, updateResource);
-    // var returnData = main.responseData(id, resourceName, db, "Song Added", ["Song added"]);
+
     if (formData["song-id"]) {
         db[resourceName][id].songs.push(formData["song-id"]);
     }
@@ -382,12 +503,11 @@ this.addSong = function (req, rsp, id, formData, db, save) {
         return main.returnJson(rsp, {}, 201);
     }
 
-    // returnData.back = req.headers.referer;
     rsp.writeHead(201, {'Content-Type': 'text/html'});
     rsp.end(main.renderPage(req, template.single, single(db, id, ["Song added"]), db));
-};
+}
 
-this.reorderSong = function(req, rsp, id, formData, db, save) {
+this.reorderItem = function(req, rsp, id, formData, db, save) {
     if (!db[resourceName][id]) {
         return main.notFound(rsp, req.url, 'PATCH', req, db);
     }
@@ -399,6 +519,14 @@ this.reorderSong = function(req, rsp, id, formData, db, save) {
         return;
     }
 
+    if (formData["song-id"]) {
+        reorderSong(req, rsp, id, formData, db, save);
+    } else {
+        reorderMedia(req, rsp, id, formData, db, save);
+    }
+};
+
+function reorderMedia(req, rsp, id, formData, db, save) {
     patchResource(id, formData, db, save);
     var returnData = main.responseData(id, resourceName, db, "Updated");
 
@@ -408,7 +536,19 @@ this.reorderSong = function(req, rsp, id, formData, db, save) {
 
     rsp.writeHead(200, {'Content-Type': 'text/html'});
     rsp.end(main.renderPage(req, template.single, single(db, id, [`${resourceName} id ${id} media updated.`]), db));
-};
+}
+
+function reorderSong(req, rsp, id, formData, db, save) {
+    patchResource(id, formData, db, save);
+    var returnData = main.responseData(id, resourceName, db, "Updated");
+
+    if (req.headers.accept === 'application/json') {
+        return main.returnJson(rsp, returnData);
+    }
+
+    rsp.writeHead(200, {'Content-Type': 'text/html'});
+    rsp.end(main.renderPage(req, template.single, single(db, id, [`${resourceName} id ${id} media updated.`]), db));
+}
 
 this.create = function (req, rsp, formData, db, save) {
     var error = isUpdateInvalid(formData, db, id);

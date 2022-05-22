@@ -13,7 +13,7 @@ function single(db, id, msg, error) {
         "pageName": db[resourceName][id].name,
         "genres": main.genre(db[resourceName][id].genre1),
         "songs": main.objToArray(db[resourceName]).sort(main.sortByName),
-        "mediaList": mediaList(db[resourceName][id].media),
+        "mediaList": main.mediaList(db[resourceName][id].media),
         "formData": {
             "durationM": 0,
             "durationS": 0
@@ -21,19 +21,6 @@ function single(db, id, msg, error) {
     }, db[resourceName][id]);
 
     return Object.assign(main.addMessages(msg, error), resourceData);
-}
-
-function mediaList(media) {
-    if (!media) {
-        return [];
-    }
-    return media.map((s, i) => {
-        return {
-            "media-url": s.url,
-            "media-type": s.type,
-            "media-index": i
-        };
-    });
 }
 
 function domain(url) {
@@ -235,10 +222,6 @@ this.reorderMedia = function(req, rsp, id, formData, db, save) {
 
 function isMediaInvalid(formData) {
     var msg = [];
-    // var durationM = formData.durationM || 0;
-    // durationM = parseInt(durationM);
-    // var durationS = formData.durationS || 0;
-    // durationS = parseInt(durationS);
 
     if (!formData.media) {
         msg.push('Media URL is required.');
@@ -247,10 +230,6 @@ function isMediaInvalid(formData) {
     if (!formData.type) {
         msg.push('Media type is required.');
     }
-
-    // if (durationM + durationS < 1) {
-    //     msg.push('Duration is required.');
-    // }
 
     return msg;
 }
@@ -288,7 +267,6 @@ function updateResource(id, formData, db, save) {
 
     db[resourceName][id].releaseDate = formData.releaseDate;
 
-    // maybe add one media to start?
     if (!db[resourceName][id].media) {
         db[resourceName][id].media = [];
     }

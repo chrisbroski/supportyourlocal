@@ -151,7 +151,7 @@ function rspPost(req, rsp, path, body) {
 
     if (path.resource === 'release') {
         if (path.id) {
-            return release.addSong(req, rsp, path.id, body, db, endure.save);
+            return release.addItem(req, rsp, path.id, body, db, endure.save);
         } else {
             return release.create(req, rsp, body, db, endure.save);
         }
@@ -238,7 +238,7 @@ function rspDelete(req, rsp, path) {
 
 function rspPatch(req, rsp, path, body) {
     if (path.resource === 'release') {
-        return release.reorderSong(req, rsp, path.id, body, db, endure.save);
+        return release.reorderItem(req, rsp, path.id, body, db, endure.save);
     }
     if (path.resource === 'song') {
         return song.reorderMedia(req, rsp, path.id, body, db, endure.save);
@@ -615,8 +615,41 @@ async function loadData() {
             delete db.song[s].video;
         }
     });
-    delete db.photos;
 
+    // migrate release media
+    Object.keys(db.release).forEach(r => {
+        if (!db.release[r].media) {
+            db.release[r].media = [];
+        }
+        if (db.release[r].audio) {
+            if (db.release[r].audio.spotify) {
+                db.release[r].media.push({
+                    "url": db.release[r].audio.spotify,
+                    "type": "audio"
+                });
+            }
+            delete db.release[r].audio;
+        }
+
+        if (db.release[r].video) {
+            if (db.release[r].video.youtube) {
+                db.release[r].media.push({
+                    "url": db.release[r].video.youtube,
+                    "type": "video"
+                });
+            }
+            if (db.release[r].video.fb) {
+                db.release[r].media.push({
+                    "url": db.release[r].video.fb,
+                    "type": "video"
+                });
+            }
+            delete db.release[r].video;
+        }
+    });
+
+    // import photos. Once I get the photos solid, we can remove this.
+    delete db.photos;
     if (process.env.PHOTO_PATH) {
         db.photo = await photo.fromFiles(process.env.PHOTO_PATH);
     }

@@ -66,8 +66,17 @@
 </select>
 
 <h2>Album Links</h2>
-<p>If you are releasing a single, you dont need this part.</p>
-<h3>Audio</h3>
+<p>Album specific media only, please. If you are releasing a single, you dont need this part.</p>
+<p id="media"><label>Media Links</label><br>
+    <input type="url" name="media" value="{{formData.media}}">
+    <select name="type">
+        {{#media}}
+        <option value="{{name}}"{{{selected}}}>{{name}}</option>
+        {{/media}}
+    </select>
+<p>More links to audio and video can be added after the song is created.</p>
+
+<!-- <h3>Audio</h3>
 <p><label>Spotify</label><br>
     <input type="text" name="spotify" value="{{formData.spotify}}">
 
@@ -75,7 +84,7 @@
 <p><label>YouTube</label><br>
     <input type="text" name="youtube" value="{{formData.youtube}}">
 <p><label>Facebook</label><br>
-    <input type="text" name="fb" value="{{formData.fb}}">
+    <input type="text" name="fb" value="{{formData.fb}}"> -->
 
 <footer><p><button>Create {{resourceName}}</button></footer>
 </form>

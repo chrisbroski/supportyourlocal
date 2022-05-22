@@ -144,6 +144,20 @@ function getMediumUrl(media, domain, type) {
 }
 this.getMediumUrl = getMediumUrl;
 
+function mediaList(media) {
+    if (!media) {
+        return [];
+    }
+    return media.map((s, i) => {
+        return {
+            "media-url": s.url,
+            "media-type": s.type,
+            "media-index": i
+        };
+    });
+}
+this.mediaList = mediaList;
+
 function photoWeb(db, photoId) {
     if (!db.photo[photoId]) {
         return photoId;
@@ -189,14 +203,23 @@ function noPhotoSelected(photoValue) {
 this.noPhotoSelected = noPhotoSelected;
 
 function songLink(db, releaseId) {
+    var mediums;
     var link = "";
-    if (db.release[releaseId].audio) {
-        link = db.release[releaseId].audio.spotify;
-    }
-    if (!link) {
-        link = db.song[db.release[releaseId].songs[0]].media.filter(m => {
+    if (db.release[releaseId].media.length > 0) {
+        mediums = db.release[releaseId].media.filter(m => {
             return m.type === "audio";
-        })[0].url;
+        });
+        if (mediums.length > 0) {
+            link = mediums[0].url;
+        }
+    }
+    if (!link && db.release[releaseId].songs.length === 1) {
+        mediums = db.song[db.release[releaseId].songs[0]].media.filter(m => {
+            return m.type === "audio";
+        });
+        if (mediums.length > 0) {
+            link = mediums[0].url;
+        }
     }
     return link;
 }
