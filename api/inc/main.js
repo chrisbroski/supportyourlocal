@@ -227,7 +227,17 @@ this.songLink = songLink;
 
 function songLinks(db, releaseId) {
     var mediums;
-    if (!releaseId || !db.release[releaseId]) {
+    var releases;
+    if (!releaseId) {
+        //get latest releaseId
+        releases = objToArray(db.release).sort(sortByDateDesc);
+        if (releases.length > 0) {
+            releaseId = releases[0].id;
+        } else {
+            return [];
+        }
+    }
+    if (!db.release[releaseId]) {
         return [];
     }
     if (db.release[releaseId].media.length > 0) {
