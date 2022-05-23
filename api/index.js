@@ -654,6 +654,9 @@ async function loadData() {
             delete db.release[r].video;
         }
     });
+    if (!db.support) {
+        db.support = {};
+    }
 
     // import photos. Once I get the photos solid, we can remove this.
     delete db.photos;
