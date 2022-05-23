@@ -85,10 +85,7 @@ function singleNoAuth(db) {
 
 function singleData(db) {
     var support = Object.assign({"resourceName": resourceName}, db[resourceName]);
-    var releaseId = db.release.release;
-    if (!releaseId) {
-        releaseId = autoChooseLatestRelease(db, releaseId);
-    }
+    var releaseId = autoChooseLatestRelease(db, db[resourceName].release);
     support.releaseName = main.releaseName(db, releaseId);
     support.listen = [];
     support.listen = main.songLinks(db, releaseId);
