@@ -25,6 +25,27 @@ function releaseList(db, id) {
     return releaseOptions;
 }
 
+function autoChooseLatestRelease(db, releaseId) {
+    var tzOffset = -4; // -4 for EDT, need to manage this better
+    var releases = main.objToArray(db.release).sort(main.sortByDateDesc);
+    var today = new Date();
+    today.setHours(tzOffset, 0, 0, 0);
+    if (releaseId) {
+        return releaseId;
+    }
+
+    releases = releases.filter(r => {
+        var startShowingOn = new Date(r.date);
+        startShowingOn.setHours(24 + tzOffset, 0, 0, 0);
+        return startShowingOn < today;
+    });
+    if (releases.length > 0) {
+        return releases[0].id;
+    } else {
+        return "";
+    }
+}
+
 function single(db, msg, error) {
     var resourceData = Object.assign({
         "resourceName": resourceName,
@@ -44,6 +65,7 @@ function singleNoAuth(db) {
     if (db.band.payment) {
         payments = db.band.payment;
     }
+
     var resourceData = Object.assign({
         "resourceName": resourceName,
         "pageName": 'Support the Music',
@@ -54,7 +76,8 @@ function singleNoAuth(db) {
         "releaseHtml": converter.makeHtml(db[resourceName].releaseMd),
         "donationHtml": converter.makeHtml(db[resourceName].donationMd),
         "subscribeHtml": converter.makeHtml(db[resourceName].subscribeMd),
-        "releaseLinks": main.songLinks(db, db[resourceName].release)
+        "releaseName": main.releaseName(db, autoChooseLatestRelease(db, db[resourceName].release)),
+        "releaseLinks": main.songLinks(db, autoChooseLatestRelease(db, db[resourceName].release))
     }, db.band);
 
     return Object.assign(resourceData, db[resourceName]);
@@ -62,9 +85,14 @@ function singleNoAuth(db) {
 
 function singleData(db) {
     var support = Object.assign({"resourceName": resourceName}, db[resourceName]);
+    var releaseId = db.release.release;
+    if (!releaseId) {
+        releaseId = autoChooseLatestRelease(db, releaseId);
+    }
+    support.releaseName = main.releaseName(db, releaseId);
     support.listen = [];
-    support.listen = main.songLinks(db, support.release);
-    // support.payments = db.band.payment;
+    support.listen = main.songLinks(db, releaseId);
+
     support.paymentUrl = {};
     var venmo = db.band.payment.venmo;
     support.paymentUrl.venmo = "";
@@ -74,6 +102,7 @@ function singleData(db) {
         }
         support.paymentUrl.venmo = `https://account.venmo.com/u/${venmo}`;
     }
+
     // social media
     support.social = db.band.social;
     return support;

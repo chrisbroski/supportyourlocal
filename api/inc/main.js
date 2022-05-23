@@ -227,17 +227,7 @@ this.songLink = songLink;
 
 function songLinks(db, releaseId) {
     var mediums;
-    var releases;
-    if (!releaseId) {
-        //get latest releaseId
-        releases = objToArray(db.release).sort(sortByDateDesc);
-        if (releases.length > 0) {
-            releaseId = releases[0].id;
-        } else {
-            return [];
-        }
-    }
-    if (!db.release[releaseId]) {
+    if (!releaseId || !db.release[releaseId]) {
         return [];
     }
     if (db.release[releaseId].media.length > 0) {
@@ -261,6 +251,9 @@ function songLinks(db, releaseId) {
 this.songLinks = songLinks;
 
 function releaseName(db, releaseId) {
+    if (!releaseId || !db.release[releaseId]) {
+        return "";
+    }
     if (db.release[releaseId].name) {
         return db.release[releaseId].name;
     }
