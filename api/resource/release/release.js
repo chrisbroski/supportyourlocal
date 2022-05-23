@@ -60,6 +60,11 @@ function albumList(songs, db) {
 }
 
 function single(db, id, msg, error) {
+    var releases = main.objToArray(db[resourceName]).sort(main.sortByDateDesc);
+    releases = releases.map(r => {
+        r.pageName = main.releaseName(db, r.id);
+        return r;
+    });
     var resourceData = Object.assign({
         "id": id,
         "resourceName": resourceName,
@@ -70,10 +75,7 @@ function single(db, id, msg, error) {
         "back-cover-photos": main.displayPhotos(db.photo, db[resourceName][id]["cover-back"]),
         "no-photo": main.noPhotoSelected(db[resourceName][id].photo),
         "mediaList": main.mediaList(db[resourceName][id].media),
-        "releases": main.objToArray(db[resourceName]).sort(main.sortByDateDesc).map(r => {
-            r.releaseName = main.releaseName(db, id);
-            return r;
-        })
+        "releases": releases
     }, db[resourceName][id]);
 
     return Object.assign(main.addMessages(msg, error), resourceData);

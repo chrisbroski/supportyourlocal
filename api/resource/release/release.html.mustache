@@ -137,13 +137,6 @@
 </table>
 </section>
 
-<section class="list">
-<h4>Releases</h4>
-{{#releases}}
-<p><a href="{{{API_DIR}}}/{{resourceName}}/{{id}}">{{releaseName}}</a></p>
-{{/releases}}
-</section>
-
 <section id="media">
 <h2>Album Media <span>(if not a single)</span></h2>
 <form method="POST" action="{{{API_DIR}}}/{{resourceName}}/{{id}}#media">
@@ -175,6 +168,13 @@
 
 <section>
 <p><a class="button" href="{{{API_DIR}}}/delete?resource={{resourceName}}&id={{id}}">Delete {{resourceName}}</a></p>
+</section>
+
+<section class="list">
+<h4>Releases</h4>
+{{#releases}}
+<p><a href="{{{API_DIR}}}/{{resourceName}}/{{id}}">{{pageName}}</a></p>
+{{/releases}}
 </section>
 
 </article>
