@@ -8,19 +8,21 @@ const resourceName = 'support';
 const template = {};
 
 function releaseList(db, id) {
-    const releases = [];
-    Object.keys(db.release).forEach(r => {
+    const releaseOptions = [];
+    const releases = main.objToArray(db.release);
+    releases.sort(main.sortByDateDesc);
+    releases.forEach(r => {
         var selected = "";
-        if (id && id === r) {
+        if (id && id === r.id) {
             selected = ' selected="selected"';
         }
-        releases.push({
-            "id": r,
-            "name": main.releaseName(db, r),
+        releaseOptions.push({
+            "id": r.id,
+            "name": main.releaseName(db, r.id),
             "selected": selected
         });
     });
-    return releases;
+    return releaseOptions;
 }
 
 function single(db, msg, error) {
@@ -28,7 +30,6 @@ function single(db, msg, error) {
         "resourceName": resourceName,
         "pageName": 'Support the Music',
         "releases": releaseList(db, db[resourceName].release)
-        // "countries": main.country(db[resourceName].country),
     }, db[resourceName]);
 
     return Object.assign(main.addMessages(msg, error), resourceData);
