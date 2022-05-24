@@ -182,6 +182,16 @@ function listNoAuth(db) {
     };
 }
 
+function getSpotifyAudio(media) {
+    var audio = media.filter(m => {
+        return m.type === "audio" && m.url.indexOf("open.spotify.com") > -1;
+    });
+    if (audio.length > 0) {
+        return audio[0].url;
+    }
+    return "";
+}
+
 function singleData(db, id) {
     var release = Object.assign({"resourceName": resourceName}, db[resourceName][id]);
     var tsToday = timestampToday();
@@ -191,6 +201,7 @@ function singleData(db, id) {
     }
     release["cover-front"] = main.photoWeb(db, release["cover-front"]);
     release["cover-back"] = main.photoWeb(db, release["cover-back"]);
+    release.audio = {"spotify": getSpotifyAudio(release.media)};
     // if promoted but note released, return partial data
     var releaseDate = new Date(release.date);
     releaseDate.setHours(24 + tzOffset, 0, 0, 0);
@@ -213,15 +224,7 @@ function singleData(db, id) {
 function addSongData(release, db) {
     release.songs = release.songs.map(s => {
         var songData = Object.assign({"id": s}, db.song[s]);
-        // for backward compat
-        var songMedia = db.song[s].media.filter(m => {
-            return m.type === "audio";
-        });
-        songData.audio = {};
-        songData.audio.spotify = "";
-        if (songMedia.length > 0) {
-            songData.audio.spotify = songMedia[0].url;
-        }
+        songData.audio = {"spotify": getSpotifyAudio(db.song[s].media)};
         return songData;
     });
     return release;
@@ -239,15 +242,7 @@ function listData(db) {
 
         r["cover-front"] = main.photoWeb(db, r["cover-front"]);
         r["cover-back"] = main.photoWeb(db, r["cover-back"]);
-
-        var mediums = r.media.filter(m => {
-            return m.type === "audio";
-        });
-        if (mediums.length > 0) {
-            r.audio = {"spotify": mediums[0].url};
-        } else {
-            r.audio = {"spotify": ""};
-        }
+        r.audio = {"spotify": getSpotifyAudio(r.media)};
 
         if (+releaseDate - tsToday >= 0) {
             r.upcomingRelease = true;
