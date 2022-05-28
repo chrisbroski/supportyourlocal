@@ -365,6 +365,7 @@ function homeNoAuth(db) {
             homeData.releaseTitle = "Latest Release";
         }
         homeData.upcomingRelease = data[0].upcomingRelease;
+        homeData.latestRelease.id = data[0].id;
         homeData.latestRelease.name = data[0].name || db.song[data[0].songs[0]].name;
         homeData.latestRelease.date = data[0].date;
         homeData.latestRelease.frontCover = main.photoWeb(db, data[0]["cover-front"]);
