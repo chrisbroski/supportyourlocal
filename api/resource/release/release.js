@@ -216,6 +216,26 @@ function getReleaseSpotifyAudio(db, id) {
     return "";
 }
 
+function getReleaseVideo(db, id) {
+    var videoData = {"youtube": "", "fb": ""};
+    var media = db.release[id].media;
+    if (media.filter(m => m.type === "video").length === 0 && db.release[id].songs.length === 1) {
+        media = db.song[db.release[id].songs[0]].media;
+    }
+    media.forEach(m => {
+        if (m.type === "video" && m.url.indexOf("facebook.com") > -1) {
+            videoData.fb = m.url;
+        }
+        if (m.type === "video" && m.url.indexOf("youtube.com") > -1) {
+            videoData.youtube = m.url;
+        }
+        if (m.type === "video" && m.url.indexOf("youtu.be") > -1) {
+            videoData.youtube = m.url;
+        }
+    });
+    return videoData;
+}
+
 function getSpotifyAudio(media) {
     var audio = media.filter(m => {
         return m.type === "audio" && m.url.indexOf("open.spotify.com") > -1;
@@ -261,6 +281,7 @@ function singleData(db, id) {
     release["cover-front"] = main.photoWeb(db, release["cover-front"]);
     release["cover-back"] = main.photoWeb(db, release["cover-back"]);
     release.audio = {"spotify": getReleaseSpotifyAudio(db, id)};
+    release.video = getReleaseVideo(db, id);
     // release.video = getReleaseVideo(db){"spotify": getReleaseSpotifyAudio(db, id)};
     // if promoted but note released, return partial data
     var releaseDate = new Date(release.date);
