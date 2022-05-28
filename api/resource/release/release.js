@@ -201,6 +201,21 @@ function listNoAuth(db) {
     };
 }
 
+function getReleaseSpotifyAudio(db, id) {
+    var audio = db.release[id].media.filter(m => {
+        return m.type === "audio" && m.url.indexOf("open.spotify.com") > -1;
+    });
+    if (audio.length === 0 && db.release[id].songs.length === 1) {
+        audio = db.song[db.release[id].songs[0]].media.filter(m => {
+            return m.type === "audio" && m.url.indexOf("open.spotify.com") > -1;
+        });
+    }
+    if (audio.length > 0) {
+        return audio[0].url;
+    }
+    return "";
+}
+
 function getSpotifyAudio(media) {
     var audio = media.filter(m => {
         return m.type === "audio" && m.url.indexOf("open.spotify.com") > -1;
@@ -220,7 +235,7 @@ function singleData(db, id) {
     }
     release["cover-front"] = main.photoWeb(db, release["cover-front"]);
     release["cover-back"] = main.photoWeb(db, release["cover-back"]);
-    release.audio = {"spotify": getSpotifyAudio(release.media)};
+    release.audio = {"spotify": getReleaseSpotifyAudio(db, id)};
     // if promoted but note released, return partial data
     var releaseDate = new Date(release.date);
     releaseDate.setHours(24 + tzOffset, 0, 0, 0);
@@ -261,7 +276,7 @@ function listData(db) {
 
         r["cover-front"] = main.photoWeb(db, r["cover-front"]);
         r["cover-back"] = main.photoWeb(db, r["cover-back"]);
-        r.audio = {"spotify": getSpotifyAudio(r.media)};
+        r.audio = {"spotify": getReleaseSpotifyAudio(db, r.id)};
 
         if (+releaseDate - tsToday >= 0) {
             r.upcomingRelease = true;
