@@ -23,21 +23,6 @@ function single(db, id, msg, error) {
     return Object.assign(main.addMessages(msg, error), resourceData);
 }
 
-function domain(url) {
-    var reUrl = /.*\:\/\/([^\/]*)(\/|\?|$)/;
-    var results = reUrl.exec(url);
-    if (!results) {
-        return "";
-    }
-    var domain = results[1];
-    // remove any sub-domains
-    var hasSubDomains = domain.lastIndexOf(".", domain.lastIndexOf(".") - 1);
-    if (hasSubDomains > -1) {
-        domain = domain.slice(hasSubDomains + 1);
-    }
-    return domain.charAt(0).toUpperCase() + domain.substr(1);
-}
-
 function mediaAction(type) {
     var actions = {
         "audio": "Listen",
@@ -57,7 +42,7 @@ function singleNoAuth(db, id, msg, error) {
         "mediaLinks": db[resourceName][id].media.map(m => {
             return {
                 "url": m.url,
-                "domain": domain(m.url),
+                "domain": main.domain(m.url),
                 "action": mediaAction(m.type)
             };
         })

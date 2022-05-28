@@ -158,6 +158,22 @@ function mediaList(media) {
 }
 this.mediaList = mediaList;
 
+function domain(url) {
+    var reUrl = /.*\:\/\/([^\/]*)(\/|\?|$)/;
+    var results = reUrl.exec(url);
+    if (!results) {
+        return "";
+    }
+    var domain = results[1];
+    // remove any sub-domains
+    var hasSubDomains = domain.lastIndexOf(".", domain.lastIndexOf(".") - 1);
+    if (hasSubDomains > -1) {
+        domain = domain.slice(hasSubDomains + 1);
+    }
+    return domain.charAt(0).toUpperCase() + domain.substr(1);
+}
+this.domain = domain;
+
 function photoWeb(db, photoId) {
     if (!db.photo[photoId]) {
         return photoId;

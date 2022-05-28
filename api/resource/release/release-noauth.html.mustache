@@ -30,9 +30,14 @@
 {{/cover-back}}
 <h3>{{date}}</h3>
 {{{descHtml}}}
-{{#releaseLink}}
-<p><a href="{{.}}" target="_music">Listen</a></p>
-{{/releaseLink}}
+
+{{#audioMedia}}
+<p><a href="{{url}}" target="_music">Listen on {{domain}}</a></p>
+{{/audioMedia}}
+
+{{#blogMedia}}
+<p><a href="{{url}}" target="_blog">Read on {{domain}}</a></p>
+{{/blogMedia}}
 {{/upcomingRelease}}
 </section>
 
@@ -47,12 +52,9 @@
 
 {{#hasVideo}}
 <section>
-{{#video.fb}}
-<p><a href="{{.}}">Watch Facebook Video</a></p>
-{{/video.fb}}
-{{#video.youtube}}
-<p><a href="{{.}}">Watch YouTube Video</a></p>
-{{/video.youtube}}
+{{#videoMedia}}
+<p><a href="{{url}}" target="_video">Watch on {{domain}}</a></p>
+{{/videoMedia}}
 </section>
 {{/hasVideo}}
 

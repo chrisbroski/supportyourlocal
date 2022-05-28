@@ -88,6 +88,19 @@ function expandPhotos(db, releaseData) {
     return expandedReleaseData;
 }
 
+function releaseMediaByType(db, id, type) {
+    var media = db[resourceName][id].media;
+    if (!media.some(m => m.type === type && db[resourceName][id].songs.length === 1)) {
+        media = db.song[db[resourceName][id].songs[0]].media;
+    }
+    return media.filter(m => m.type === type).map(m => {
+        return {
+            "url": m.url,
+            "domain": main.domain(m.url)
+        };
+    });
+}
+
 function singleNoAuth(db, id) {
     var resourceData = Object.assign({
         "id": id,
@@ -98,7 +111,10 @@ function singleNoAuth(db, id) {
         "albumList": albumList(db[resourceName][id].songs, db),
         "releaseLink": main.songLink(db, id),
         "descHtml": converter.makeHtml(db[resourceName][id].desc),
-        "hasVideo": (db[resourceName][id].video && (db[resourceName][id].video.fb || db[resourceName][id].video.youtube))
+        "hasVideo": releaseMediaByType(db, id, "video").length > 0,
+        "audioMedia": releaseMediaByType(db, id, "audio"),
+        "videoMedia": releaseMediaByType(db, id, "video"),
+        "blogMedia": releaseMediaByType(db, id, "article")
     }, expandPhotos(db, db[resourceName][id]));
 
     var tsToday = timestampToday();
@@ -113,13 +129,16 @@ function singleNoAuth(db, id) {
         resourceData.upcomingRelease = true;
         resourceData["cover-back"] = "";
         resourceData.credits = "";
-        resourceData.audio = {};
-        resourceData.video = {};
+        resourceData.audio = {}; // deprecated
+        resourceData.video = {}; // deprecated
         resourceData.songs.length = 0;
 
         resourceData.releaseLink = "";
         resourceData.hasAlbumList = false;
         resourceData.hasVideo = false;
+        resourceData.audioMedia = [];
+        resourceData.videoMedia = [];
+        resourceData.blogMedia = [];
         return resourceData;
     }
 
