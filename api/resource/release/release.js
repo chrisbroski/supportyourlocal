@@ -226,6 +226,31 @@ function getSpotifyAudio(media) {
     return "";
 }
 
+function backCompatAudio(song) {
+    var media = song.media.filter(m => m.type === "audio" && m.url.indexOf("spotify.com") > -1);
+    var audioData = {"spotify": ""};
+    if (media.length > 0) {
+        audioData.spotify = media[0].url;
+    }
+    return audioData;
+}
+
+function backCompatVideo(song) {
+    var videoData = {"youtube": "", "fb": ""};
+    song.media.forEach(m => {
+        if (m.type === "video" && m.url.indexOf("facebook.com") > -1) {
+            videoData.fb = m.url;
+        }
+        if (m.type === "video" && m.url.indexOf("youtube.com") > -1) {
+            videoData.youtube = m.url;
+        }
+        if (m.type === "video" && m.url.indexOf("youtu.be") > -1) {
+            videoData.youtube = m.url;
+        }
+    });
+    return videoData;
+}
+
 function singleData(db, id) {
     var release = Object.assign({"resourceName": resourceName}, db[resourceName][id]);
     var tsToday = timestampToday();
@@ -236,6 +261,7 @@ function singleData(db, id) {
     release["cover-front"] = main.photoWeb(db, release["cover-front"]);
     release["cover-back"] = main.photoWeb(db, release["cover-back"]);
     release.audio = {"spotify": getReleaseSpotifyAudio(db, id)};
+    // release.video = getReleaseVideo(db){"spotify": getReleaseSpotifyAudio(db, id)};
     // if promoted but note released, return partial data
     var releaseDate = new Date(release.date);
     releaseDate.setHours(24 + tzOffset, 0, 0, 0);
@@ -250,7 +276,11 @@ function singleData(db, id) {
     }
 
     release.songs = release.songs.map(s => {
-        return Object.assign({"id": s}, db.song[s]);
+        return Object.assign({
+            "id": s,
+            "audio": backCompatAudio(db.song[s]),
+            "video": backCompatVideo(db.song[s])
+        }, db.song[s]);
     });
     return release;
 }
