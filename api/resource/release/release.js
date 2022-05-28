@@ -92,7 +92,7 @@ function singleNoAuth(db, id) {
     var resourceData = Object.assign({
         "id": id,
         "resourceName": resourceName,
-        "pageName": main.pageName(db, id),
+        "pageName": main.releaseName(db, id),
         "songlist": songList(main.objToArray(db.song)),
         "hasAlbumList": db[resourceName][id].songs.length > 1,
         "albumList": albumList(db[resourceName][id].songs, db),
