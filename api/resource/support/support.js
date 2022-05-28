@@ -91,7 +91,10 @@ function singleData(db) {
     support.listen = main.songLinks(db, releaseId);
 
     support.paymentUrl = {};
-    var venmo = db.band.payment.venmo;
+    var venmo;
+    if (db.band.payment) {
+        venmo = db.band.payment.venmo;
+    }
     support.paymentUrl.venmo = "";
     if (venmo) {
         if (venmo.slice(0, 1) === '@') {
