@@ -242,6 +242,7 @@ function updateResource(id, formData, db, save) {
     db[resourceName][id].name = formData.name;
     db[resourceName][id].artist = formData.artist;
     db[resourceName][id].desc = formData.desc;
+    db[resourceName][id].story = formData.story;
     db[resourceName][id].lyrics = formData.lyrics;
     db[resourceName][id].durationM = formData.durationM;
     db[resourceName][id].durationS = formData.durationS;
