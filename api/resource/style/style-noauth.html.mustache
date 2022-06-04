@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<title>{{homeName}}</title>
+{{{head}}}
+
+<body>
+{{{header}}}
+
+<article id="main">
+<h1>Style Guide</h1>
+
+{{#hasLogo}}
+<section>
+    <h2>Logo</h2>
+    {{{logoRules}}}
+    {{#logo1}}
+    <p>{{.}}</p>
+    {{/logo1}}
+    {{#logo2}}
+    <p>{{.}}</p>
+    {{/logo2}}
+    {{#logo3}}
+    <p>{{.}}</p>
+    {{/logo3}}
+</section>
+{{/hasLogo}}
+
+<section>
+    <h2>Colors</h2>
+    {{#color1}}
+    <p>{{.}}</p>
+    {{/color1}}
+    {{#color2}}
+    <p>{{.}}</p>
+    {{/color2}}
+    {{#color3}}
+    <p>{{.}}</p>
+    {{/color3}}
+    {{#color4}}
+    <p>{{.}}</p>
+    {{/color4}}
+    {{#color5}}
+    <p>{{.}}</p>
+    {{/color5}}
+    {{#color6}}
+    <p>{{.}}</p>
+    {{/color6}}
+</section>
+
+<section>
+    <h2>Fonts</h2>
+    {{#font1}}
+    <p>{{.}}</p>
+    {{/font1}}
+    {{#font2}}
+    <p>{{.}}</p>
+    {{/font2}}
+    {{#font3}}
+    <p>{{.}}</p>
+    {{/font3}}
+    {{#font4}}
+    <p>{{.}}</p>
+    {{/font4}}
+</section>
+
+{{#tone}}
+<section>
+    <h2>Tone</h2>
+    {{{toneHtml}}}
+</section>
+{{/tone}}
+
+</article>

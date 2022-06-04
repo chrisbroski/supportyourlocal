@@ -28,6 +28,7 @@ const song = require('./resource/song/song.js');
 const announcement = require('./resource/announcement/announcement.js');
 const user = require('./resource/user/user.js');
 const site = require('./resource/site/site.js');
+const style = require('./resource/style/style.js');
 const release = require('./resource/release/release.js');
 const photo = require('./resource/photo/photo.js');
 const version = require('./resource/version/version.js');
@@ -190,6 +191,9 @@ function rspPut(req, rsp, path, body) {
     if (path.resource === 'site') {
         return site.update(req, rsp, body, db, endure.save);
     }
+    if (path.resource === 'style') {
+        return style.update(req, rsp, body, db, endure.save);
+    }
     if (path.resource === 'release') {
         return release.update(req, rsp, path.id, body, db, endure.save);
     }
@@ -339,6 +343,9 @@ function rspGet(req, rsp, path) {
     }
     if (path.resource === 'site') {
         return site.get(req, rsp, db);
+    }
+    if (path.resource === 'style') {
+        return style.get(req, rsp, db);
     }
     if (path.resource === 'release') {
         return release.get(req, rsp, path.id, db);
@@ -566,103 +573,10 @@ async function loadData() {
     db = await endure.load(`${__dirname}/../data`);
 
     // migrate data, if needed
-    Object.keys(db.song).forEach(s => {
-        // if no media array exists, create it
-        if (!db.song[s].media) {
-            db.song[s].media = [];
-        }
-        // copy urls to media array
-        if (db.song[s].audio) {
-            if (db.song[s].audio.spotify) {
-                db.song[s].media.push({
-                    "url": db.song[s].audio.spotify,
-                    "type": "audio"
-                });
-            }
-            if (db.song[s].audio.apple) {
-                db.song[s].media.push({
-                    "url": db.song[s].audio.apple,
-                    "type": "audio"
-                });
-            }
-            if (db.song[s].audio.amazon) {
-                db.song[s].media.push({
-                    "url": db.song[s].audio.amazon,
-                    "type": "audio"
-                });
-            }
-            if (db.song[s].audio.youtube) {
-                db.song[s].media.push({
-                    "url": db.song[s].audio.youtube,
-                    "type": "audio"
-                });
-            }
-            if (db.song[s].audio.cdbaby) {
-                db.song[s].media.push({
-                    "url": db.song[s].audio.cdbaby,
-                    "type": "audio"
-                });
-            }
-            delete db.song[s].audio;
-        }
-
-        if (db.song[s].video) {
-            if (db.song[s].video.youtube) {
-                db.song[s].media.push({
-                    "url": db.song[s].video.youtube,
-                    "type": "video"
-                });
-            }
-            if (db.song[s].video.fb) {
-                db.song[s].media.push({
-                    "url": db.song[s].video.fb,
-                    "type": "video"
-                });
-            }
-            delete db.song[s].video;
-        }
-    });
-
-    // migrate release media
-    Object.keys(db.release).forEach(r => {
-        if (!db.release[r].media) {
-            db.release[r].media = [];
-        }
-        if (db.release[r].audio) {
-            if (db.release[r].audio.spotify) {
-                db.release[r].media.push({
-                    "url": db.release[r].audio.spotify,
-                    "type": "audio"
-                });
-            }
-            delete db.release[r].audio;
-        }
-
-        if (db.release[r].video) {
-            if (db.release[r].video.youtube) {
-                db.release[r].media.push({
-                    "url": db.release[r].video.youtube,
-                    "type": "video"
-                });
-            }
-            if (db.release[r].video.fb) {
-                db.release[r].media.push({
-                    "url": db.release[r].video.fb,
-                    "type": "video"
-                });
-            }
-            delete db.release[r].video;
-        }
-    });
-    if (!db.support) {
-        db.support = {};
+    if (!db.style) {
+        db.style = {};
     }
 
-    // import photos. Once I get the photos solid, we can remove this.
-    delete db.photos;
-    if (process.env.PHOTO_PATH) {
-        db.photo = await photo.fromFiles(process.env.PHOTO_PATH);
-    }
     endure.save();
     if (process.env.CSS_FRONT) {
         cssStat = await fs.stat(process.env.CSS_FRONT);

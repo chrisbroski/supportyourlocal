@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<title>{{pageName}} - {{resourceNameCap}} - API - {{homeName}}</title>
+{{{head}}}
+<style>
+section > p > img {
+    width: 100%;
+    float: none;
+}
+</style>
+<body>
+{{{header}}}
+
+<article id="main">
+<h1>{{pageName}}</h1>
+
+<h5><a href="{{API_DIR}}/">Home</a> &gt; <a href="{{API_DIR}}/{{resourceName}}">{{resourceName}}s</a> &gt; {{pageName}}</h5>
+
+{{{message-display}}}
+
+<section id="photo-info">
+<p>{{width}} × {{height}}, {{sizeKb}} kB
+{{#loggedIn}}
+<a class="button" href="{{API_DIR}}/delete?resource={{resourceName}}&id={{id}}">Delete {{resourceName}}</a>
+{{/loggedIn}}
+</p>
+{{#web}}
+<p><a href="/photo/{{id}}">View full-sized image.</a></p>
+<p><img src="/photo/{{name}}_web{{ext}}"></p>
+{{/web}}
+{{^web}}
+<p><img src="/photo/{{id}}"></p>
+{{/web}}
+</section>
+
+<section class="photolist">
+{{#photos}}
+<p><a href="{{API_DIR}}/photo/{{id}}"><img src="/photo/{{id}}"><span>{{width}} × {{height}} ({{sizeKb}} kB)</span></a></p>
+{{/photos}}
+</section>
+
+</article>

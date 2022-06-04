@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<title>{{pageName}} - API - {{homeName}}</title>
+{{{head}}}
+
+<body id="style-page">
+{{{header}}}
+
+<article id="main">
+<h1>{{resourceName}}</h1>
+
+<h5><a href="{{API_DIR}}/">Home</a> &gt; {{pageName}}</h5>
+
+{{{message-display}}}
+
+<section>
+<form method="POST" action="{{API_DIR}}/style" enctype="application/x-www-form-urlencoded">
+<input type="hidden" name="method" value="PUT">
+
+<h2>Logo</h2>
+
+<p><label>Logo Rules</label><br>
+    <textarea name="logoRules">{{logoRules}}</textarea>
+
+<h3>Logo Image 1</h3>
+<div class="photos">
+<label>
+    <input type="radio" name="logo1" value=""{{{logo1-no-photo}}}>
+    <img src="{{API_DIR}}/nophoto" alt="No photo">
+</label>
+{{#logo1-photos}}
+<label>
+    <input type="radio" name="logo1" value="{{file}}"{{{selected}}}>
+    <img src="/photo/{{thumb}}">
+</label>
+{{/logo1-photos}}
+</div>
+
+<h3>Logo Image 2</h3>
+<div class="photos">
+<label>
+    <input type="radio" name="logo2" value=""{{{logo2-no-photo}}}>
+    <img src="{{API_DIR}}/nophoto" alt="No photo">
+</label>
+{{#logo2-photos}}
+<label>
+    <input type="radio" name="logo2" value="{{file}}"{{{selected}}}>
+    <img src="/photo/{{thumb}}">
+</label>
+{{/logo2-photos}}
+</div>
+
+<h3>Logo Image 3</h3>
+<div class="photos">
+<label>
+    <input type="radio" name="logo3" value=""{{{logo3-no-photo}}}>
+    <img src="{{API_DIR}}/nophoto" alt="No photo">
+</label>
+{{#logo3-photos}}
+<label>
+    <input type="radio" name="logo3" value="{{file}}"{{{selected}}}>
+    <img src="/photo/{{thumb}}">
+</label>
+{{/logo3-photos}}
+</div>
+
+<h2>Colors</h2>
+
+<p><label>Color 1</label><br>
+    <input type="color" name="color1" value="{{color1}}">
+<p><label>Color 2</label><br>
+    <input type="color" name="color2" value="{{color2}}">
+<p><label>Color 3</label><br>
+    <input type="color" name="color3" value="{{color3}}">
+<p><label>Color 4</label><br>
+    <input type="color" name="color4" value="{{color4}}">
+<p><label>Color 5</label><br>
+    <input type="color" name="color5" value="{{color5}}">
+<p><label>Color 6</label><br>
+    <input type="color" name="color6" value="{{color6}}">
+
+<h2>Fonts</h2>
+
+<p><label>Header Font 1</label>*<br><select name="font1">
+    <option value="sans-serif"{{{header-sans-serif-selected}}}>Sans-serif</option>
+    <option value="serif"{{{header-serif-selected}}}>Serif</option>
+    <option value="monospace"{{{header-monospace-selected}}}>Monospace</option>
+    <option value="cursive"{{{header-cursive-selected}}}>Cursive</option>
+    <option value="fantasy"{{{header-fantasy-selected}}}>Fantasy</option>
+</select>
+</p>
+<p><label>Header Font 2</label><br><select name="font2">
+    <option value="sans-serif"{{{header-sans-serif-selected}}}>Sans-serif</option>
+    <option value="serif"{{{header-serif-selected}}}>Serif</option>
+    <option value="monospace"{{{header-monospace-selected}}}>Monospace</option>
+    <option value="cursive"{{{header-cursive-selected}}}>Cursive</option>
+    <option value="fantasy"{{{header-fantasy-selected}}}>Fantasy</option>
+</select>
+</p>
+<p><label>Body Font</label>*<br><select name="font3">
+    <option value="sans-serif"{{{header-sans-serif-selected}}}>Sans-serif</option>
+    <option value="serif"{{{header-serif-selected}}}>Serif</option>
+    <option value="monospace"{{{header-monospace-selected}}}>Monospace</option>
+    <option value="cursive"{{{header-cursive-selected}}}>Cursive</option>
+    <option value="fantasy"{{{header-fantasy-selected}}}>Fantasy</option>
+</select>
+</p>
+<p><label>Monospace Font</label><br><select name="fontMonospace">
+    <option value="sans-serif"{{{header-sans-serif-selected}}}>Sans-serif</option>
+    <option value="serif"{{{header-serif-selected}}}>Serif</option>
+    <option value="monospace"{{{header-monospace-selected}}}>Monospace</option>
+    <option value="cursive"{{{header-cursive-selected}}}>Cursive</option>
+    <option value="fantasy"{{{header-fantasy-selected}}}>Fantasy</option>
+</select>
+</p>
+
+<h2>Tone of Voice</h2>
+<p><textarea name="tone">{{tone}}</textarea>
+
+<footer><p><button>Update Style Information</button></footer>
+</form>
+</section>
+
+</article>
