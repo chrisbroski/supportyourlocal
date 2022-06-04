@@ -58,37 +58,6 @@ var db;
 var cssMainVer = "";
 global.photoStorageUsed = 0;
 
-function authenticate(req, rsp, path) {
-    var cookies, userid;
-    var userData;
-
-    var exceptions = ["login", "password", "forgot-password", "start"];
-    if (exceptions.indexOf(path.resource) > -1) {
-        return true;
-    }
-
-    cookies = main.parseCookie(req.headers.cookie);
-    if (!cookies.user) {
-        return auth.fail(req, rsp, 'Not logged in', db);
-    }
-    userid = cookies.user;
-
-    userData = db.user[userid];
-    if (!userData) {
-        return auth.fail(req, rsp, 'User id not found', db);
-    }
-
-    if (!userData.hash) {
-        return auth.fail(req, rsp, 'User not able to log in. Please contact your moderator.', db);
-    }
-
-    if (main.hash(userData.password + userid, userData.salt) !== cookies.token) {
-        return auth.fail(req, rsp, 'Invalid token', db);
-    }
-
-    return true;
-}
-
 /*
 function isFileForm(req) {
     var contentType = req.headers['content-type'];
@@ -519,7 +488,7 @@ function routeMethods(req, rsp, body) {
         return rspGet(req, rsp, path);
     }
 
-    if (!authenticate(req, rsp, path)) {
+    if (!auth.authenticate(req, rsp, db, path)) {
         return;
     }
     if (method === 'POST') {
