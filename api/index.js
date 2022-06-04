@@ -58,15 +58,6 @@ var db;
 var cssMainVer = "";
 global.photoStorageUsed = 0;
 
-/*
-function isFileForm(req) {
-    var contentType = req.headers['content-type'];
-    if (contentType.length > 18 && contentType.slice(0, 19) === 'multipart/form-data') {
-        return true;
-    }
-    return false;
-}*/
-
 function getDelete(req, rsp) {
     var searchParams = main.parseQs(req.url, true);
 

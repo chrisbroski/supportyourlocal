@@ -52,9 +52,11 @@ Endure backup and parse test. (In case of catastrophic failure.)
 
 ## Features for next version
 
-All https
+Custom fonts - Upload and make available in style guide.
 
-Admin key in .env (for data download and future executive feature)
+Style guide page. Populate drop-down from guide colors.
+
+I don't think *Site* is the proper resource name. It should probably be *Style* and be displayed as a proper style guide. Have up to 6 colors (or infinite?) and make the top 2 the web site ones. Should there be shades of color? Maybe.
 
 ### Tests
 
@@ -66,26 +68,25 @@ Songs partially done. The rest, not at all
 * Deletion can cause invalid state
 * Small photos might create thumbnails larger than themselves.
 * A "track" type Spotify link for release media breaks stuff on the front end.
+* There seem to be 2 file extension functions: getExtension and main.extractFileType
 
 ## Features for next next version
 
-Custom fonts - Upload and make available in style guide.
+All https
 
-Style guide page. Populate drop-down from guide colors.
-
-I don't think *Site* is the proper resource name. It should probably be *Style* and be displayed as a proper style guide. Have up to 6 colors (or infinite?) and make the top 2 the web site ones. Should there be shades of color? Maybe.
+Admin key in .env (for data download and future executive feature)
 
 Get local features working with member cities. "Check in" on mobile when at open mics, etc.
-
-### Email List
-
-Export instructions to email them your damn self. Add phone number too for mass spam texting.
 
 EPK
 
 Password recovery using email.
 
 More data validation
+
+### Email List
+
+Export instructions to email them your damn self. Add phone number too for mass spam texting.
 
 ## Onboarding:
 
