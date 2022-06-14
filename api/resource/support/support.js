@@ -56,6 +56,16 @@ function single(db, msg, error) {
     return Object.assign(main.addMessages(msg, error), resourceData);
 }
 
+function venmoUsername(payment) {
+    if (payment.venmo) {
+        if (payment.venmo.slice(0, 1) === "@") {
+            return payment.venmo.slice(1);
+        }
+        return payment.venmo;
+    }
+    return "";
+}
+
 function singleNoAuth(db) {
     var socials = {};
     if (db.band.social) {
@@ -71,6 +81,7 @@ function singleNoAuth(db) {
         "pageName": 'Support the Music',
         "hasSocialMedia": Object.keys(socials).some(s => !!socials[s]),
         "hasPayment": Object.keys(payments).some(p => !!payments[p]),
+        "paymentVenmo": venmoUsername(db.band.payment),
         "donationSection": Object.keys(payments).some(p => !!payments[p]) || !!db[resourceName].donationMd,
         "subscribeSection": Object.keys(socials).some(s => !!socials[s]) || !!db[resourceName].subscribeMd,
         "releaseHtml": converter.makeHtml(db[resourceName].releaseMd),
@@ -97,10 +108,7 @@ function singleData(db) {
     }
     support.paymentUrl.venmo = "";
     if (venmo) {
-        if (venmo.slice(0, 1) === '@') {
-            venmo = venmo.slice(1);
-        }
-        support.paymentUrl.venmo = `https://account.venmo.com/u/${venmo}`;
+        support.paymentUrl.venmo = `https://account.venmo.com/u/${venmoUsername(db.band.payment)}`;
     }
 
     // social media
