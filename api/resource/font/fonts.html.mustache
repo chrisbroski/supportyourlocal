@@ -3,7 +3,7 @@
 <title>{{pageName}} - API - {{homeName}}</title>
 {{{head}}}
 
-<body id="photos">
+<body id="fonts">
 {{{header}}}
 
 <article id="main">
@@ -15,32 +15,24 @@
 
 {{#loggedIn}}
 <section>
-{{^uploadFull}}
-<p>Storage: Using {{storageUsed}} out of {{storageLimit}}MB.</p>
-<p>{{bytesLeft}}MB remaining.</p>
-<form method="POST" action="{{API_DIR}}/photo" enctype="multipart/form-data">
-<p><input type="file" name="photo"></p>
-<p><button>Upload Photo</button></p>
+{{^full}}
+<p>Using {{fontCount}} fonts out of 4 maximum.</p>
+<form method="POST" action="{{API_DIR}}/font" enctype="multipart/form-data">
+<p><input type="file" name="font" accept="{{accept}}"></p>
+<p><button>Upload Font</button></p>
 </form>
-{{/uploadFull}}
-{{#uploadFull}}
-<p>You have exceeded your storage limit of {{storageLimit}}MB.
-<p>Delete some photos, reduce their size, or contact Chris for more storage.
-{{/uploadFull}}
+{{/full}}
+{{#full}}
+<p>You are at the maximum number of fonts (4.)
+<p>If you want to add new fonts, you'll have to delete some first.
+{{/full}}
 </section>
 {{/loggedIn}}
 
-<!-- <section>
-<form method="POST" action="{{API_DIR}}/photo" enctype="application/x-www-form-urlencoded">
-<input type="hidden" name="method" value="DELETE">
-<p><img src=""></p>
-<p><button>Delete Photos</button></p>
-</section> -->
-
-<section class="photolist">
-{{#photos}}
-<p><a href="{{API_DIR}}/photo/{{id}}"><img src="/photo/{{name}}_thumb{{ext}}"><span>{{width}} × {{height}} ({{sizeKb}} kB)</span></a></p>
-{{/photos}}
+<section class="list">
+{{#fonts}}
+<p><a href="{{API_DIR}}/font/{{.}}">{{.}}</a></p>
+{{/fonts}}
 </section>
 
 </article>

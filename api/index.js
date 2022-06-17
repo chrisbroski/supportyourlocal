@@ -31,6 +31,7 @@ const site = require('./resource/site/site.js');
 const style = require('./resource/style/style.js');
 const release = require('./resource/release/release.js');
 const photo = require('./resource/photo/photo.js');
+const font = require('./resource/font/font.js');
 const version = require('./resource/version/version.js');
 const head = require('./resource/head/head.js');
 
@@ -62,7 +63,13 @@ function getDelete(req, rsp) {
     var searchParams = main.parseQs(req.url, true);
 
     if (!db[searchParams.resource][searchParams.id]) {
-        return main.notFound(rsp, req.url, 'GET', req, db);
+        if (Array.isArray(db[searchParams.resource])) {
+            if (db[searchParams.resource].indexOf(searchParams.id) === -1) {
+                return main.notFound(rsp, req.url, 'GET', req, db);
+            }
+        } else {
+            return main.notFound(rsp, req.url, 'GET', req, db);
+        }
     }
 
     var deleteData = {
@@ -85,6 +92,10 @@ function rspPost(req, rsp, path, body) {
 
     if (path.resource === 'photo') {
         return photo.create(req, rsp, body, db, endure.save);
+    }
+
+    if (path.resource === 'font') {
+        return font.create(req, rsp, body, db, endure.save);
     }
 
     if (path.resource === 'gig') {
@@ -195,6 +206,10 @@ function rspDelete(req, rsp, path) {
 
     if (path.resource === 'photo') {
         return photo.remove(req, rsp, path.id, db, endure.save);
+    }
+
+    if (path.resource === 'font') {
+        return font.remove(req, rsp, path.id, db, endure.save);
     }
 
     if (path.resource === `password`) {
@@ -318,6 +333,9 @@ function rspGet(req, rsp, path) {
     }
     if (path.resource === "photo") {
         return photo.get(req, rsp, path.id, db);
+    }
+    if (path.resource === "font") {
+        return font.get(req, rsp, path.id, db);
     }
     if (path.resource === "meta") {
         return head.get(req, rsp, db, path.qs, cssMainVer);
@@ -535,6 +553,9 @@ async function loadData() {
     // migrate data, if needed
     if (!db.style) {
         db.style = {};
+    }
+    if (!db.font) {
+        db.style = [];
     }
 
     endure.save();

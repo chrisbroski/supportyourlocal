@@ -33,9 +33,11 @@ function single(db, id, msg, error) {
     return Object.assign(main.addMessages(msg, error), resourceData);
 }
 
+var photoExt = [".png", ".jpg", ".jpeg"];
 function list(db, msg, error) {
     var resourceData = {
         "resourceName": resourceName,
+        "accept": photoExt.join(","),
         "pageName": 'Photos',
         "photos": photoList(db),
         "storageUsed": Math.round(global.photoStorageUsed / 1000000),
@@ -49,7 +51,6 @@ function list(db, msg, error) {
 
 function isPhotoInvalid(body) {
     var msg = [];
-    var photoExt = [".png", ".jpg", ".jpeg"];
 
     if (!body.files || body.files.length === 0) {
         msg.push("You must include a photo.");
