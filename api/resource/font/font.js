@@ -4,6 +4,7 @@ const fs = require("fs").promises;
 const main = require('../../inc/main.js');
 const resourceName = 'font';
 const template = {};
+const fontMax = 6;
 
 function single(db, id, msg, error) {
     var resourceData = {
@@ -28,7 +29,8 @@ function list(db, msg, error) {
         "pageName": 'Fonts',
         "fonts": db.font,
         "fontCount": fontCount,
-        "full": db.font && db.font.length > 3
+        "fontMax": fontMax,
+        "full": db.font && db.font.length >= fontMax
     };
 
     return Object.assign(main.addMessages(msg, error), resourceData);

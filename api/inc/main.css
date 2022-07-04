@@ -184,7 +184,9 @@ div.photos label {
 div.photos img {
     margin: 4px 0;
     padding: 6px;
-    height: 100px;
+    max-height: 100px;
+    max-width: 200px;
+    vertical-align: middle;
 }
 div.photos input {
     margin-top: 8px;
@@ -237,7 +239,6 @@ section > img, section > p > img, section > p > a > img {
 }
 section.photolist > p {
     margin: 0;
-    /* width: 50%; */
     float: left;
     position: relative;
     line-height: 1;
@@ -249,6 +250,7 @@ section.photolist > p > a {
 }
 section.photolist > p > a > img {
     margin: 0; padding: 4px;
+    display: inline-block;
     width: 160px !important;
     float: none;
     color: white;
@@ -285,6 +287,9 @@ section.photolist > p > a > span {
 #media select {
     margin: 4px 0;
     width: auto;
+}
+td.color-cell {
+    min-width: 60px;
 }
 @keyframes fadeOutAfterLoad {
     0% {

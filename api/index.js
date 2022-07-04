@@ -130,6 +130,10 @@ function rspPost(req, rsp, path, body) {
         }
     }
 
+    if (path.resource === 'style') {
+        return style.addColorOrFont(req, rsp, body, db, endure.save);
+    }
+
     if (path.resource === 'start') {
         return site.setup(req, rsp, body, db, endure.save, process.env.SETUP_TOKEN);
     }
@@ -226,8 +230,11 @@ function rspPatch(req, rsp, path, body) {
     if (path.resource === 'song') {
         return song.reorderMedia(req, rsp, path.id, body, db, endure.save);
     }
+    if (path.resource === 'style') {
+        return style.reorderColorOrFont(req, rsp, body, db, endure.save);
+    }
 
-    return main.notFound(rsp, req.url, 'PUT', req, db);
+    return main.notFound(rsp, req.url, 'PATCH', req, db);
 }
 
 function rspGet(req, rsp, path) {
@@ -555,7 +562,7 @@ async function loadData() {
         db.style = {};
     }
     if (!db.font) {
-        db.style = [];
+        db.font = [];
     }
 
     endure.save();

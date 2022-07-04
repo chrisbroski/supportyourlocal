@@ -12,16 +12,18 @@
 {{#hasLogo}}
 <section>
     <h2>Logo</h2>
-    {{{logoRules}}}
+    {{{logoRulesHtml}}}
+    <div class="photos">
     {{#logo1}}
-    <p>{{.}}</p>
+    <label><a href="/api/photo/{{.}}"><img src="/photo/{{.}}"></a></label>
     {{/logo1}}
     {{#logo2}}
-    <p>{{.}}</p>
+    <label><a href="/api/photo/{{.}}"><img src="/photo/{{.}}"></a></label>
     {{/logo2}}
     {{#logo3}}
-    <p>{{.}}</p>
+    <label><a href="/api/photo/{{.}}"><img src="/photo/{{.}}"></a></label>
     {{/logo3}}
+    </div>
 </section>
 {{/hasLogo}}
 
