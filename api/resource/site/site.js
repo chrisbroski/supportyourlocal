@@ -203,6 +203,9 @@ this.update = function (req, rsp, formData, db, save) {
 
 function getFontData(style, file) {
     var fontData;
+    if (!style.fonts) {
+        return;
+    }
     style.fonts.forEach(f => {
         if (f.file === file) {
             fontData = f;
