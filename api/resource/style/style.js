@@ -148,6 +148,15 @@ function hasLogo(styleData) {
     return (styleData.logoRules || styleData.logo1 || styleData.logo2 || styleData.logo3);
 }
 
+function getCustomFonts(db) {
+    return db[resourceName].fonts.map(f => {
+        return {
+            "name": f.name,
+            "file": f.type === "uploaded" ? `/photo/${f.file}` : f.file
+        };
+    });
+}
+
 function singleNoAuth(db, msg, error) {
     // console.log('hasLogo(db[resourceName])');
     // console.log(hasLogo(db[resourceName]));
@@ -155,7 +164,12 @@ function singleNoAuth(db, msg, error) {
         "resourceName": resourceName,
         "logoRulesHtml": converter.makeHtml(db[resourceName].logoRules),
         "toneHtml": converter.makeHtml(db[resourceName].tone),
-        "hasLogo": hasLogo(db[resourceName])
+        "hasLogo": hasLogo(db[resourceName]),
+        "colorInfo": db[resourceName].colors.map(c => {
+            var rgb = main.hexToRgb(c);
+            return {"hex": c.slice(1), "rgb": rgb, "cmyk": main.rgbToCmyk(rgb)};
+        }),
+        "customFonts": getCustomFonts(db)
     }, db[resourceName]);
 
     return Object.assign(main.addMessages(msg, error), resourceData);

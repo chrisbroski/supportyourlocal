@@ -93,7 +93,7 @@ this.create = async function (req, rsp, body, db, save) {
     save();
 
     rsp.writeHead(200, {'Content-Type': 'text/html'});
-    rsp.end(main.renderPage(req, template.list, list(db, [`Photo added.`]), db));
+    rsp.end(main.renderPage(req, template.list, list(db, [`Font added.`]), db));
 };
 
 this.get = function (req, rsp, id, db) {

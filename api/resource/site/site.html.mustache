@@ -37,7 +37,13 @@
     <input type="color" name="color2" value="{{color2}}">
 
 <p><label>Header Font</label><br>
-    <input type="text" name="header-font" value="{{header-font}}"></p>
+    <select name="header-font">
+        <option value="">Select Font</option>
+        {{#headerFonts}}
+        <option value="{{{file}}}"{{{selected}}}>{{name}}</option>
+        {{/headerFonts}}
+    </select>
+</p>
 <p><label>Generic Font Family</label><br><select name="header-font-default">
     <option value="sans-serif"{{{header-sans-serif-selected}}}>Sans-serif</option>
     <option value="serif"{{{header-serif-selected}}}>Serif</option>
@@ -51,7 +57,12 @@
 </p>
 
 <p><label>Body Font</label><br>
-    <input type="text" name="body-font" value="{{body-font}}"><br>
+    <select name="body-font">
+        <option value="">Select Font</option>
+        {{#bodyFonts}}
+        <option value="{{{file}}}"{{{selected}}}>{{name}}</option>
+        {{/bodyFonts}}
+    </select>
 <p><label>Generic Font Family</label><br><select name="body-font-default">
     <option value="sans-serif"{{{body-sans-serif-selected}}}>Sans-serif</option>
     <option value="serif"{{{body-serif-selected}}}>Serif</option>

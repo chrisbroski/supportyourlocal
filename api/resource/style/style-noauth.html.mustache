@@ -2,6 +2,14 @@
 <html lang="en">
 <title>{{homeName}}</title>
 {{{head}}}
+<style>
+{{#customFonts}}
+@font-face {
+    font-family: "{{name}}";
+    src: url("{{{file}}}");
+}
+{{/customFonts}}
+</style>
 
 <body>
 {{{header}}}
@@ -29,40 +37,23 @@
 
 <section>
     <h2>Colors</h2>
-    {{#color1}}
-    <p>{{.}}</p>
-    {{/color1}}
-    {{#color2}}
-    <p>{{.}}</p>
-    {{/color2}}
-    {{#color3}}
-    <p>{{.}}</p>
-    {{/color3}}
-    {{#color4}}
-    <p>{{.}}</p>
-    {{/color4}}
-    {{#color5}}
-    <p>{{.}}</p>
-    {{/color5}}
-    {{#color6}}
-    <p>{{.}}</p>
-    {{/color6}}
+    {{#colorInfo}}
+    <div class="color-box">
+        <div style="background-color: #{{hex}}; "></div>
+        <p>#{{hex}}</p>
+        <p>rgb({{rgb.r}}, {{rgb.g}}, {{rgb.b}})</p>
+        <p>RGBA: {{hex}}ff</p>
+        <p>CMYK: {{cmyk.c}}, {{cmyk.m}}, {{cmyk.y}}, {{cmyk.k}}</p>
+    </div>
+    {{/colorInfo}}
 </section>
 
 <section>
     <h2>Fonts</h2>
-    {{#font1}}
-    <p>{{.}}</p>
-    {{/font1}}
-    {{#font2}}
-    <p>{{.}}</p>
-    {{/font2}}
-    {{#font3}}
-    <p>{{.}}</p>
-    {{/font3}}
-    {{#font4}}
-    <p>{{.}}</p>
-    {{/font4}}
+    {{#fonts}}
+    <h5>{{name}}</h5>
+    <p style="font-family: '{{name}}' !important; ">Pack my box with five dozen liquor jugs.</p>
+    {{/fonts}}
 </section>
 
 {{#tone}}

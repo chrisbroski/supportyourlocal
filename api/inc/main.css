@@ -291,6 +291,16 @@ section.photolist > p > a > span {
 td.color-cell {
     min-width: 60px;
 }
+.color-box {
+    overflow: auto;
+    clear: both;
+}
+.color-box > div {
+    margin-right: 8px;
+    float: left;
+    height: 120px;
+    width: 120px;
+}
 @keyframes fadeOutAfterLoad {
     0% {
         opacity: 1;

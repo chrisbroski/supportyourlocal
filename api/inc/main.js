@@ -351,6 +351,25 @@ function hexToRgb(hex) {
 }
 this.hexToRgb = hexToRgb;
 
+function rgbToCmyk(rgb) {
+    var c = 1 - (rgb.r / 255);
+    var m = 1 - (rgb.g / 255);
+    var y = 1 - (rgb.b / 255);
+    var k = Math.min(c, Math.min(m, y));
+
+    c = (c - k) / (1 - k);
+    m = (m - k) / (1 - k);
+    y = (y - k) / (1 - k);
+
+    c = isNaN(c) ? 0 : Math.round(c * 100);
+    m = isNaN(m) ? 0 : Math.round(m * 100);
+    y = isNaN(y) ? 0 : Math.round(y * 100);
+    k = isNaN(k) ? 0 : Math.round(k * 100);
+
+    return {c: c, m: m, y: y, k: k};
+}
+this.rgbToCmyk = rgbToCmyk;
+
 function toTitleCase(str) {
     if (!str) {
         return "";
