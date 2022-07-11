@@ -13,7 +13,6 @@ function getGoogleFontName(fontFile) {
     var fontVariant = "";
 
     webFonts.forEach(font => {
-        // console.log(font.family);
         font.files.forEach(file => {
             if (file.file === fontFile) {
                 fontName = font.family;
@@ -34,11 +33,9 @@ async function getWebFonts(req) {
             referer: req.headers.host
         }
     };
-    // console.log(options);
 
     let p = new Promise((resolve, reject) => {
         const req = https.request(options, (res) => {
-            // res.setEncoding('utf8');
             var responseBody = '';
             var statusCode = res.statusCode;
 
@@ -48,8 +45,6 @@ async function getWebFonts(req) {
 
             res.on('end', () => {
                 if (statusCode >= 200 && statusCode < 400) {
-                    // console.log(responseBody.slice(0, 64));
-                    // console.log(statusCode);
                     var jsonFonts = JSON.parse(responseBody);
                     jsonFonts.items.forEach(font => {
 
@@ -67,7 +62,6 @@ async function getWebFonts(req) {
                     });
                     resolve(webFonts);
                 } else {
-                    // console.error(responseBody);
                     resolve([]);
                 }
             });
@@ -77,7 +71,6 @@ async function getWebFonts(req) {
             reject(err);
         });
 
-        // req.write(data);
         req.end();
     });
 
@@ -118,9 +111,6 @@ function fontList(items) {
 }
 
 function single(req, db, msg, error) {
-    // if (req && webFonts.length === 0) {
-    //     webFonts = await getWebFonts(req);
-    // }
     var resourceData = Object.assign({
         "resourceName": resourceName,
         "logo1-photos": main.displayPhotos(db.photo, db[resourceName].logo1),
@@ -140,7 +130,7 @@ function single(req, db, msg, error) {
         "fontList": fontList(db[resourceName].fonts),
         "webFonts": webFonts
     }, db[resourceName]);
-    // console.log(resourceData);
+
     return Object.assign(main.addMessages(msg, error), resourceData);
 }
 
@@ -158,8 +148,6 @@ function getCustomFonts(db) {
 }
 
 function singleNoAuth(db, msg, error) {
-    // console.log('hasLogo(db[resourceName])');
-    // console.log(hasLogo(db[resourceName]));
     var resourceData = Object.assign({
         "resourceName": resourceName,
         "logoRulesHtml": converter.makeHtml(db[resourceName].logoRules),
@@ -177,6 +165,10 @@ function singleNoAuth(db, msg, error) {
 
 function singleData(db) {
     return Object.assign({
+        "colorInfo": db[resourceName].colors.map(c => {
+            var rgb = main.hexToRgb(c);
+            return {"hex": c.slice(1), "rgb": rgb, "cmyk": main.rgbToCmyk(rgb)};
+        }),
         "resourceName": resourceName,
     }, db[resourceName]);
 }
