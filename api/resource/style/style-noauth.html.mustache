@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<title>{{homeName}}</title>
+{{{head}}}
+<style>
+{{#customFonts}}
+@font-face {
+    font-family: "{{name}}";
+    src: url("{{{file}}}");
+}
+{{/customFonts}}
+</style>
+
+<body>
+{{{header}}}
+
+<article id="main">
+<h1>Style Guide</h1>
+
+{{#hasLogo}}
+<section>
+    <h2>Logo</h2>
+    {{{logoRulesHtml}}}
+    <div class="photos">
+    {{#logo1}}
+    <label><a href="/api/photo/{{.}}"><img src="/photo/{{.}}"></a></label>
+    {{/logo1}}
+    {{#logo2}}
+    <label><a href="/api/photo/{{.}}"><img src="/photo/{{.}}"></a></label>
+    {{/logo2}}
+    {{#logo3}}
+    <label><a href="/api/photo/{{.}}"><img src="/photo/{{.}}"></a></label>
+    {{/logo3}}
+    </div>
+</section>
+{{/hasLogo}}
+
+<section>
+    <h2>Colors</h2>
+    {{#colorInfo}}
+    <div class="color-box">
+        <div style="background-color: #{{hex}}; "></div>
+        <p>#{{hex}}</p>
+        <p>rgb({{rgb.r}}, {{rgb.g}}, {{rgb.b}})</p>
+        <p>RGBA: {{hex}}ff</p>
+        <p>CMYK: {{cmyk.c}}, {{cmyk.m}}, {{cmyk.y}}, {{cmyk.k}}</p>
+    </div>
+    {{/colorInfo}}
+</section>
+
+<section>
+    <h2>Fonts</h2>
+    {{#fonts}}
+    <h5>{{name}}</h5>
+    <p style="font-family: '{{name}}' !important; ">Pack my box with five dozen liquor jugs.</p>
+    {{/fonts}}
+</section>
+
+{{#tone}}
+<section>
+    <h2>Tone</h2>
+    {{{toneHtml}}}
+</section>
+{{/tone}}
+
+</article>

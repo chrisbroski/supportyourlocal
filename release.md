@@ -1,5 +1,19 @@
 # Release Notes
 
+## 1.4.0 (2022-07-11)
+
+### Style PAge
+
+Arrays of colors and fonts (including a drop-down of all available good fonts,) graphic logos, plus formatted text areas to describe logo usage and tone of voice. Site information for colors and fonts now uses this data.
+
+### Upload Custom Fonts
+
+Use custom fonts instead of web fonts by uploading to the site. (It also should make page loading faster.)
+
+### Style Guide
+
+Style information can be viewed unauthenticated in a "style guide." with JSON version for the front end.
+
 ## 1.3.0 (2022-05-28)
 
 ### Login Improvements

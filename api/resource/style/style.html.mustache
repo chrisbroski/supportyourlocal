@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+<title>{{pageName}} - API - {{homeName}}</title>
+{{{head}}}
+
+<body id="style-page">
+{{{header}}}
+
+<article id="main">
+<h1>{{resourceName}}</h1>
+
+<h5><a href="{{API_DIR}}/">Home</a> &gt; {{pageName}}</h5>
+
+{{{message-display}}}
+
+<section>
+<form method="POST" action="{{API_DIR}}/style" enctype="application/x-www-form-urlencoded">
+<input type="hidden" name="method" value="PUT">
+
+<h2>Logo</h2>
+
+<p><label>Logo Rules</label><br>
+    <textarea name="logoRules">{{logoRules}}</textarea>
+
+<h3>Logo Image 1</h3>
+<div class="photos">
+<label>
+    <input type="radio" name="logo1" value=""{{{logo1-no-photo}}}>
+    <img src="{{API_DIR}}/nophoto" alt="No photo">
+</label>
+{{#logo1-photos}}
+<label>
+    <input type="radio" name="logo1" value="{{file}}"{{{selected}}}>
+    <img src="/photo/{{thumb}}">
+</label>
+{{/logo1-photos}}
+</div>
+
+<h3>Logo Image 2</h3>
+<div class="photos">
+<label>
+    <input type="radio" name="logo2" value=""{{{logo2-no-photo}}}>
+    <img src="{{API_DIR}}/nophoto" alt="No photo">
+</label>
+{{#logo2-photos}}
+<label>
+    <input type="radio" name="logo2" value="{{file}}"{{{selected}}}>
+    <img src="/photo/{{thumb}}">
+</label>
+{{/logo2-photos}}
+</div>
+
+<h3>Logo Image 3</h3>
+<div class="photos">
+<label>
+    <input type="radio" name="logo3" value=""{{{logo3-no-photo}}}>
+    <img src="{{API_DIR}}/nophoto" alt="No photo">
+</label>
+{{#logo3-photos}}
+<label>
+    <input type="radio" name="logo3" value="{{file}}"{{{selected}}}>
+    <img src="/photo/{{thumb}}">
+</label>
+{{/logo3-photos}}
+</div>
+
+<h2>Tone of Voice</h2>
+<p><textarea name="tone">{{tone}}</textarea>
+
+<footer><p><button>Update Style Information</button></footer>
+</form>
+</section>
+
+<section id="color">
+<h2>Colors</h2>
+<form method="POST" action="{{{API_DIR}}}/{{resourceName}}/#color">
+    <p><input type="color" name="color" value="">
+        <button>Add Color</button>
+</form>
+
+<table class="color-table">
+{{#colorList}}
+<tr>
+{{^index-top}}
+<td>
+<form method="POST" action="{{{API_DIR}}}/{{resourceName}}/#color">
+    <input type="hidden" name="method" value="PATCH">
+    <input type="hidden" name="index" value="0">
+    <input type="hidden" name="array" value="colors">
+    <input type="hidden" name="reorder-value" value="{{reorder-value}}">
+    <button>Move to Top</button>
+</form>
+</td>
+<td>
+<form method="POST" action="{{{API_DIR}}}/{{resourceName}}/#color">
+    <input type="hidden" name="method" value="PATCH">
+    <input type="hidden" name="index" value="{{index-up}}">
+    <input type="hidden" name="array" value="colors">
+    <input type="hidden" name="reorder-value" value="{{reorder-value}}">
+    <button>↑</button>
+</form>
+</td>
+{{/index-top}}
+{{#index-top}}
+<td></td><td></td>
+{{/index-top}}
+{{^index-bottom}}
+<td>
+<form method="POST" action="{{{API_DIR}}}/{{resourceName}}/#color">
+    <input type="hidden" name="method" value="PATCH">
+    <input type="hidden" name="index" value="{{index-down}}">
+    <input type="hidden" name="array" value="colors">
+    <input type="hidden" name="reorder-value" value="{{reorder-value}}">
+    <button>↓</button>
+</form>
+</td>
+{{/index-bottom}}
+{{#index-bottom}}
+<td></td>
+{{/index-bottom}}
+
+<th>{{reorder-value}}</th>
+<td style="background-color: {{reorder-value}}" class="color-cell"></td>
+<td>
+<form method="POST" action="{{{API_DIR}}}/{{resourceName}}/#color">
+    <input type="hidden" name="method" value="PATCH">
+    <input type="hidden" name="index" value="-1">
+    <input type="hidden" name="array" value="colors">
+    <input type="hidden" name="reorder-value" value="{{reorder-value}}">
+    <button>×</button>
+</form>
+</td>
+</tr>
+{{/colorList}}
+</table>
+</section>
+
+<section id="font">
+<h2>Fonts</h2>
+<form method="POST" action="{{{API_DIR}}}/{{resourceName}}/#font">
+    <p><select name="font">
+        <option value="">Select Font
+        {{#hasUploadedFonts}}
+        <optgroup label="Uploaded Fonts">
+        {{#uploadedFonts}}
+        <option value="{{file}}|uploaded">{{name}}
+        {{/uploadedFonts}}
+        </optgroup>
+        {{/hasUploadedFonts}}
+        {{#webFonts}}
+        {{#no-variants}}
+        {{#files}}
+        <option value="{{file}}|google">{{family}}
+        {{/files}}
+        {{/no-variants}}
+        {{^no-variants}}
+        <optgroup label="{{family}}">
+            {{#files}}
+            <option value="{{file}}|google">{{family}} {{variant}}
+            {{/files}}
+        </optgroup>
+        {{/no-variants}}
+        {{/webFonts}}
+        </select>
+        <button>Add Font</button>
+</form>
+
+<table class="font-table">
+{{#fontList}}
+<tr>
+{{^index-top}}
+<td>
+<form method="POST" action="{{{API_DIR}}}/{{resourceName}}/#font">
+    <input type="hidden" name="method" value="PATCH">
+    <input type="hidden" name="index" value="0">
+    <input type="hidden" name="array" value="fonts">
+    <input type="hidden" name="reorder-value" value="{{reorder-value}}">
+    <button>Move to Top</button>
+</form>
+</td>
+<td>
+<form method="POST" action="{{{API_DIR}}}/{{resourceName}}/#font">
+    <input type="hidden" name="method" value="PATCH">
+    <input type="hidden" name="index" value="{{index-up}}">
+    <input type="hidden" name="array" value="fonts">
+    <input type="hidden" name="reorder-value" value="{{reorder-value}}">
+    <button>↑</button>
+</form>
+</td>
+{{/index-top}}
+{{#index-top}}
+<td></td><td></td>
+{{/index-top}}
+{{^index-bottom}}
+<td>
+<form method="POST" action="{{{API_DIR}}}/{{resourceName}}/#font">
+    <input type="hidden" name="method" value="PATCH">
+    <input type="hidden" name="index" value="{{index-down}}">
+    <input type="hidden" name="array" value="fonts">
+    <input type="hidden" name="reorder-value" value="{{reorder-value}}">
+    <button>↓</button>
+</form>
+</td>
+{{/index-bottom}}
+{{#index-bottom}}
+<td></td>
+{{/index-bottom}}
+
+<th>{{font-name}}</th>
+<td>
+<form method="POST" action="{{{API_DIR}}}/{{resourceName}}/#font">
+    <input type="hidden" name="method" value="PATCH">
+    <input type="hidden" name="index" value="-1">
+    <input type="hidden" name="array" value="fonts">
+    <input type="hidden" name="reorder-value" value="{{reorder-value}}">
+    <button>×</button>
+</form>
+</td>
+</tr>
+{{/fontList}}
+</table>
+</section>
+
+</article>

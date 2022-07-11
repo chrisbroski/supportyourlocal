@@ -150,6 +150,38 @@ function pathFromFullUrl(url) {
     return parsedUrl;
 }
 
+function authenticate(req, rsp, db, path) {
+    var cookies, userid;
+    var userData;
+
+    var exceptions = ["login", "password", "forgot-password", "start"];
+    if (exceptions.indexOf(path.resource) > -1) {
+        return true;
+    }
+
+    cookies = main.parseCookie(req.headers.cookie);
+    if (!cookies.user) {
+        return fail(req, rsp, 'Not logged in', db);
+    }
+    userid = cookies.user;
+
+    userData = db.user[userid];
+    if (!userData) {
+        return fail(req, rsp, 'User id not found', db);
+    }
+
+    if (!userData.hash) {
+        return fail(req, rsp, 'User not able to log in. Please contact your moderator.', db);
+    }
+
+    if (main.hash(userData.password + userid, userData.salt) !== cookies.token) {
+        return fail(req, rsp, 'Invalid token', db);
+    }
+
+    return true;
+}
+this.authenticate = authenticate;
+
 function login(req, rsp, body, db) {
     var lockoutDuration;
     var userId;

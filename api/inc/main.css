@@ -173,29 +173,37 @@ table.media-table td button {
     width: 2em;
 }
 
-div.photos {
+div.photos, div.colors {
     height: 120px;
     overflow: auto;
     white-space: nowrap;
 }
-div.photos label {
+div.photos label, div.colors label {
     position: relative;
 }
-div.photos img {
+div.photos img, div.colors label > div {
     margin: 4px 0;
     padding: 6px;
-    height: 100px;
+    max-height: 100px;
+    max-width: 200px;
+    vertical-align: middle;
 }
-div.photos input {
+div.colors label > div {
+    display: inline-block;
+    height: 100px;
+    width: 100px;
+    vertical-align: middle;
+}
+div.photos input, div.colors input {
     margin-top: 8px;
     display: none;
 }
 
-div.photos input:checked {
+div.photos input:checked, div.colors input:checked {
     display: inline-block;
     position: absolute;
 }
-div.photos label input:checked + img {
+div.photos label input:checked + img, div.colors input:checked + div {
     padding: 0;
     border: 1px solid rgb(var(--color2));
     box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.8);
@@ -237,7 +245,6 @@ section > img, section > p > img, section > p > a > img {
 }
 section.photolist > p {
     margin: 0;
-    /* width: 50%; */
     float: left;
     position: relative;
     line-height: 1;
@@ -249,6 +256,7 @@ section.photolist > p > a {
 }
 section.photolist > p > a > img {
     margin: 0; padding: 4px;
+    display: inline-block;
     width: 160px !important;
     float: none;
     color: white;
@@ -285,6 +293,19 @@ section.photolist > p > a > span {
 #media select {
     margin: 4px 0;
     width: auto;
+}
+td.color-cell {
+    min-width: 60px;
+}
+.color-box {
+    overflow: auto;
+    clear: both;
+}
+.color-box > div {
+    margin-right: 8px;
+    float: left;
+    height: 120px;
+    width: 120px;
 }
 @keyframes fadeOutAfterLoad {
     0% {

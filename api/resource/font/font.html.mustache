@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<title>{{pageName}} - {{resourceNameCap}} - API - {{homeName}}</title>
+{{{head}}}
+<style>
+@font-face {
+    font-family: '{{pageName}}';
+    src: url("/photo/{{id}}");
+}
+
+#font-example {
+    font-family: '{{pageName}}';
+    font-size: 36px;
+}
+</style>
+<body>
+{{{header}}}
+
+<article id="main">
+<h1>{{pageName}}</h1>
+
+<h5><a href="{{API_DIR}}/">Home</a> &gt; <a href="{{API_DIR}}/{{resourceName}}">{{resourceName}}s</a> &gt; {{pageName}}</h5>
+
+{{{message-display}}}
+
+<section id="font-info">
+<p>
+{{#loggedIn}}
+<a class="button" href="{{API_DIR}}/delete?resource={{resourceName}}&id={{id}}">Delete {{resourceName}}</a>
+{{/loggedIn}}
+</p>
+<p><a href="/photo/{{id}}">Download {{id}}</a></p>
+<p id="font-example">The quick, brown, fox jumped over the lazy dog.</p>
+</section>
+
+<section class="list">
+{{#fonts}}
+<p><a href="{{API_DIR}}/font/{{.}}">{{.}}</a></p>
+{{/fonts}}
+</section>
+
+</article>
