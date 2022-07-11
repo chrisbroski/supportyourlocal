@@ -405,12 +405,13 @@ function sortByDateDesc(a, b) {
 }
 this.sortByDateDesc = sortByDateDesc;
 
-function extractSpotifyTrackId(shareLink) {
+function extractSpotifyTrackId(shareLink, type) {
     if (!shareLink) {
         return "";
     }
+    type = type || "track";
     var reQs, val;
-    reQs = new RegExp("[.*]spotify.com/track/([^?#]*)", "i");
+    reQs = new RegExp("[.*]spotify.com/" + type + "/([^?#]*)", "i");
     val = reQs.exec(shareLink);
     if (val) {
         return val[1];

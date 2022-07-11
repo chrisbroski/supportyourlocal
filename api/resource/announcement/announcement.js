@@ -72,10 +72,15 @@ function listData(db, req) {
     announcementData.resourceName = resourceName;
     announcementData.announcements.forEach(a => {
         var spotifyTrackId;
+        var spotifyAlbumId;
         if (a.song && db.song[a.song]) {
             spotifyTrackId = main.extractSpotifyTrackId(main.getMediumUrl(db.song[a.song].media, "spotify.com", "audio"));
             if (spotifyTrackId) {
                 a.spotifyTrackId = spotifyTrackId;
+            }
+            spotifyAlbumId = main.extractSpotifyTrackId(main.getMediumUrl(db.song[a.song].media, "spotify.com", "audio"), "album");
+            if (spotifyAlbumId) {
+                a.spotifyAlbumId = spotifyAlbumId;
             }
         }
     });
