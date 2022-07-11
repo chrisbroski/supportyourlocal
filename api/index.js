@@ -564,6 +564,10 @@ async function loadData() {
     if (!db.font) {
         db.font = [];
     }
+    // move site.color1 and site.color2 to style colors
+    db.style.colors = [];
+    db.style.colors.push(db.site.color1);
+    db.style.colors.push(db.site.color2);
 
     endure.save();
     if (process.env.CSS_FRONT) {
