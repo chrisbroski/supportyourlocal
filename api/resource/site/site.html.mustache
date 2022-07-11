@@ -32,9 +32,32 @@
 <form method="POST" action="{{API_DIR}}/site" enctype="application/x-www-form-urlencoded">
 <input type="hidden" name="method" value="PUT">
 <p><label>Primary Color</label><br>
-    <input type="color" name="color1" value="{{color1}}">
+<div class="colors">
+<label>
+    <input type="radio" name="color1" value=""{{{no-color1}}}>
+    <div style="background-color: #000; "></div>
+</label>
+{{#colors1}}
+<label>
+    <input type="radio" name="color1" value="{{colorHex}}"{{{selected}}}>
+    <div style="background-color: {{colorHex}}; "></div>
+</label>
+{{/colors1}}
+</div>
+
 <p><label>Secondary Color</label><br>
-    <input type="color" name="color2" value="{{color2}}">
+<div class="colors">
+<label>
+    <input type="radio" name="color2" value=""{{{no-color2}}}>
+    <div style="background-color: #000; "></div>
+</label>
+{{#colors2}}
+<label>
+    <input type="radio" name="color2" value="{{colorHex}}"{{{selected}}}>
+    <div style="background-color: {{colorHex}}; "></div>
+</label>
+{{/colors2}}
+</div>
 
 <p><label>Header Font</label><br>
     <select name="header-font">

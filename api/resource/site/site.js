@@ -44,6 +44,28 @@ function fontList(fonts, selected) {
     });
 }
 
+function displayColors(colors, selected) {
+    var colorData = [];
+    var selectedIdx;
+    var selectedColor;
+    colors.forEach((c, idx) => {
+        var sel = '';
+        if (selected === c) {
+            sel = ' checked="checked"';
+            selectedIdx = idx;
+        }
+        colorData.push({
+            "colorHex": c,
+            "selected": sel
+        });
+    });
+    if (selectedIdx) {
+        selectedColor = colorData.splice(selectedIdx, 1);
+        colorData.unshift(selectedColor[0]);
+    }
+    return colorData;
+}
+
 function single(db, msg, error) {
     var headerFontNormal = ' checked="checked"';
     var headerFontBold = '';
@@ -54,6 +76,10 @@ function single(db, msg, error) {
     var resourceData = Object.assign({
         "resourceName": resourceName,
         "pageName": main.toTitleCase(resourceName),
+        "colors1": displayColors(db.style.colors, db[resourceName].color1),
+        "no-color1": main.noPhotoSelected(db[resourceName].color1),
+        "colors2": displayColors(db.style.colors, db[resourceName].color2),
+        "no-color2": main.noPhotoSelected(db[resourceName].color2),
         "headerFonts": fontList(db.style.fonts, db.site["header-font"]),
         "header-font-normal": headerFontNormal,
         "header-sans-serif-selected": db.site["header-font-default"] === "sans-serif" ? ' selected="selected"' : '',
@@ -78,10 +104,17 @@ function single(db, msg, error) {
 }
 
 function siteData(rsp, db) {
-    main.returnJson(rsp, {
+    var jsonSite = {
         "site": db.site,
         "band": db.band
-    });
+    };
+    if (!jsonSite.site.color1) {
+        jsonSite.site.color1 = "#000000";
+    }
+    if (!jsonSite.site.color2) {
+        jsonSite.site.color2 = "#000000";
+    }
+    main.returnJson(rsp, jsonSite);
 }
 
 function isSetupInvalid(body, setupToken) {
@@ -109,15 +142,15 @@ function isSetupInvalid(body, setupToken) {
     return msg;
 }
 
-function isUpdateInvalid(body) {
+function isUpdateInvalid() {
     var msg = [];
 
-    if (!body.color1) {
-        msg.push('Primary color is required.');
-    }
-    if (!body.color2) {
-        msg.push('Secondary color is required.');
-    }
+    // if (!body.color1) {
+    //     msg.push('Primary color is required.');
+    // }
+    // if (!body.color2) {
+    //     msg.push('Secondary color is required.');
+    // }
 
     return msg;
 }
@@ -215,8 +248,8 @@ function getFontData(style, file) {
 }
 
 function getCustomCSS(db) {
-    var color1 = main.hexToRgb(db.site.color1);
-    var color2 = main.hexToRgb(db.site.color2);
+    var color1 = main.hexToRgb(db.site.color1 || '#000000');
+    var color2 = main.hexToRgb(db.site.color2 || '#000000');
     var headerFontData = getFontData(db.style, db.site["header-font"]);
     var bodyFontData = getFontData(db.style, db.site["body-font"]);
     var headerFont = "sans-serif";
@@ -234,9 +267,9 @@ function getCustomCSS(db) {
         }
 
         fontImport = `@font-face {
-            font-family: "${headerFontData.name}";
-            src: url("${path}${headerFontData.file}");
-        }
+    font-family: "${headerFontData.name}";
+    src: url("${path}${headerFontData.file}");
+}
 
 `;
         headerFont = `'${headerFontData.name}', ${headerFont}`;
@@ -252,9 +285,9 @@ function getCustomCSS(db) {
         }
 
         fontImport += `@font-face {
-            font-family: "${bodyFontData.name}";
-            src: url("${path}${bodyFontData.file}");
-        }
+    font-family: "${bodyFontData.name}";
+    src: url("${path}${bodyFontData.file}");
+}
 
 `;
         bodyFont = `'${bodyFontData.name}', ${bodyFont}`;
