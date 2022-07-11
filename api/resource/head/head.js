@@ -76,7 +76,8 @@ this.get = function (req, rsp, db, qs, cssMainVer) {
     if (db.site.thumbnail) {
         metaData.push(`<meta property="og:image" content="${protocol}${server}/photo/${db.site.thumbnail}" />`);
     }
-    metaData.push(`<meta property="og:url" content="${protocol}${server}${request.path}" />`);
+    var path = request.path || "";
+    metaData.push(`<meta property="og:url" content="${protocol}${server}${path}" />`);
     metaData.push('<meta property="og:type" content="website" />');
     metaData.push(`<meta property="og:title" content="${title.join(" - ")}" />`);
     rsp.writeHead(200, {'Content-Type': 'text/pht'});
