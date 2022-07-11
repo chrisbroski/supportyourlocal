@@ -173,31 +173,37 @@ table.media-table td button {
     width: 2em;
 }
 
-div.photos {
+div.photos, div.colors {
     height: 120px;
     overflow: auto;
     white-space: nowrap;
 }
-div.photos label {
+div.photos label, div.colors label {
     position: relative;
 }
-div.photos img {
+div.photos img, div.colors label > div {
     margin: 4px 0;
     padding: 6px;
     max-height: 100px;
     max-width: 200px;
     vertical-align: middle;
 }
-div.photos input {
+div.colors label > div {
+    display: inline-block;
+    height: 100px;
+    width: 100px;
+    vertical-align: middle;
+}
+div.photos input, div.colors input {
     margin-top: 8px;
     display: none;
 }
 
-div.photos input:checked {
+div.photos input:checked, div.colors input:checked {
     display: inline-block;
     position: absolute;
 }
-div.photos label input:checked + img {
+div.photos label input:checked + img, div.colors input:checked + div {
     padding: 0;
     border: 1px solid rgb(var(--color2));
     box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.8);
