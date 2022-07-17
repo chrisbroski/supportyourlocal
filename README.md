@@ -52,11 +52,7 @@ Endure backup and parse test. (In case of catastrophic failure.)
 
 ## Features for next version
 
-Custom fonts - Upload and make available in style guide.
-
-Style guide page. Populate drop-down from guide colors.
-
-I don't think *Site* is the proper resource name. It should probably be *Style* and be displayed as a proper style guide. Have up to 6 colors (or infinite?) and make the top 2 the web site ones. Should there be shades of color? Maybe.
+Fix bugs, HTTPS, data tools, password recovery (email)
 
 ### Tests
 
@@ -96,6 +92,7 @@ On setup, read and agree to rules:
 2. Make your city locations accurate and non-spammy.
 
 Also, setup needs more work:
+
 * When you hit the front-end site it is weird
 * Write new site script and test
 

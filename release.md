@@ -2,7 +2,7 @@
 
 ## 1.4.0 (2022-07-11)
 
-### Style PAge
+### Style Page
 
 Arrays of colors and fonts (including a drop-down of all available good fonts,) graphic logos, plus formatted text areas to describe logo usage and tone of voice. Site information for colors and fonts now uses this data.
 
