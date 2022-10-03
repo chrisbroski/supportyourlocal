@@ -65,6 +65,8 @@ Songs partially done. The rest, not at all
 * Small photos might create thumbnails larger than themselves.
 * A "track" type Spotify link for release media breaks stuff on the front end.
 * There seem to be 2 file extension functions: getExtension and main.extractFileType
+* If blank make gig duration 0
+* Support page ?
 
 ## Features for next next version
 

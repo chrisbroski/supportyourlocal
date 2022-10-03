@@ -46,7 +46,7 @@ function gigTimes(date, startTime, durationH, durationM) {
     if (hourEnd > 12) {
         hourEnd = hourEnd - 12;
     }
-    if (minuteStart) {
+    if (minuteEnd) {
         if (minuteEnd < 10) {
             minuteEnd = ":0" + minuteEnd;
         } else {
