@@ -569,6 +569,10 @@ async function loadData() {
     db.style.colors.push(db.site.color1);
     db.style.colors.push(db.site.color2);
 
+    if (!db.style.fonts) {
+        db.style.fonts = [];
+    }
+
     endure.save();
     if (process.env.CSS_FRONT) {
         cssStat = await fs.stat(process.env.CSS_FRONT);
