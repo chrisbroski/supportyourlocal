@@ -20,7 +20,11 @@ Face it, if this takes a lot of my time I won't do it. I'm happy to add features
 
 ### Email
 
-Managing an email list and sending out newsletters and updates is something that I have not found a source I like for yet. This is the key feature.
+Managing an email list and sending out newsletters and updates is something that I have not found a source I like for yet. This is a key feature.
+
+### Browser Push Notifications
+
+Killer feature! This is what everyone will want. (So dont' implement until the core structures are done and there are at least 10 beta users.)
 
 ### Song List
 
@@ -52,7 +56,15 @@ Endure backup and parse test. (In case of catastrophic failure.)
 
 ## Features for next version
 
-Fix bugs, HTTPS, data tools, password recovery (email)
+HTTPS
+
+Data tools (API key, download data, QA and deploy scripts.)
+
+Password recovery (email)
+
+EPK
+
+More data validation and deletion checks (e.g. can't delete song if part of release, venue if part of gig, etc.)
 
 ### Tests
 
@@ -66,21 +78,26 @@ Songs partially done. The rest, not at all
 * A "track" type Spotify link for release media breaks stuff on the front end.
 * There seem to be 2 file extension functions: getExtension and main.extractFileType
 * If blank make gig duration 0
-* Support page ?
+* iOS Safari has dates and times wrong. Use TZ from venue.
+* Can't see everything on Mike's ridiculous screen
 
 ## Features for next next version
 
-All https
-
-Admin key in .env (for data download and future executive feature)
+Handle live stream gigs.
 
 Get local features working with member cities. "Check in" on mobile when at open mics, etc.
 
-EPK
+Playing live now!
 
-Password recovery using email.
+Browser push notifications
 
-More data validation
+Onboarding
+
+Genericize "Kandy" front end
+
+Set up back end as front end ("secure" and "private" - no JS or cookies. Also accessible. Talk to Rob C!)
+
+3rd-party cookie option (will replace maps and audio embed with external links)
 
 ### Email List
 
@@ -106,4 +123,4 @@ Funnel from QR code to persistent connection.
 
 ## Before Next 10
 
-Onboarding process, https, password recovery via email, data tools (backup and restore data.json)
+Onboarding process, https, password recovery via email, data tools (backup and restore data.json, local QA and deployment.)

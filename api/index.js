@@ -553,12 +553,9 @@ function init() {
     });
 }
 
-var cssStat;
-async function loadData() {
-    db = await endure.load(`${__dirname}/../data`);
-
+function migrate() {
     // migrate data, if needed
-    if (!db.style) {
+    /*if (!db.style) {
         db.style = {};
     }
     if (!db.font) {
@@ -573,7 +570,14 @@ async function loadData() {
         db.style.fonts = [];
     }
 
-    endure.save();
+    endure.save();*/
+}
+
+var cssStat;
+async function loadData() {
+    db = await endure.load(`${__dirname}/../data`);
+
+    migrate();
     if (process.env.CSS_FRONT) {
         cssStat = await fs.stat(process.env.CSS_FRONT);
     }
