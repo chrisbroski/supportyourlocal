@@ -19,9 +19,6 @@
     </p>
     <p><a href="{{{API_DIR}}}/logout">Logout</a></p>
     <h6><a href="{{{API_DIR}}}/version/">Your Local Band v1.4</a></h6>
-    {{#API_DIR}}
-    <h6><a href="/">Front End Site</a></h6>
-    {{/API_DIR}}
     {{/loggedIn}}
 
     {{^loggedIn}}`
@@ -45,4 +42,8 @@
     <p><button>Log In</button>
     </form>
     {{/loggedIn}}
+    
+    {{#API_DIR}}
+    <h6><a href="/">Front End Site</a></h6>
+    {{/API_DIR}}
 </header>
