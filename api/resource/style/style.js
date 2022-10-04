@@ -113,6 +113,7 @@ function fontList(items) {
 function single(req, db, msg, error) {
     var resourceData = Object.assign({
         "resourceName": resourceName,
+        "pageName": "Style Guide",
         "logo1-photos": main.displayPhotos(db.photo, db[resourceName].logo1),
         "logo1-no-photo": main.noPhotoSelected(db[resourceName].logo1),
         "logo2-photos": main.displayPhotos(db.photo, db[resourceName].logo2),
@@ -150,6 +151,7 @@ function getCustomFonts(db) {
 function singleNoAuth(db, msg, error) {
     var resourceData = Object.assign({
         "resourceName": resourceName,
+        "pageName": "Style Guide",
         "logoRulesHtml": converter.makeHtml(db[resourceName].logoRules),
         "toneHtml": converter.makeHtml(db[resourceName].tone),
         "hasLogo": hasLogo(db[resourceName]),
