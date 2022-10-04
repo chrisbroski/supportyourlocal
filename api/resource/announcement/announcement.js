@@ -18,7 +18,7 @@ function songList(db, id) {
             "date": db.song[sid].date
         });
     });
-    return songs.sort(main.sortByDate);
+    return songs.sort(main.sortByName);
 }
 
 function single(db, id, msg, error) {
