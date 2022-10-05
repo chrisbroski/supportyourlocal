@@ -66,6 +66,8 @@ EPK
 
 More data validation and deletion checks (e.g. can't delete song if part of release, venue if part of gig, etc.)
 
+Hide pages if no data.
+
 ### Tests
 
 Songs partially done. The rest, not at all

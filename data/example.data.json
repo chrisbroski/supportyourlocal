@@ -11,7 +11,8 @@
         ]
     },
     "band": {
-        "social": {}
+        "social": {},
+        "payment": {}
     },
     "gig": {},
     "venue": {},

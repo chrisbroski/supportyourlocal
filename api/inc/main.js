@@ -518,9 +518,41 @@ function getUserIdByEmail(email, users) {
 }
 this.getUserIdByEmail = getUserIdByEmail;
 
+function countGigs(db, gigType) {
+    var gigs = objToArray(db.gig);
+    var now = new Date();
+
+    if (gigType === "upcoming") {
+        gigs.sort(sortByDate);
+        gigs = gigs.filter(g => {
+            return Date.parse(g.date + "T23:59:59") >= +now;
+        });
+    } else if (gigType === "past") {
+        gigs.sort(sortByDateDesc);
+        gigs = gigs.filter(g => {
+            return Date.parse(g.date + "T23:59:59") < +now;
+        });
+    }
+    return gigs.length;
+}
+
+function hasAbout(db) {
+    return (db.band.contact || db.band.desc || db.band.bio || Object.keys(db.user).some(u => db.user[u].bandMember === "Y"));
+}
+
+function hasSupport(db) {
+    return (
+        db.support.releaseMd || db.support.release || db.support.donationMd || db.support.subscribeMd ||
+        Object.keys(db.band.social).some(s => !!db.band.social[s]) ||
+        Object.keys(db.band.payment).some(p => !!db.band.payment[p])
+    );
+}
+this.hasSupport = hasSupport;
+
 function renderPage(req, pageTemplate, d, db) {
     var userData = getAuthUserData(req, db.user);
     var loggedIn = true;
+    var hasUpcomingGigs = countGigs(db, "upcoming");
 
     pageTemplate = pageTemplate || TEMPLATE.generic;
 
@@ -534,7 +566,13 @@ function renderPage(req, pageTemplate, d, db) {
         "site": db.site,
         "server": req.headers.host,
         "loggedIn": loggedIn,
-        "API_DIR": process.env.SUBDIR
+        "API_DIR": process.env.SUBDIR,
+        "hasUpcomingGigs": hasUpcomingGigs > 0,
+        "hasPastGigs": (countGigs(db, "past") > 0 && hasUpcomingGigs === 0),
+        "hasReleases": Object.keys(db.release).length > 0,
+        "hasSongs": Object.keys(db.song).length > 0,
+        "hasAbout": hasAbout(db),
+        "hasSupport": hasSupport(db)
     });
 
     var head = mustache.render(TEMPLATE.head, {

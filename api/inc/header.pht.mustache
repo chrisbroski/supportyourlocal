@@ -25,11 +25,24 @@
     <p><a href="{{{API_DIR}}}/login">Login</a></p>
     <h2><a href="{{{API_DIR}}}/">Home</a></h2>
     <p>
+        {{#hasUpcomingGigs}}
         <a href="{{{API_DIR}}}/gig/?range=upcoming">Upcoming Shows</a>
+        {{/hasUpcomingGigs}}
+        {{#hasPastGigs}}
+        <a href="{{{API_DIR}}}/gig/?range=past">Past Shows</a>
+        {{/hasPastGigs}}
+        {{#hasReleases}}
         <a href="{{{API_DIR}}}/release/">New Releases</a>
+        {{/hasReleases}}
+        {{#hasSongs}}
         <a href="{{{API_DIR}}}/song/">All Songs</a>
+        {{/hasSongs}}
+        {{#hasAbout}}
         <a href="{{{API_DIR}}}/band">About</a>
+        {{/hasAbout}}
+        {{#hasSupport}}
         <a href="{{{API_DIR}}}/support">Support the Music</a>
+        {{/hasSupport}}
     </p>
     <p>
         <a href="{{{API_DIR}}}/style">Style Guide</a>

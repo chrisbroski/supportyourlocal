@@ -473,6 +473,9 @@ function homeNoAuth(db) {
     if (db.band.bio || db.band.contact) {
         homeData.hasAbout = true;
     }
+    if (main.hasSupport(db)) {
+        homeData.hasSupport = true;
+    }
 
     // social links
     // data = main.objToArray(db.band.social);
