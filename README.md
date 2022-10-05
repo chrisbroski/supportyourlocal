@@ -80,6 +80,7 @@ Songs partially done. The rest, not at all
 * If blank make gig duration 0
 * iOS Safari has dates and times wrong. Use TZ from venue.
 * Can't see everything on Mike's ridiculous screen
+* Need venue address handling - festival name, stage
 
 ## Features for next next version
 

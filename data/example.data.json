@@ -1,16 +1,27 @@
 {
     "site": {
-        "color1": "#000000",
+        "color1": "#333333",
         "color2": "#0000ff"
     },
-    "band": {},
+    "style": {
+        "fonts": [],
+        "colors": [
+            "#333333",
+            "#0000ff"
+        ]
+    },
+    "band": {
+        "social": {}
+    },
     "gig": {},
     "venue": {},
     "song": {},
     "release": {},
+    "support": {},
     "news": {},
     "user": {},
     "announcement": {},
     "release": {},
-    "photo": {}
+    "photo": {},
+    "font": []
 }

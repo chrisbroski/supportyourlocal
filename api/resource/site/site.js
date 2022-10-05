@@ -503,7 +503,12 @@ this.getCss = function (req, rsp, db, isCss) {
 };
 
 this.start = function (req, rsp, db, qs) {
-    var setupToken = qs["setup-token"] || "";
+    var setupToken;
+    if (qs) {
+        setupToken = qs["setup-token"] || "";
+    } else {
+        setupToken = "";
+    }
     // rsp.setHeader('Cache-Control', 'max-age=0,no-cache,no-store,post-check=0,pre-check=0');
     rsp.writeHead(200, {'Content-Type': 'text/html'});
     rsp.end(main.renderPage(req, template.start, {"setup-token": setupToken}, db));
