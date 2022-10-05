@@ -57,7 +57,7 @@ function single(db, msg, error) {
 }
 
 function venmoUsername(payment) {
-    if (payment.venmo) {
+    if (payment && payment.venmo) {
         if (payment.venmo.slice(0, 1) === "@") {
             return payment.venmo.slice(1);
         }
