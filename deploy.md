@@ -26,9 +26,17 @@ Add any data migrations in index.js load section.
 
 ## New Site
 
+### Back End
+
 1. Clone git@github.com:chrisbroski/yourlocalband.git
 2. Copy `api/example.env` to `api/.env` and increment port number.
 3. MAP_KEY = "AIzaSyDURh87Gbk15QtqLhHdK8iRsHsjkYRrEBs"
 4. PHOTO_PATH = "/Users/christopherbroski/projects/yourlocal/photo"
 5. DEV = "Y"
 6. CSS_FRONT = "/Users/christopherbroski/projects/kandy/www/inc/main.css"
+
+### Front End
+
+1. Clone git@github.com:chrisbroski/kandy.git
+2. Copy nginx configuration file with updated values: API port, domain/port, root path, and photo path.
+
