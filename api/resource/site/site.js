@@ -256,6 +256,7 @@ function getCustomCSS(db) {
     var bodyFont = "serif";
     var fontImport = "";
     var fontWeight = "normal";
+    var backgroundImage = db.site.background || "";
     var path = "";
 
     if (db.site["header-font-default"]) {
@@ -297,12 +298,17 @@ function getCustomCSS(db) {
         fontWeight = db.site["header-font-weight"];
     }
 
+    if (backgroundImage) {
+        backgroundImage = `url('/photo/${backgroundImage}')`;
+    }
+
     return `${fontImport}:root {
     --color1: ${color1.r}, ${color1.g}, ${color1.b};
     --color2: ${color2.r}, ${color2.g}, ${color2.b};
     --header-font: ${headerFont};
     --header-font-weight: ${fontWeight};
     --body-font: ${bodyFont};
+    --background-image: ${backgroundImage};
 }
 `;
 }
