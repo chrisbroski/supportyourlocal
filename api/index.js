@@ -10,7 +10,7 @@ require('dotenv').config();
 const PORT = process.env.PORT || 29170;
 process.env.SUBDIR = process.env.API_DIR || "/api";
 const MAP_KEY = process.env.MAP_KEY || "";
-process.env.PHOTO_STORAGE_LIMIT = process.env.PHOTO_STORAGE_LIMIT || 500000000;
+process.env.PHOTO_STORAGE_LIMIT = process.env.PHOTO_STORAGE_LIMIT || 50000000;
 process.env.PHOTO_SIZE_LIMIT = process.env.PHOTO_SIZE_LIMIT || 2000;
 process.env.PHOTO_WEB_SIZE = process.env.PHOTO_WEB_SIZE || 1200;
 
