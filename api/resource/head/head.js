@@ -72,7 +72,13 @@ this.get = function (req, rsp, db, qs, cssMainVer) {
         metaData.push(`<meta property="og:description" content="${attrEsc(db.band.desc)}" />`);
     }
     metaData.push(`<link rel="stylesheet" href="/inc/main.css?v=${cssMainVer}">`);
-    metaData.push('<link rel="icon" href="/favicon.ico">');
+
+    if (db.site.favicon) {
+        metaData.push('<link rel="icon" href="/photo/' + db.site.favicon + '">');
+    } else {
+        metaData.push('<link rel="icon" href="/api/favicon.ico">');
+    }
+
     if (db.site.thumbnail) {
         metaData.push(`<meta property="og:image" content="${protocol}${server}/photo/${db.site.thumbnail}" />`);
     }

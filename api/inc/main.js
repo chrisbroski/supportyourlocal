@@ -185,21 +185,26 @@ function photoWeb(db, photoId) {
 }
 this.photoWeb = photoWeb;
 
-function displayPhotos(photos, selected) {
+function displayPhotos(photos, selected, favicon) {
     var photoData = [];
     var selectedIdx;
     var selectedPhoto;
-    Object.keys(photos).forEach((p, idx) => {
+    var idx = 0;
+
+    Object.keys(photos).forEach((p) => {
         var sel = '';
-        if (selected === p) {
-            sel = ' checked="checked"';
-            selectedIdx = idx;
+        if (!favicon || (favicon && photos[p].ext === '.png' && photos[p].width === photos[p].height)) {
+            if (selected === p) {
+                sel = ' checked="checked"';
+                selectedIdx = idx;
+            }
+            photoData.push({
+                "file": p,
+                "selected": sel,
+                "thumb": `${photos[p].name}_thumb${photos[p].ext}`
+            });
+            idx += 1;
         }
-        photoData.push({
-            "file": p,
-            "selected": sel,
-            "thumb": `${photos[p].name}_thumb${photos[p].ext}`
-        });
     });
     if (selectedIdx) {
         selectedPhoto = photoData.splice(selectedIdx, 1);

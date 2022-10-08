@@ -73,6 +73,7 @@ function single(db, msg, error) {
         headerFontNormal = '';
         headerFontBold = ' checked="checked"';
     }
+
     var resourceData = Object.assign({
         "resourceName": resourceName,
         "pageName": main.toTitleCase(resourceName),
@@ -97,7 +98,9 @@ function single(db, msg, error) {
         "bg-photos": main.displayPhotos(db.photo, db[resourceName].background),
         "bg-no-photo": main.noPhotoSelected(db[resourceName].background),
         "thumb-photos": main.displayPhotos(db.photo, db[resourceName].thumbnail),
-        "thumb-no-photo": main.noPhotoSelected(db[resourceName].thumbnail)
+        "thumb-no-photo": main.noPhotoSelected(db[resourceName].thumbnail),
+        "favicon-photos": main.displayPhotos(db.photo, db[resourceName].favicon, true),
+        "favicon-no-photo": main.noPhotoSelected(db[resourceName].favicon)
     }, db[resourceName]);
 
     return Object.assign(main.addMessages(msg, error), resourceData);
@@ -184,6 +187,7 @@ function updateResource(body, db, save) {
 
     db[resourceName].background = body.background;
     db[resourceName].thumbnail = body.thumbnail;
+    db[resourceName].favicon = body.favicon;
 
     save();
 }

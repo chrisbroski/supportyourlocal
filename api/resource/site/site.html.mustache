@@ -122,6 +122,21 @@
 {{/thumb-photos}}
 </div>
 
+<h2>Favicon</h2>
+<p>Favicon images must be square PNGs.
+<div class="photos">
+<label>
+    <input type="radio" name="favicon" value=""{{{favicon-no-photo}}}>
+    <img src="{{API_DIR}}/favicon.ico" alt="No photo">
+</label>
+{{#favicon-photos}}
+<label>
+    <input type="radio" name="favicon" value="{{file}}"{{{selected}}}>
+    <img src="/photo/{{thumb}}">
+</label>
+{{/favicon-photos}}
+</div>
+
 <footer><p><button>Update Site Information</button></footer>
 </form>
 {{/loggedIn}}

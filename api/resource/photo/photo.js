@@ -122,7 +122,7 @@ this.create = async function (req, rsp, body, db, save) {
     if (photoExt.toLowerCase() === ".png") {
         uploadedPhoto.png({palette: true}).toFile(filePath);
         uploadedPhoto.resize({height: 200}).png({palette: true}).toFile(thumbPath);
-        // console.log(metadata.width, photoSizeLimit, metadata.width > photoSizeLimit);
+
         if (metadata.width > photoSizeLimit || metadata.height > photoSizeLimit) {
             db.photo[photoName].web = true;
             if (metadata.width > metadata.height) {
@@ -136,6 +136,7 @@ this.create = async function (req, rsp, body, db, save) {
     } else {
         uploadedPhoto.toFile(filePath);
         uploadedPhoto.resize({height: 200}).toFile(thumbPath);
+        
         if (metadata.width > photoSizeLimit || metadata.height > photoSizeLimit) {
             db.photo[photoName].web = true;
             if (metadata.width > metadata.height) {
@@ -147,7 +148,6 @@ this.create = async function (req, rsp, body, db, save) {
             db.photo[photoName].web = false;
         }
     }
-    // await fs.writeFile(filePath, body.files[0].photo, 'binary');
 
     console.log('Photo saved.');
     var size = body.files[0].photo.length;
