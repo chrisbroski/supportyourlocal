@@ -76,9 +76,8 @@ Songs partially done. The rest, not at all
 
 * Updates don't persist new form data after 400
 * Deletion can cause invalid state
-* Small photos might create thumbnails larger than themselves.
+* Small photos might create thumbnails larger than themselves. (Is this really a problem?)
 * A "track" type Spotify link for release media breaks stuff on the front end.
-* There seem to be 2 file extension functions: getExtension and main.extractFileType
 * If blank make gig duration 0
 * iOS Safari has dates and times wrong. Use TZ from venue.
 * Can't see everything on Mike's ridiculous screen

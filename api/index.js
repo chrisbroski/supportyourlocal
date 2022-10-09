@@ -293,20 +293,22 @@ function rspGet(req, rsp, path) {
     if (path.path === '/logout') {
         return auth.logout(req, rsp, db);
     }
-    if (path.resource === `data`) {
+    if (path.resource === 'data') {
         rsp.setHeader('Cache-Control', 'max-age=0,no-cache,no-store,post-check=0,pre-check=0');
-        rsp.writeHead(200, {'Content-Type': 'application/json'});
-        if (path.id) {
-            if (db[path.id]) {
-                rsp.end(JSON.stringify(db[path.id]));
+        if (path.qs.key === process.env.ADMIN_TOKEN) {
+            if (path.id) {
+                if (db[path.id]) {
+                    return main.returnJson(rsp, db[path.id]);
+                } else {
+                    rsp.writeHead(404, {'Content-Type': 'application/json'});
+                    return rsp.end('');
+                }
             } else {
-                rsp.end("{}");
+                return main.returnJson(rsp, db);
             }
-
-        } else {
-            rsp.end(JSON.stringify(db));
         }
-        return;
+        rsp.writeHead(400, {'Content-Type': 'application/json'});
+        return rsp.end('Invalid API key');
     }
     if (path.resource === 'gig') {
         return gig.get(req, rsp, path.id, db, MAP_KEY);
@@ -350,6 +352,7 @@ function rspGet(req, rsp, path) {
     if (path.resource === "version") {
         return version.get(req, rsp, db);
     }
+
     // if (path.pathname === `${process.env.SUBDIR}/forgot-password`) {}
 
     return main.notFound(rsp, path.pathname, 'GET', req, db);
