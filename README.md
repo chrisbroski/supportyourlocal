@@ -1,128 +1,130 @@
-# supportyourlocal.band
+# YourLocal.band
 
-What would a local band need?
+Free site system for small bands with tools to take them from zero fans to 1,000!
 
-## Key Features
+## Installation
 
-### MVP
+### Install Back End
 
-OK, the "Minimal Work from Me" version is still too much work to get started. I think a static site is the best first step. (And maybe the best overall as well.) Just base it off of our current site.
+The "back end" is a fully-featured web site and RESTful API. It can be run as the font facing web site, but as long as you are OK with a very simple visual style. There is no JavaScript on the HTML pages (and there never will be) so it can't do anything fancy, but this also gives it superior simplicity for speed, accessibility, security, and privacy.
 
-* Mobile-first design
-* Home page with sections
-* EPK
-* Gigs / Previous gigs
-* Contact information
+#### Dependencies
 
-### Minimal Work from Me
+You'll need [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and [Node.js](https://nodejs.org/en/download/).
 
-Face it, if this takes a lot of my time I won't do it. I'm happy to add features and do basic tech support, but **all** of the administration needs to be done by the bands.
+1. Clone the [YourLocalBand repo](https://github.com/chrisbroski/yourlocalband)
+2. Change directory to `/api`
+3. Run `npm install`
+4. Run `npm start`
 
-### Email
+It should start running out of the box with default configuration. To customize your server, read about the environment values in the section below.
 
-Managing an email list and sending out newsletters and updates is something that I have not found a source I like for yet. This is a key feature.
+### Install Front End
 
-### Browser Push Notifications
+Right now I maintain one standard front end called [Kandy](https://github.com/chrisbroski/kandy) that is very customtizable.
 
-Killer feature! This is what everyone will want. (So dont' implement until the core structures are done and there are at least 10 beta users.)
+#### Dependencies
 
-### Song List
+You'll need to run the [nginx](http://nginx.org/en/docs/install.html) web server. You may be able to run it with another web server, who knows? Good luck with that.
 
-This will not only be a source of information for their home page, but will fuel set list creation. Data should include song title, artist, link (or links) to audio, duration, and flags for featured and mothballed.
+#### Clone the Front End
 
-### External Links
+At the moment, it is only this one [https://github.com/chrisbroski/kandy](https://github.com/chrisbroski/kandy).
 
-This site is meant to be a central location. You can upgrade (or downgrade) your site to paid/self-hosted at any time without penalty or hassle. (If you wanted a custom domain, for instance.) Everything else can be linked to.
+#### Add nginx Server Configuration
 
-### Style Guide
+This is the basic one to start with:
 
-It will make style guides easy and fun! Home pages and emails will use templates that will apply the styles automatically. This is the real killer feature.
+    server {
+        listen 60050;
+        root /srv/kandy/www;
 
-### The Rest
+        location / {
+            ssi on;
+            ssi_last_modified on;
+            index index.html;
+            try_files $uri $uri/ $uri.shtml $uri.html $uri.txt =404;
+            gzip on;
+            client_max_body_size 20M;
+        }
 
-Fan accounts. Like/follow bands. Write "reviews"
+        # Location of where uploaded photos will be stored
+        location ^~ /photo {
+            root /srv/yourlocal;
+            expires 1y;
+            add_header Cache-Control "public";
+            etag off;
+            gzip off;
+            add_header Last-Modified "";
+            access_log off;
+        }
 
-## Monitization
+        # Reverse proxy to pipe the back end to the `/api` subdirectory
+        location ^~ /api {
+            proxy_pass http://127.0.0.1:29170;
+            proxy_http_version 1.1;
+            proxy_set_header Host $host:$server_port;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Referrer $request;
+            proxy_set_header Accept $http_accept;
+            proxy_cache_bypass $http_upgrade;
+            proxy_set_header Connection "Upgrade";
+            client_max_body_size 8M;
+        }
 
-Custom domain, more storage space (for photos.)
+        # Aggressively cache images and fonts
+        location ~ \.(ico|gif|jpg|jpeg|png|svg|ttf|woff|woff2)$ {
+            expires 1y;
+            add_header Cache-Control "public";
+            etag off;
+            gzip off;
+            add_header Last-Modified "";
+            access_log off;
+        }
+    }
 
-Advertise for local venues and bands.
+## Environment Configuration
 
-Add "powered by yourlocal.band" on site.
+### PORT
 
-## API Style
+The default port is 29170, but you can run it on anything you want. The major reasong to change this value is if you want to run multiple instances.
 
-Endure backup and parse test. (In case of catastrophic failure.)
+### MAP_KEY
 
-## Features for next version
+This is the Google API key for location services.
 
-HTTPS
+### API_DIR
 
-Data tools (API key, download data, QA and deploy scripts.)
+You can run the back end as any subdirectory of the main site but changeing this value and the reverse proxy locaiton inthe nginx config. Leave this blank if you are running the back end as a standalone, Javascript-free, site.
 
-Password recovery (email)
+### FAIL_UNTIL_LOCKOUT
 
-EPK
+How many times a user can fil to log in before they are locked out for a determined time. If blank, the default is 10 times.
 
-More data validation and deletion checks (e.g. can't delete song if part of release, venue if part of gig, etc.)
+### LOCKOUT_DURATION_SECONDS = 600000
 
-Hide pages if no data.
+How long a user's login will be locked about after failure times, in miliseconds. Default is 10 minutes.
 
-### Tests
+### SESSION_TIMEOUT_SECONDS
 
-Songs partially done. The rest, not at all
+Maximum ength of time that session cookies will be kept. Default is 1 year.
 
-### Known Bugs
+### SETUP_TOKEN
 
-* Updates don't persist new form data after 400
-* Deletion can cause invalid state
-* Small photos might create thumbnails larger than themselves. (Is this really a problem?)
-* A "track" type Spotify link for release media breaks stuff on the front end.
-* If blank make gig duration 0
-* iOS Safari has dates and times wrong. Use TZ from venue.
-* Can't see everything on Mike's ridiculous screen
-* Need venue address handling - festival name, stage
+If you are setting this site up for someone else, you can include a code here that will only initiate the setup process if it is inluded in a link.
 
-## Features for next next version
+### ADMIN_TOKEN
 
-Handle live stream gigs.
+If this key is added, then certain admin processes will not work without it such as full data download.
 
-Get local features working with member cities. "Check in" on mobile when at open mics, etc.
+### PHOTO_PATH
 
-Playing live now!
+Location of the folder where downloaded photos will be stored.
 
-Browser push notifications
+### CSS_FRONT
 
-Onboarding
+If you include the path to your front end's css file, it will be serves with proper caching versions.
 
-Genericize "Kandy" front end
+### PHOTO_STORAGE_LIMIT = 50000000
 
-Set up back end as front end ("secure" and "private" - no JS or cookies. Also accessible. Talk to Rob C!)
-
-3rd-party cookie option (will replace maps and audio embed with external links)
-
-### Email List
-
-Export instructions to email them your damn self. Add phone number too for mass spam texting.
-
-## Onboarding:
-
-On setup, read and agree to rules:
-
-1. Do not libel or harrass other bands or their fandom.
-2. Make your city locations accurate and non-spammy.
-
-Also, setup needs more work:
-
-* When you hit the front-end site it is weird
-* Write new site script and test
-
-## Central Site
-
-### Blog articles
-
-Funnel from QR code to persistent connection.
-
-## Before Next 10
-
-Onboarding process, https, password recovery via email, data tools (backup and restore data.json, local QA and deployment.)
+How much space is allowed for uploaded files. The default is 50000000 (50MB.)

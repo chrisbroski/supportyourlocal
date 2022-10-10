@@ -1,6 +1,16 @@
 # Release Notes
 
-## 1.4.0 (2022-07-11)
+## 1.5.0
+
+## Genericize Back End
+
+Kandy-specific images and styles have all been replaced by soft data including background image and favicon.
+
+## Admin Features
+
+And API key was added to .env config that allows the downloading of the data.json file.
+
+## 1.4.0 (Release 2022-10-04)
 
 ### Style Page
 
