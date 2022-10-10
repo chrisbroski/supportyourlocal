@@ -540,10 +540,12 @@ function countGigs(db, gigType) {
     }
     return gigs.length;
 }
+this.countGigs = countGigs;
 
 function hasAbout(db) {
     return (db.band.contact || db.band.desc || db.band.bio || Object.keys(db.user).some(u => db.user[u].bandMember === "Y"));
 }
+this.hasAbout = hasAbout;
 
 function hasSupport(db) {
     return (

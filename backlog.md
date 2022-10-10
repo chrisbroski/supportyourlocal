@@ -58,15 +58,13 @@ Endure backup and parse test. (In case of catastrophic failure.)
 
 HTTPS
 
-Data tools (API key, download data, QA and deploy scripts.)
+Data tools (QA and deploy scripts.)
 
 Password recovery (email)
 
 EPK
 
 More data validation and deletion checks (e.g. can't delete song if part of release, venue if part of gig, etc.)
-
-Hide pages if no data.
 
 ### Tests
 

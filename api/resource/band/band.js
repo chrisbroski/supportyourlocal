@@ -58,6 +58,25 @@ function singleNoAuth(db) {
     return resourceData;
 }
 
+function contentExists(db) {
+    var upcomingGigs = main.countGigs(db, "upcoming");
+    var hasUpcomingGigs = upcomingGigs > 0;
+    var hasPastGigs = (main.countGigs(db, "past") > 0 && upcomingGigs === 0);
+    var hasReleases = Object.keys(db.release).length > 0;
+    var hasSongs = Object.keys(db.song).length > 0;
+    var hasAbout = main.hasAbout(db);
+    var hasSupport = main.hasSupport(db);
+
+    return {
+        "upcomingGigs": hasUpcomingGigs,
+        "pastGigs": hasPastGigs,
+        "releases": hasReleases,
+        "songs": hasSongs,
+        "about": hasAbout,
+        "support": hasSupport
+    };
+}
+
 function isUpdateInvalid(body) {
     var msg = [];
 
@@ -125,7 +144,7 @@ this.update = function (req, rsp, formData, db, save) {
 this.get = function (req, rsp, db) {
     rsp.setHeader('Cache-Control', 'max-age=0,no-cache,no-store,post-check=0,pre-check=0');
     if (req.headers.accept === 'application/json') {
-        return main.returnJson(rsp, db.band);
+        return main.returnJson(rsp, Object.assign(contentExists(db), db.band));
     }
     rsp.writeHead(200, {'Content-Type': 'text/html'});
     if (main.isLoggedIn(req, db.user)) {
