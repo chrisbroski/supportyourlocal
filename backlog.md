@@ -6,17 +6,11 @@ What would a local band need?
 
 ### MVP
 
-OK, the "Minimal Work from Me" version is still too much work to get started. I think a static site is the best first step. (And maybe the best overall as well.) Just base it off of our current site.
-
 * Mobile-first design
 * Home page with sections
 * EPK
 * Gigs / Previous gigs
 * Contact information
-
-### Minimal Work from Me
-
-Face it, if this takes a lot of my time I won't do it. I'm happy to add features and do basic tech support, but **all** of the administration needs to be done by the bands.
 
 ### Email
 
@@ -66,6 +60,8 @@ EPK
 
 More data validation and deletion checks (e.g. can't delete song if part of release, venue if part of gig, etc.)
 
+Onboarding
+
 ### Tests
 
 Songs partially done. The rest, not at all
@@ -80,6 +76,7 @@ Songs partially done. The rest, not at all
 * iOS Safari has dates and times wrong. Use TZ from venue.
 * Can't see everything on Mike's ridiculous screen
 * Need venue address handling - festival name, stage
+* Need to revoke map API key (it got exposed in Git, whoops)
 
 ## Features for next next version
 
@@ -90,10 +87,6 @@ Get local features working with member cities. "Check in" on mobile when at open
 Playing live now!
 
 Browser push notifications
-
-Onboarding
-
-Genericize "Kandy" front end
 
 Set up back end as front end ("secure" and "private" - no JS or cookies. Also accessible. Talk to Rob C!)
 
@@ -109,6 +102,13 @@ On setup, read and agree to rules:
 
 1. Do not libel or harrass other bands or their fandom.
 2. Make your city locations accurate and non-spammy.
+
+## Setup
+
+1. Agree to rules (above)
+2. username and password
+2. Style
+3. Add band data
 
 Also, setup needs more work:
 

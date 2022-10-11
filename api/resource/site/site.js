@@ -141,6 +141,9 @@ function isSetupInvalid(body, setupToken) {
     if (setupToken && body.setupToken !== setupToken) {
         msg.push("Invalid Setup Token.");
     }
+    if (!body.agree) {
+        msg.push("You must agree to the rules.");
+    }
 
     return msg;
 }
