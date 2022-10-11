@@ -30,10 +30,10 @@ Add any data migrations in index.js load section.
 
 1. Clone git@github.com:chrisbroski/yourlocalband.git
 2. Copy `api/example.env` to `api/.env` and increment port number.
-3. MAP_KEY = "AIzaSyDURh87Gbk15QtqLhHdK8iRsHsjkYRrEBs"
-4. PHOTO_PATH = "/Users/christopherbroski/projects/yourlocal/photo"
+3. Set MAP_KEY
+4. Set PHOTO_PATH
 5. DEV = "Y"
-6. CSS_FRONT = "/Users/christopherbroski/projects/kandy/www/inc/main.css"
+6. Set CSS_FRONT
 
 ### Front End
 
