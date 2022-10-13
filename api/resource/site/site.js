@@ -254,6 +254,13 @@ function getFontData(style, file) {
     return fontData;
 }
 
+function relativeHttp(url) {
+    if (!url) {
+        return "";
+    }
+    return url.replace(/http:|https:/, "");
+}
+
 function getCustomCSS(db) {
     var color1 = main.hexToRgb(db.site.color1 || '#000000');
     var color2 = main.hexToRgb(db.site.color2 || '#000000');
@@ -276,7 +283,7 @@ function getCustomCSS(db) {
 
         fontImport = `@font-face {
     font-family: "${headerFontData.name}";
-    src: url("${path}${headerFontData.file}");
+    src: url("${path}${relativeHttp(headerFontData.file)}");
 }
 
 `;
@@ -294,7 +301,7 @@ function getCustomCSS(db) {
 
         fontImport += `@font-face {
     font-family: "${bodyFontData.name}";
-    src: url("${path}${bodyFontData.file}");
+    src: url("${path}${relativeHttp(bodyFontData.file)}");
 }
 
 `;

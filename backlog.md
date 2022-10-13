@@ -50,17 +50,15 @@ Endure backup and parse test. (In case of catastrophic failure.)
 
 ## Features for next version
 
-HTTPS
-
 Data tools (QA and deploy scripts.)
 
-Password recovery (email)
+Password recovery (request to me - no email yet)
 
 EPK
 
 More data validation and deletion checks (e.g. can't delete song if part of release, venue if part of gig, etc.)
 
-Onboarding
+Onboarding wizard
 
 ### Tests
 
@@ -112,8 +110,7 @@ On setup, read and agree to rules:
 
 Also, setup needs more work:
 
-* When you hit the front-end site it is weird
-* Write new site script and test
+* There should probalby be a style/site/band basic setup page with helpful information.
 
 ## Central Site
 
