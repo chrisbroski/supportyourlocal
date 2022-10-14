@@ -1,10 +1,18 @@
 # Release Notes
 
-## 1.5.0
+## 1.4.1 (Released 2022-10-13)
 
 ## Genericize Back End
 
-Kandy-specific images and styles have all been replaced by soft data including background image and favicon.
+In preparation for new sites to use the system, all Kandy-specific images and styles have all been replaced by data including background image and favicon.
+
+Bugs were fixed from startup with the initial empty data set.
+
+Hiding no-auth side nav for pages that don't have any data yet.
+
+Fixed bugs related to HTTPS hosting.
+
+Implemented admin and setup keys.
 
 ## Admin Features
 

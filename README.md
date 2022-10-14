@@ -6,7 +6,7 @@ Free site system for small bands with tools to take them from zero fans to 1,000
 
 ### Install Back End
 
-The "back end" is a fully-featured web site and RESTful API. It can be run as the font facing web site, but as long as you are OK with a very simple visual style. There is no JavaScript on the HTML pages (and there never will be) so it can't do anything fancy, but this also gives it superior simplicity for speed, accessibility, security, and privacy.
+The "back end" is a fully-featured web site and RESTful API. It can be run as a front facing web site, as long as you are OK with a very simple visual style. There is no JavaScript on any of the HTML pages (and there never will be) so it can't do anything fancy, but this also gives it superior simplicity for speed, accessibility, security, and privacy.
 
 #### Dependencies
 
@@ -87,23 +87,23 @@ This is the basic one to start with:
 
 ### PORT
 
-The default port is 29170, but you can run it on anything you want. The major reasong to change this value is if you want to run multiple instances.
+The default port is 29170, but you can run it on anything you want. The major reason to change this value is if you want to run multiple instances.
 
 ### MAP_KEY
 
-This is the Google API key for location services.
+This is the Google API key for location and font services.
 
 ### API_DIR
 
-You can run the back end as any subdirectory of the main site but changeing this value and the reverse proxy locaiton inthe nginx config. Leave this blank if you are running the back end as a standalone, Javascript-free, site.
+You can run the back end as any subdirectory of the main site by changing this value and the reverse proxy locaiton in the nginx config.
 
 ### FAIL_UNTIL_LOCKOUT
 
-How many times a user can fil to log in before they are locked out for a determined time. If blank, the default is 10 times.
+How many times a user can fail authentication in before they are locked out for a determined time. If blank, the default is 10 times.
 
-### LOCKOUT_DURATION_SECONDS = 600000
+### LOCKOUT_DURATION_SECONDS
 
-How long a user's login will be locked about after failure times, in miliseconds. Default is 10 minutes.
+How long a user's login will be locked about after failure times, in milliseconds. Default is 10 minutes.
 
 ### SESSION_TIMEOUT_SECONDS
 
@@ -123,8 +123,8 @@ Location of the folder where downloaded photos will be stored.
 
 ### CSS_FRONT
 
-If you include the path to your front end's css file, it will be serves with proper caching versions.
+If you include the path to your front end's css file, it will be served with proper caching versions.
 
-### PHOTO_STORAGE_LIMIT = 50000000
+### PHOTO_STORAGE_LIMIT
 
 How much space is allowed for uploaded files. The default is 50000000 (50MB.)
