@@ -70,10 +70,8 @@ Songs partially done. The rest, not at all
 * Deletion can cause invalid state
 * Small photos might create thumbnails larger than themselves. (Is this really a problem?)
 * A "track" type Spotify link for release media breaks stuff on the front end.
-* If blank make gig duration 0
 * iOS Safari has dates and times wrong. Use TZ from venue.
 * Can't see everything on Mike's ridiculous screen
-* Need venue address handling - festival name, stage
 * Need to revoke map API key (it got exposed in Git, whoops)
 
 ## Features for next next version

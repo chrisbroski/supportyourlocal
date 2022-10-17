@@ -65,8 +65,8 @@ function updateResource(id, formData, db, save) {
     db[resourceName][id].title = formData.title;
     db[resourceName][id].date = formData.date;
     db[resourceName][id].startTime = formData.startTime;
-    db[resourceName][id].durationH = formData.durationH;
-    db[resourceName][id].durationM = formData.durationM;
+    db[resourceName][id].durationH = formData.durationH || 0;
+    db[resourceName][id].durationM = formData.durationM || 0;
     db[resourceName][id].venue = formData.venue;
     db[resourceName][id].desc = formData.desc;
     db[resourceName][id].fbEvent = formData.fbEvent;
