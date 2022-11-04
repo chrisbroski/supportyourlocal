@@ -355,6 +355,9 @@ this.getHeader = function (req, rsp, db) {
     if (db.band.social.podcast) {
         socials.push(`        <a href="${db.band.social.podcast}"><img src="/img/social/anchor.svg" alt="Podcast"></a>`);
     }
+    if (db.band.social.apple) {
+        socials.push(`        <a href="${db.band.social.apple}"><img src="/img/icon/apple-music.svg" alt="Apple Music"></a>`);
+    }
 
     var nav = `<nav id="main">
     <p><a href="/"><span class="material-icons">home</span> Home</a></p>
@@ -504,7 +507,9 @@ function homeNoAuth(db) {
         "spotify": "Spotify",
         "instagram": "Instagram",
         "youtube": "YouTube",
-        "podcast": "Podcast"
+        "podcast": "Podcast",
+        "tiktok": "TikTok",
+        "apple": "Apple Music"
     };
     homeData.social = [];
     Object.keys(db.band.social).forEach(s => {

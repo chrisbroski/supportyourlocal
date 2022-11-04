@@ -111,6 +111,7 @@ function updateResource(body, db, save) {
     db[resourceName].social.youtube = body["social-youtube"];
     db[resourceName].social.tiktok = body["social-tiktok"];
     db[resourceName].social.podcast = body["social-podcast"];
+    db[resourceName].social.apple = body["social-apple"];
 
     if (!db[resourceName].payment) {
         db[resourceName].payment = {};

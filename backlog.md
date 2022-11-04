@@ -54,33 +54,13 @@ Data tools (QA and deploy scripts.)
 
 Password recovery (request to me - no email yet)
 
-EPK
-
-More data validation and deletion checks (e.g. can't delete song if part of release, venue if part of gig, etc.)
-
-Onboarding wizard
-
 ### Tests
 
 Songs partially done. The rest, not at all
 
-### Known Bugs
-
-* Updates don't persist new form data after 400
-* Deletion can cause invalid state
-* A "track" type Spotify link for release media breaks stuff on the front end.
-* iOS Safari has dates and times wrong. Use TZ from venue.
-* Need to revoke map API key (it got exposed in Git, whoops)
-
 ## Features for next next version
 
-Handle live stream gigs.
-
 Get local features working with member cities. "Check in" on mobile when at open mics, etc.
-
-Playing live now!
-
-Browser push notifications
 
 Set up back end as front end ("secure" and "private" - no JS or cookies. Also accessible. Talk to Rob C!)
 
@@ -90,24 +70,6 @@ Set up back end as front end ("secure" and "private" - no JS or cookies. Also ac
 
 Export instructions to email them your damn self. Add phone number too for mass spam texting.
 
-## Onboarding:
-
-On setup, read and agree to rules:
-
-1. Do not libel or harrass other bands or their fandom.
-2. Make your city locations accurate and non-spammy.
-
-## Setup
-
-1. Agree to rules (above)
-2. username and password
-2. Style
-3. Add band data
-
-Also, setup needs more work:
-
-* There should probalby be a style/site/band basic setup page with helpful information.
-
 ## Central Site
 
 ### Blog articles
@@ -116,4 +78,4 @@ Funnel from QR code to persistent connection.
 
 ## Before Next 10
 
-Onboarding process, https, password recovery via email, data tools (backup and restore data.json, local QA and deployment.)
+Onboarding process, password recovery via email, data tools (backup and restore data.json, local QA and deployment.)

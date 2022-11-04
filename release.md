@@ -14,6 +14,8 @@ Fixed bugs related to HTTPS hosting.
 
 Implemented admin and setup keys.
 
+Added Apple Music social link.
+
 ## Admin Features
 
 And API key was added to .env config that allows the downloading of the data.json file.
