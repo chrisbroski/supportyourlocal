@@ -57,8 +57,8 @@ function isPhotoInvalid(body) {
         return msg;
     }
 
-    if (!body.files || body.files[0].photo.length > 8000000) {
-        msg.push("Photos over 8MB not allowed.");
+    if (!body.files || body.files[0].photo.length > 10000000) {
+        msg.push("Photos over 10MB not allowed.");
     }
 
     if (photoExt.indexOf(body.files[0].type.toLowerCase()) === -1) {
@@ -136,7 +136,7 @@ this.create = async function (req, rsp, body, db, save) {
     } else {
         uploadedPhoto.toFile(filePath);
         uploadedPhoto.resize({height: 200}).toFile(thumbPath);
-        
+
         if (metadata.width > photoSizeLimit || metadata.height > photoSizeLimit) {
             db.photo[photoName].web = true;
             if (metadata.width > metadata.height) {
