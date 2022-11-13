@@ -20,12 +20,18 @@ section > p > img {
 
 <section id="photo-info">
 <p>{{width}} × {{height}}, {{sizeKb}} kB
-{{#loggedIn}}
-<a class="button" href="{{API_DIR}}/delete?resource={{resourceName}}&id={{id}}">Delete {{resourceName}}</a>
-{{/loggedIn}}
-</p>
+<p><a href="/photo/{{name}}_thumb{{ext}}">Thumbnail</a>
 {{#web}}
-<p><a href="/photo/{{id}}">View full-sized image.</a></p>
+<p><a href="/photo/{{name}}_web{{ext}}">Web Optimized</a>
+{{/web}}
+<p><a href="/photo/{{id}}">Original</a>
+
+{{#loggedIn}}
+<p><a class="button" href="{{API_DIR}}/delete?resource={{resourceName}}&id={{id}}">Delete {{resourceName}}</a>
+</p>
+{{/loggedIn}}
+{{#web}}
+<!-- <p><a href="/photo/{{id}}">View full-sized image.</a></p> -->
 <p><img src="/photo/{{name}}_web{{ext}}"></p>
 {{/web}}
 {{^web}}

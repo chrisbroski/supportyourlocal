@@ -269,20 +269,8 @@ section.photolist > p > a > span {
     font-size: 14px;
     line-height: 1;
 }
-/* #photo-noauth {
-    padding: 4px;
-}
-#photo-noauth img {
-    margin: 4px;
-    float: left;
-    width: 150px;
-} */
 #photo-info p {
     position: relative;
-}
-#photo-info p a.button {
-    position: absolute;
-    right: 0;
 }
 #photo-info p img {
     margin: 1em 0 0;
