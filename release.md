@@ -1,5 +1,13 @@
 # Release Notes
 
+## 1.5
+
+Wizard!
+
+The "About" or "Band" pages are expanded to serve all the functions of an EPK.
+
+Photo page lists URLs
+
 ## 1.4.1 (Released 2022-11-13)
 
 ## Genericize Back End

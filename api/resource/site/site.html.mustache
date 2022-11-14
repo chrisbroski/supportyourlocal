@@ -29,7 +29,7 @@
 {{/loggedIn}}
 
 {{#loggedIn}}
-<form method="POST" action="{{API_DIR}}/site" enctype="application/x-www-form-urlencoded">
+<form method="POST" action="{{API_DIR}}/{{resourceName}}" enctype="application/x-www-form-urlencoded">
 <input type="hidden" name="method" value="PUT">
 <p><label>Primary Color</label><br>
 <div class="colors">

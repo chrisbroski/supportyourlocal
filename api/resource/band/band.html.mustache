@@ -14,8 +14,8 @@
 {{{message-display}}}
 
 <section>
-<form method="POST" action="{{API_DIR}}/band" enctype="application/x-www-form-urlencoded">
-<input type="hidden" name="method" value="PUT">
+<form method="POST" action="{{API_DIR}}/{{resourceName}}" enctype="application/x-www-form-urlencoded">
+<input type="hidden" name="method" value="PUT">{{resourceName}}
 <p><label>Band Name</label>*<br>
     <input type="text" name="name" value="{{name}}" autofocus="autofocus" required="required">
 <p><label>City</label><br><input type="text" name="city" value="{{city}}">
