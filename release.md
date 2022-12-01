@@ -6,6 +6,17 @@ Wizard!
 
 The "About" or "Band" pages are expanded to serve all the functions of an EPK.
 
+https://bandzoogle.com/blog/the-8-things-that-should-be-in-every-band-s-digital-press-kit
+
+* Promotional photos
+* "Press" links
+
+Mark any release as "latest"
+
+Separate music and social websites. Add support for Amazon Music, YouTube Music, Deezer, Band Camp, and Sound Cloud.
+
+### Finished
+
 Photo page lists URLs
 
 ## 1.4.1 (Released 2022-11-13)
