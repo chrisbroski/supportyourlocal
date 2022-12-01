@@ -509,7 +509,12 @@ function homeNoAuth(db) {
         "youtube": "YouTube",
         "podcast": "Podcast",
         "tiktok": "TikTok",
-        "apple": "Apple Music"
+        "apple": "Apple Music",
+        "youtubemusic": "YouTube Music",
+        "amazon": "Amazon Music",
+        "soundcloud": "SoundCloud",
+        "bandcamp": "Bandcamp",
+        "deezer": "Deezer"
     };
     homeData.social = [];
     Object.keys(db.band.social).forEach(s => {

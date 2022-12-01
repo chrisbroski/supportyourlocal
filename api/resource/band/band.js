@@ -105,13 +105,19 @@ function updateResource(body, db, save) {
     if (!db[resourceName].social) {
         db[resourceName].social = {};
     }
-    db[resourceName].social.fb = body["social-fb"];
     db[resourceName].social.spotify = body["social-spotify"];
+    db[resourceName].social.apple = body["social-apple"];
+    db[resourceName].social.youtubemusic = body["social-youtubemusic"];
+    db[resourceName].social.amazon = body["social-amazon"];
+    db[resourceName].social.deezer = body["social-deezer"];
+    db[resourceName].social.bandcamp = body["social-bandcamp"];
+    db[resourceName].social.soundcloud = body["social-soundcloud"];
+
+    db[resourceName].social.fb = body["social-fb"];
     db[resourceName].social.instagram = body["social-instagram"];
     db[resourceName].social.youtube = body["social-youtube"];
     db[resourceName].social.tiktok = body["social-tiktok"];
     db[resourceName].social.podcast = body["social-podcast"];
-    db[resourceName].social.apple = body["social-apple"];
 
     if (!db[resourceName].payment) {
         db[resourceName].payment = {};

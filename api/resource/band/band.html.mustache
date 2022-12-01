@@ -15,7 +15,7 @@
 
 <section>
 <form method="POST" action="{{API_DIR}}/{{resourceName}}" enctype="application/x-www-form-urlencoded">
-<input type="hidden" name="method" value="PUT">{{resourceName}}
+<input type="hidden" name="method" value="PUT">
 <p><label>Band Name</label>*<br>
     <input type="text" name="name" value="{{name}}" autofocus="autofocus" required="required">
 <p><label>City</label><br><input type="text" name="city" value="{{city}}">
@@ -33,17 +33,32 @@
 
 <p><label>Description (Short Bio)</label><br>
     <textarea name="desc">{{desc}}</textarea></p>
-<p><label>Bio</label><br>
+<p><label>Bio (Longer Bio)</label><br>
     <textarea name="bio">{{bio}}</textarea></p>
 <p><label>Contact Information</label><br>
 <textarea name="contact">{{contact}}</textarea></p>
 <p>Your bio and contact information must be plain text, but may also use <a href="https://www.markdownguide.org/" target="_blank">markdown syntax</a>.</p>
 
+<h2>Music Distributors</h2>
+<p>Artist pages
+<p><label>Spotify</label><br>
+<input type="url" name="social-spotify" value="{{social.spotify}}">
+<p><label>Apple Music</label><br>
+<input type="url" name="social-apple" value="{{social.apple}}">
+<p><label>YouTube Music</label><br>
+<input type="url" name="social-youtubemusic" value="{{social.youtubemusic}}">
+<p><label>Amazon</label><br>
+<input type="url" name="social-amazon" value="{{social.amazon}}">
+<p><label>Deezer</label><br>
+<input type="url" name="social-deezer" value="{{social.deezer}}">
+<p><label>Band Camp</label><br>
+<input type="url" name="social-bandcamp" value="{{social.bandcamp}}">
+<p><label>Sound Cloud</label><br>
+<input type="url" name="social-soundcloud" value="{{social.soundcloud}}">
+
 <h2>Social Media</h2>
 <p><label>Facebook</label><br>
     <input type="url" name="social-fb" value="{{social.fb}}">
-<p><label>Spotify</label><br>
-    <input type="url" name="social-spotify" value="{{social.spotify}}">
 <p><label>Instagram</label><br>
     <input type="url" name="social-instagram" value="{{social.instagram}}">
 <p><label>YouTube</label><br>
@@ -52,8 +67,6 @@
     <input type="url" name="social-tiktok" value="{{social.tiktok}}">
 <p><label>Podcast</label><br>
     <input type="url" name="social-podcast" value="{{social.podcast}}">
-<p><label>Apple Music</label><br>
-    <input type="url" name="social-apple" value="{{social.apple}}">
 
 <h2>Payment Types</h2>
 <p><label>Venmo</label> (Username starting with @)<br>

@@ -224,6 +224,11 @@ body > footer {
     background: rgb(var(--color1));
     color: white;
 }
+body > footer > p {
+    margin: 0;
+    width: 50%;
+    float: left;
+}
 body > footer a {
     color: white;
 }
