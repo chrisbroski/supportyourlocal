@@ -27,7 +27,7 @@ section > p > img {
 <p><a href="/photo/{{id}}">Original</a>
 
 {{#loggedIn}}
-<p><a class="button" href="{{API_DIR}}/delete?resource={{resourceName}}&id={{id}}">Delete {{resourceName}}</a>
+<p><a class="button warn" href="{{API_DIR}}/delete?resource={{resourceName}}&id={{id}}">Delete {{resourceName}}</a>
 </p>
 {{/loggedIn}}
 {{#web}}

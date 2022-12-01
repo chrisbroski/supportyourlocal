@@ -114,6 +114,7 @@ button, input[type="button"], input[type="submit"], input[type="reset"], a.butto
     -webkit-border-radius: 0;
 }
 a.button {display: inline-block; text-decoration: none; }
+.button.warn {background-color: rgb(var(--color2)); }
 button:focus, input:focus {outline: 0 none; }
 label {font-weight: bold; }
 input:invalid, select:invalid {
