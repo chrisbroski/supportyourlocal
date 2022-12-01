@@ -558,22 +558,9 @@ function init() {
 
 function migrate() {
     // migrate data, if needed
-    /*if (!db.style) {
-        db.style = {};
+    if (!db.band.music) {
+        db.band.music = {};
     }
-    if (!db.font) {
-        db.font = [];
-    }
-    // move site.color1 and site.color2 to style colors
-    db.style.colors = [];
-    db.style.colors.push(db.site.color1);
-    db.style.colors.push(db.site.color2);
-
-    if (!db.style.fonts) {
-        db.style.fonts = [];
-    }
-
-    endure.save();*/
 }
 
 var cssStat;
@@ -590,8 +577,6 @@ async function loadData() {
     ASSET.noPhoto = await fs.readFile(`${__dirname}/inc/nophoto.png`);
     ASSET.ajaxTool = await fs.readFile(`${__dirname}/ajax-tool.html`, 'utf8');
 
-    // TEMPLATE.home = await fs.readFile(`${__dirname}/index.html.mustache`, 'utf8');
-    // TEMPLATE.homeNoAuth = await fs.readFile(`${__dirname}/index-noauth.html.mustache`, 'utf8');
     TEMPLATE.tests = await fs.readFile(`${__dirname}/tests.html.mustache`, 'utf8');
     TEMPLATE.delete = await fs.readFile(`${__dirname}/inc/delete.html.mustache`, 'utf8');
 
