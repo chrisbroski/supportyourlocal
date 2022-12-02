@@ -90,7 +90,7 @@ function expandPhotos(db, releaseData) {
 
 function releaseMediaByType(db, id, type) {
     var media = db[resourceName][id].media;
-    if (!media.some(m => m.type === type && db[resourceName][id].songs.length === 1)) {
+    if (!media.some(m => m.type === type) && db[resourceName][id].songs.length === 1) {
         media = db.song[db[resourceName][id].songs[0]].media;
     }
     return media.filter(m => m.type === type).map(m => {
@@ -125,7 +125,7 @@ function singleNoAuth(db, id) {
     // if promoted but note released, return partial data
     var releaseDate = new Date(db[resourceName][id].date);
     releaseDate.setHours(24 + tzOffset, 0, 0, 0);
-    if (+releaseDate - tsToday >= 0) {
+    if (+releaseDate - tsToday > 0) {
         resourceData.upcomingRelease = true;
         resourceData["cover-back"] = "";
         resourceData.credits = "";
@@ -178,7 +178,7 @@ function listNoAuth(db) {
     releases = releases.map(r => {
         var releaseDate = new Date(r.date);
         releaseDate.setHours(24 + tzOffset, 0, 0, 0);
-        if (+releaseDate - tsToday >= 0) {
+        if (+releaseDate - tsToday > 0) {
             r.upcomingRelease = true;
         } else {
             r.releaseLink = main.songLink(db, r.id);
@@ -286,7 +286,7 @@ function singleData(db, id) {
     // if promoted but note released, return partial data
     var releaseDate = new Date(release.date);
     releaseDate.setHours(24 + tzOffset, 0, 0, 0);
-    if (+releaseDate - tsToday >= 0) {
+    if (+releaseDate - tsToday > 0) {
         release.upcomingRelease = true;
         release["cover-back"] = "";
         release.credits = "";
@@ -329,7 +329,7 @@ function listData(db) {
         r["cover-back"] = main.photoWeb(db, r["cover-back"]);
         r.audio = {"spotify": getReleaseSpotifyAudio(db, r.id)};
 
-        if (+releaseDate - tsToday >= 0) {
+        if (+releaseDate - tsToday > 0) {
             r.upcomingRelease = true;
             r["cover-back"] = "";
             r.credits = "";
