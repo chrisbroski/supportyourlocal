@@ -102,6 +102,10 @@ function rspPost(req, rsp, path, body) {
         return gig.create(req, rsp, body, db, endure.save);
     }
 
+    if (path.resource === 'band') {
+        return band.addPress(req, rsp, body, db, endure.save);
+    }
+
     if (path.resource === 'venue') {
         return venue.create(req, rsp, body, db, endure.save);
     }
@@ -232,6 +236,9 @@ function rspPatch(req, rsp, path, body) {
     }
     if (path.resource === 'style') {
         return style.reorderColorOrFont(req, rsp, body, db, endure.save);
+    }
+    if (path.resource === 'band') {
+        return band.reorderPress(req, rsp, body, db, endure.save);
     }
 
     return main.notFound(rsp, req.url, 'PATCH', req, db);
@@ -558,9 +565,9 @@ function init() {
 
 function migrate() {
     // migrate data, if needed
-    if (!db.band.music) {
+    /*if (!db.band.music) {
         db.band.music = {};
-    }
+    }*/
 }
 
 var cssStat;

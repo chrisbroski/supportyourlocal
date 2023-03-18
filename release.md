@@ -13,7 +13,7 @@ https://bandzoogle.com/blog/the-8-things-that-should-be-in-every-band-s-digital-
 
 Mark any release as "latest"
 
-Separate music and social websites. Add support for Amazon Music, YouTube Music, Deezer, Band Camp, and Sound Cloud.
+Separate music and social websites. Add support for Amazon Music, YouTube Music, Deezer, Bandcamp, and Sound Cloud.
 
 ### Finished
 

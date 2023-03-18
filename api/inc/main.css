@@ -64,7 +64,7 @@ body > article {
     padding-right: 360px;
 }
 li {font-size: 16px; margin-bottom: 0.3em; line-height: 1.4em; }
-h1, h2, h4 {
+h1, h2, h4, caption {
     font-family: var(--header-font);
     color: rgb(var(--color2));
     font-weight: var(--header-font-weight);
@@ -141,20 +141,21 @@ section.list, section.photolist {
 }
 
 table {border-collapse: collapse; }
+table caption {text-align: left; font-size: 24px; }
 table button {padding: 4px; }
 table td, table th {
     padding: 4px;
     text-align: left;
 }
 table pre {
-    margin: 0; padding: 8px 4px;
+    margin: 0; padding: 6px;
     font-weight: normal;
     background: #eee;
     overflow: auto;
     white-space: nowrap;
     max-width: none;
 }
-table.media-table {
+table.media-table, table#pressList {
     table-layout: fixed;
     width: 100%;
 }
@@ -173,6 +174,11 @@ table.media-table td form {
 table.media-table td button {
     width: 2em;
 }
+
+table#pressList {margin-top: 2em; }
+table#pressList td {width: 2em; }
+table#pressList th {font-weight: normal; }
+table#pressList th p {margin: 0; }
 
 div.photos, div.colors {
     height: 120px;

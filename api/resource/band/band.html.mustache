@@ -76,4 +76,55 @@
 </form>
 </section>
 
+<section id="press">
+<h2>Press Coverage</h2>
+<form method="POST" action="{{{API_DIR}}}/{{resourceName}}#press">
+    <p><label>Headline</label><br>
+        <input type="text" name="headline" value="">
+    <p><label>Link (URL)</label><br>
+        <input type="url" name="press-url" value="">
+    <p><button>Add Press Clipping</button>
+</form>
+
+<table id="pressList">
+{{#hasPress}}<caption>Press Clipping Order</caption>{{/hasPress}}
+{{#pressList}}
+<tr>
+    <td>
+    {{^index-top}}
+    <form method="POST" action="{{{API_DIR}}}/{{resourceName}}/#press">
+        <input type="hidden" name="method" value="PATCH">
+        <input type="hidden" name="press-index" value="{{press-index}}">
+        <input type="hidden" name="index" value="{{index-up}}">
+        <button>↑</button>
+    </form>
+    {{/index-top}}
+    </td>
+    <td>
+    {{^index-bottom}}
+    <form method="POST" action="{{{API_DIR}}}/{{resourceName}}/#press">
+        <input type="hidden" name="method" value="PATCH">
+        <input type="hidden" name="press-index" value="{{press-index}}">
+        <input type="hidden" name="index" value="{{index-down}}">
+        <button>↓</button>
+    </form>
+    {{/index-bottom}}
+    </td>
+    <th>
+        <p>{{press-headline}}</p>
+        <pre>{{press-url}}</pre>
+    </th>
+    <td>
+    <form method="POST" action="{{{API_DIR}}}/{{resourceName}}#press">
+        <input type="hidden" name="method" value="PATCH">
+        <input type="hidden" name="press-index" value="{{press-index}}">
+        <input type="hidden" name="index" value="-1">
+        <button>×</button>
+    </form>
+    </td>
+</tr>
+{{/pressList}}
+</table>
+</section>
+
 </article>

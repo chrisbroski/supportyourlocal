@@ -7,11 +7,30 @@ const main = require('../../inc/main.js');
 const resourceName = 'band';
 const template = {};
 
+function pressList(press) {
+    if (!press) {
+        return [];
+    }
+    return press.map((s, i) => {
+        return {
+            "press-url": s.url,
+            "press-headline": s.headline,
+            "press-index": i,
+            "index-up": i - 1,
+            "index-down": i + 1,
+            "index-top": i === 0,
+            "index-bottom": i >= press.length - 1
+        };
+    });
+}
+
 function single(db, msg, error) {
     var resourceData = Object.assign({
         "resourceName": resourceName,
         "pageName": 'Band Info',
-        "countries": main.country(db[resourceName].country),
+        "countries": main.country(db[resourceName].country) || "US",
+        "pressList": pressList(db[resourceName].press),
+        "hasPress": db[resourceName].press && db[resourceName].press.length > 0
     }, db[resourceName]);
 
     return Object.assign(main.addMessages(msg, error), resourceData);
@@ -52,6 +71,8 @@ function singleNoAuth(db) {
         "descHtml": converter.makeHtml(db.band.desc),
         "bioHtml": converter.makeHtml(db.band.bio),
         "contactHtml": converter.makeHtml(db.band.contact),
+        "pressList": db[resourceName].press,
+        "hasPress": db[resourceName].press && db[resourceName].press.length > 0,
         "members": members
     }, db[resourceName]);
 
@@ -76,6 +97,74 @@ function contentExists(db) {
         "support": hasSupport
     };
 }
+
+function isPressInvalid(formData) {
+    var msg = [];
+
+    if (!formData['press-url']) {
+        msg.push('Press URL is required.');
+    }
+
+    if (!formData.headline) {
+        msg.push('Press headline is required.');
+    }
+
+    return msg;
+}
+
+this.addPress = function (req, rsp, formData, db, save) {
+    var error = isPressInvalid(formData);
+    if (error.length) {
+        rsp.writeHead(400, {'Content-Type': 'text/html'});
+        rsp.end(main.renderPage(req, template.single, single(db, "", error), db));
+        return;
+    }
+    if (!db[resourceName].press) {
+        db[resourceName].press = [];
+    }
+    db[resourceName].press.unshift({
+        "url": formData['press-url'],
+        "headline": formData.headline
+    });
+    save();
+
+    rsp.writeHead(201, {'Content-Type': 'text/html'});
+    rsp.end(main.renderPage(req, template.single, single(db, ["Press added"]), db));
+};
+
+this.reorderPress = function (req, rsp, body, db, save) {
+    var currentIndex;
+    var newIndex;
+    var pressValue;
+    var returnData;
+
+    currentIndex = body['press-index'];
+
+    if (currentIndex < 0 || currentIndex >= db.band.press.length) {
+        rsp.writeHead(404, {'Content-Type': 'text/html'});
+        rsp.end(main.renderPage(req, template.single, single(db, "", "Value not found"), db));
+        return;
+    }
+    newIndex = body.index;
+    if (newIndex >= db.band.press.length) {
+        newIndex = db.band.press.length - 1;
+    }
+    pressValue = db.band.press.splice(currentIndex, 1);
+    if (parseInt(newIndex) > -1) {
+        db.band.press.splice(newIndex, 0, pressValue[0]);
+    }
+
+    save();
+
+    returnData = main.responseData("", resourceName, db, "Updated");
+
+    if (req.headers.accept === 'application/json') {
+        return main.returnJson(rsp, returnData);
+    }
+
+    rsp.writeHead(200, {'Content-Type': 'text/html'});
+    rsp.end(main.renderPage(req, template.single, single(db, [`Press coverage updated.`]), db));
+};
 
 function isUpdateInvalid(body) {
     var msg = [];
@@ -131,7 +220,7 @@ this.update = function (req, rsp, formData, db, save) {
     var error = isUpdateInvalid(formData);
     if (error.length) {
         rsp.writeHead(400, {'Content-Type': 'text/html'});
-        rsp.end(main.renderPage(req, template.band, single(db, [`${resourceName} updated.`]), db));
+        rsp.end(main.renderPage(req, template.single, single(db, [`${resourceName} updated.`]), db));
         return;
     }
 
@@ -145,7 +234,7 @@ this.update = function (req, rsp, formData, db, save) {
 
     // returnData.back = req.headers.referer;
     rsp.writeHead(200, {'Content-Type': 'text/html'});
-    rsp.end(main.renderPage(req, template.band, single(db, [`${resourceName} updated.`]), db, process.env.SUBDIR));
+    rsp.end(main.renderPage(req, template.single, single(db, [`${resourceName} updated.`]), db, process.env.SUBDIR));
 };
 
 this.get = function (req, rsp, db) {
@@ -155,15 +244,15 @@ this.get = function (req, rsp, db) {
     }
     rsp.writeHead(200, {'Content-Type': 'text/html'});
     if (main.isLoggedIn(req, db.user)) {
-        rsp.end(main.renderPage(req, template.band, single(db), db));
+        rsp.end(main.renderPage(req, template.single, single(db), db));
     } else {
-        rsp.end(main.renderPage(req, template.bandNoAuth, singleNoAuth(db), db));
+        rsp.end(main.renderPage(req, template.singleNoAuth, singleNoAuth(db), db));
     }
 };
 
 async function loadData() {
-    template.band = await fs.readFile(`${__dirname}/${resourceName}.html.mustache`, 'utf8');
-    template.bandNoAuth = await fs.readFile(`${__dirname}/${resourceName}-noauth.html.mustache`, 'utf8');
+    template.single = await fs.readFile(`${__dirname}/${resourceName}.html.mustache`, 'utf8');
+    template.singleNoAuth = await fs.readFile(`${__dirname}/${resourceName}-noauth.html.mustache`, 'utf8');
 }
 
 loadData();

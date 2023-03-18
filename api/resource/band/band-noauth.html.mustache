@@ -23,6 +23,15 @@
 
 {{{bioHtml}}}
 
+{{#hasPress}}
+<h2>Press</h2>
+<ul>
+{{#pressList}}
+<li><a href="{{{url}}}">{{headline}}</a>
+{{/pressList}}
+</ul>
+{{/hasPress}}
+
 {{#members}}
 <section>
 <h2>{{name}}</h2>
