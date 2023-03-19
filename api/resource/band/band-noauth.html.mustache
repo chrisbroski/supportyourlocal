@@ -22,14 +22,28 @@
 {{{descHtml}}}
 
 {{{bioHtml}}}
+</section>
+
+{{#hasPhotos}}
+<section>
+<h2>Promotional Photos</h2>
+<div class="photos">
+{{#promo-photos}}
+<a href="/photo/{{file}}" target="_photo"><img src="/photo/{{thumb}}"></a>
+{{/promo-photos}}
+</div>
+</section>
+{{/hasPhotos}}
 
 {{#hasPress}}
+<section>
 <h2>Press</h2>
 <ul>
 {{#pressList}}
 <li><a href="{{{url}}}">{{headline}}</a>
 {{/pressList}}
 </ul>
+</section>
 {{/hasPress}}
 
 {{#members}}

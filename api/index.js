@@ -103,7 +103,7 @@ function rspPost(req, rsp, path, body) {
     }
 
     if (path.resource === 'band') {
-        return band.addPress(req, rsp, body, db, endure.save);
+        return band.addPressOrPhoto(req, rsp, body, db, endure.save);
     }
 
     if (path.resource === 'venue') {
@@ -238,7 +238,7 @@ function rspPatch(req, rsp, path, body) {
         return style.reorderColorOrFont(req, rsp, body, db, endure.save);
     }
     if (path.resource === 'band') {
-        return band.reorderPress(req, rsp, body, db, endure.save);
+        return band.reorderPressOrPhoto(req, rsp, body, db, endure.save);
     }
 
     return main.notFound(rsp, req.url, 'PATCH', req, db);

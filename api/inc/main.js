@@ -185,24 +185,28 @@ function photoWeb(db, photoId) {
 }
 this.photoWeb = photoWeb;
 
+function photoListData(photoId, sel, photoData) {
+    return {
+        "file": photoId,
+        "selected": sel,
+        "thumb": `${photoData.name}_thumb${photoData.ext}`
+    };
+}
+
 function displayPhotos(photos, selected, favicon) {
     var photoData = [];
     var selectedIdx;
     var selectedPhoto;
     var idx = 0;
 
-    Object.keys(photos).forEach((p) => {
+    Object.keys(photos).forEach(p => {
         var sel = '';
         if (!favicon || (favicon && photos[p].ext === '.png' && photos[p].width === photos[p].height)) {
             if (selected === p) {
                 sel = ' checked="checked"';
                 selectedIdx = idx;
             }
-            photoData.push({
-                "file": p,
-                "selected": sel,
-                "thumb": `${photos[p].name}_thumb${photos[p].ext}`
-            });
+            photoData.push(photoListData(p, sel, photos[p]));
             idx += 1;
         }
     });
@@ -213,6 +217,36 @@ function displayPhotos(photos, selected, favicon) {
     return photoData;
 }
 this.displayPhotos = displayPhotos;
+
+function displayMultiPhoto(photos, selected) {
+    var photoData = [];
+    var sel = ' checked="checked"';
+
+    selected = selected || [];
+
+    Object.keys(photos).forEach(p => {
+        if (selected.indexOf(p) < 0) {
+            photoData.push(photoListData(p, sel, photos[p]));
+            sel = '';
+        }
+    });
+
+    return photoData;
+}
+this.displayMultiPhoto = displayMultiPhoto;
+
+function displayMultiPhoto2(photos, db) {
+    var photoData = [];
+    var sel = ' checked="checked"';
+
+    photos.forEach(p => {
+        photoData.push(photoListData(p, sel, db.photo[p]));
+        sel = '';
+    });
+
+    return photoData;
+}
+this.displayMultiPhoto2 = displayMultiPhoto2;
 
 function noPhotoSelected(photoValue) {
     var sel = '';

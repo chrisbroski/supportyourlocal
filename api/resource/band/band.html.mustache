@@ -76,6 +76,45 @@
 </form>
 </section>
 
+<section id="photos">
+<h2>Promotional Photos</h2>
+
+<form method="POST" action="{{API_DIR}}/{{resourceName}}#photos" enctype="application/x-www-form-urlencoded">
+
+<div class="photos">
+{{#unselected-photos}}
+<label>
+    <input type="radio" name="promo" value="{{file}}"{{{selected}}}>
+    <img src="/photo/{{thumb}}">
+</label>
+{{/unselected-photos}}
+</div>
+
+<p><button>Add Promotional Photo</button>
+</form>
+
+{{#hasPhotos}}<h4>Photo Order</h4>{{/hasPhotos}}
+<form method="POST" action="{{API_DIR}}/{{resourceName}}#photos" enctype="application/x-www-form-urlencoded">
+<input type="hidden" name="method" value="PATCH">
+<input type="hidden" name="array" value="promo">
+
+<div class="photos">
+{{#promo-photos}}
+<label>
+    <input type="radio" name="promo" value="{{file}}"{{{selected}}}>
+    <img src="/photo/{{thumb}}">
+</label>
+{{/promo-photos}}
+</div>
+
+{{#hasPhotos}}<p>
+    <input type="submit" name="move_right" value="Move Right">
+    <input type="submit" name="move_left" value="Move Left">
+    <input type="submit" name="remove" value="Remove">
+{{/hasPhotos}}
+</form>
+</section>
+
 <section id="press">
 <h2>Press Coverage</h2>
 <form method="POST" action="{{{API_DIR}}}/{{resourceName}}#press">
@@ -96,6 +135,7 @@
         <input type="hidden" name="method" value="PATCH">
         <input type="hidden" name="press-index" value="{{press-index}}">
         <input type="hidden" name="index" value="{{index-up}}">
+        <input type="hidden" name="array" value="press">
         <button>↑</button>
     </form>
     {{/index-top}}
@@ -106,6 +146,7 @@
         <input type="hidden" name="method" value="PATCH">
         <input type="hidden" name="press-index" value="{{press-index}}">
         <input type="hidden" name="index" value="{{index-down}}">
+        <input type="hidden" name="array" value="press">
         <button>↓</button>
     </form>
     {{/index-bottom}}
@@ -119,6 +160,7 @@
         <input type="hidden" name="method" value="PATCH">
         <input type="hidden" name="press-index" value="{{press-index}}">
         <input type="hidden" name="index" value="-1">
+        <input type="hidden" name="array" value="press">
         <button>×</button>
     </form>
     </td>

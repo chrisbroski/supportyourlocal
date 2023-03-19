@@ -29,6 +29,9 @@ function single(db, msg, error) {
         "resourceName": resourceName,
         "pageName": 'Band Info',
         "countries": main.country(db[resourceName].country) || "US",
+        "unselected-photos": main.displayMultiPhoto(db.photo, db[resourceName].promos),
+        "promo-photos": main.displayMultiPhoto2(db[resourceName].promos, db),
+        "hasPhotos": db[resourceName].promos && db[resourceName].promos.length > 0,
         "pressList": pressList(db[resourceName].press),
         "hasPress": db[resourceName].press && db[resourceName].press.length > 0
     }, db[resourceName]);
@@ -71,6 +74,8 @@ function singleNoAuth(db) {
         "descHtml": converter.makeHtml(db.band.desc),
         "bioHtml": converter.makeHtml(db.band.bio),
         "contactHtml": converter.makeHtml(db.band.contact),
+        "promo-photos": main.displayMultiPhoto2(db[resourceName].promos, db),
+        "hasPhotos": db[resourceName].promos && db[resourceName].promos.length > 0,
         "pressList": db[resourceName].press,
         "hasPress": db[resourceName].press && db[resourceName].press.length > 0,
         "members": members
@@ -112,7 +117,24 @@ function isPressInvalid(formData) {
     return msg;
 }
 
-this.addPress = function (req, rsp, formData, db, save) {
+function isPhotoInvalid(formData) {
+    var msg = [];
+
+    if (!formData.promo) {
+        msg.push('Photo is required.');
+    }
+
+    return msg;
+}
+
+this.addPressOrPhoto = function (req, rsp, formData, db, save) {
+    if (formData['press-url']) {
+        return addPress(req, rsp, formData, db, save);
+    }
+    return addPhoto(req, rsp, formData, db, save);
+};
+
+function addPress(req, rsp, formData, db, save) {
     var error = isPressInvalid(formData);
     if (error.length) {
         rsp.writeHead(400, {'Content-Type': 'text/html'});
@@ -130,9 +152,33 @@ this.addPress = function (req, rsp, formData, db, save) {
 
     rsp.writeHead(201, {'Content-Type': 'text/html'});
     rsp.end(main.renderPage(req, template.single, single(db, ["Press added"]), db));
+}
+
+function addPhoto(req, rsp, formData, db, save) {
+    var error = isPhotoInvalid(formData);
+    if (error.length) {
+        rsp.writeHead(400, {'Content-Type': 'text/html'});
+        rsp.end(main.renderPage(req, template.single, single(db, "", error), db));
+        return;
+    }
+    if (!db[resourceName].promos) {
+        db[resourceName].promos = [];
+    }
+    db[resourceName].promos.push(formData.promo);
+    save();
+
+    rsp.writeHead(201, {'Content-Type': 'text/html'});
+    rsp.end(main.renderPage(req, template.single, single(db, ["Promo photo added"]), db));
+}
+
+this.reorderPressOrPhoto = function (req, rsp, formData, db, save) {
+    if (formData.array === "press") {
+        return reorderPress(req, rsp, formData, db, save);
+    }
+    return reorderPhoto(req, rsp, formData, db, save);
 };
 
-this.reorderPress = function (req, rsp, body, db, save) {
+function reorderPress(req, rsp, body, db, save) {
     var currentIndex;
     var newIndex;
     var pressValue;
@@ -164,7 +210,50 @@ this.reorderPress = function (req, rsp, body, db, save) {
 
     rsp.writeHead(200, {'Content-Type': 'text/html'});
     rsp.end(main.renderPage(req, template.single, single(db, [`Press coverage updated.`]), db));
-};
+}
+
+function reorderPhoto(req, rsp, body, db, save) {
+    var currentIndex;
+    var newIndex;
+    var photoValue;
+    var returnData;
+
+    currentIndex = db.band.promos.indexOf(body.promo);
+
+    if (currentIndex < 0 || currentIndex >= db.band.promos.length) {
+        rsp.writeHead(404, {'Content-Type': 'text/html'});
+        rsp.end(main.renderPage(req, template.single, single(db, "", "Value not found"), db));
+        return;
+    }
+    if (body.move_right) {
+        newIndex = currentIndex + 1;
+        if (newIndex >= db.band.promos.length) {
+            newIndex = 0;
+        }
+    } else if (body.move_left) {
+        newIndex = currentIndex - 1;
+        if (newIndex < 0) {
+            newIndex = db.band.promos.length;
+        }
+    }
+
+    photoValue = db.band.promos.splice(currentIndex, 1);
+    if (!body.remove) {
+        db.band.promos.splice(newIndex, 0, body.promo);
+    }
+
+    save();
+
+    returnData = main.responseData("", resourceName, db, "Updated");
+
+    if (req.headers.accept === 'application/json') {
+        return main.returnJson(rsp, returnData);
+    }
+
+    rsp.writeHead(200, {'Content-Type': 'text/html'});
+    // Move selected with photos
+    rsp.end(main.renderPage(req, template.single, single(db, [`Promo photo order updated.`]), db));
+}
 
 function isUpdateInvalid(body) {
     var msg = [];
