@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<title>{{pageName}} - API - {{homeName}}</title>
+{{{head}}}
+
+<body id="site-page">
+{{{header}}}
+
+<article id="main">
+<h1>{{pageName}}</h1>
+
+<h5><a href="{{API_DIR}}/">Home</a> &gt; {{pageName}}</h5>
+
+{{{message-display}}}
+
+<section>
+<form method="POST" action="{{API_DIR}}/{{resourceName}}" enctype="application/x-www-form-urlencoded">
+<input type="hidden" name="method" value="PUT">
+<p><label>Band Name</label>*<br>
+    <input type="text" name="name" value="{{name}}" autofocus="autofocus" required="required">
+<p><label>City</label><br><input type="text" name="city" value="{{city}}">
+<p><label>State</label><br><input type="text" name="state" value="{{state}}">
+<p><label>Home Country</label><br>
+    <select name="country">
+        <option value="">Select Country</option>
+        {{#countries}}
+        <option value="{{code}}"{{{selected}}}>{{name}}</option>{{/countries}}
+    </select>
+
+<p><label>Genre</label><br><input type="text" name="genre1" value="{{genre1}}">
+<p><label>Genre</label><br><input type="text" name="genre2" value="{{genre2}}">
+<p><label>Genre</label><br><input type="text" name="genre3" value="{{genre3}}">
+
+<p><label>Description (Short Bio)</label><br>
+    <textarea name="desc">{{desc}}</textarea></p>
+<p><label>Bio (Longer Bio)</label><br>
+    <textarea name="bio">{{bio}}</textarea></p>
+<p><label>Contact Information</label><br>
+<textarea name="contact">{{contact}}</textarea></p>
+<p>Your bio and contact information must be plain text, but may also use <a href="https://www.markdownguide.org/" target="_blank">markdown syntax</a>.</p>
+
+<h2>Music Distributors</h2>
+<p>Artist pages
+<p><label>Spotify</label><br>
+<input type="url" name="social-spotify" value="{{social.spotify}}">
+<p><label>Apple Music</label><br>
+<input type="url" name="social-apple" value="{{social.apple}}">
+<p><label>YouTube Music</label><br>
+<input type="url" name="social-youtubemusic" value="{{social.youtubemusic}}">
+<p><label>Amazon</label><br>
+<input type="url" name="social-amazon" value="{{social.amazon}}">
+<p><label>Deezer</label><br>
+<input type="url" name="social-deezer" value="{{social.deezer}}">
+<p><label>Band Camp</label><br>
+<input type="url" name="social-bandcamp" value="{{social.bandcamp}}">
+<p><label>Sound Cloud</label><br>
+<input type="url" name="social-soundcloud" value="{{social.soundcloud}}">
+
+<h2>Social Media</h2>
+<p><label>Facebook</label><br>
+    <input type="url" name="social-fb" value="{{social.fb}}">
+<p><label>Instagram</label><br>
+    <input type="url" name="social-instagram" value="{{social.instagram}}">
+<p><label>YouTube</label><br>
+    <input type="url" name="social-youtube" value="{{social.youtube}}">
+<p><label>TikTok</label><br>
+    <input type="url" name="social-tiktok" value="{{social.tiktok}}">
+<p><label>Podcast</label><br>
+    <input type="url" name="social-podcast" value="{{social.podcast}}">
+
+<h2>Payment Types</h2>
+<p><label>Venmo</label> (Username starting with @)<br>
+    <input type="text" name="pay-venmo" value="{{payment.venmo}}">
+
+<footer><p><button>Update Band Information</button></footer>
+</form>
+</section>
+
+<section id="photos">
+<h2>Promotional Photos</h2>
+
+<form method="POST" action="{{API_DIR}}/{{resourceName}}#photos" enctype="application/x-www-form-urlencoded">
+
+<div class="photos">
+{{#unselected-photos}}
+<label>
+    <input type="radio" name="promo" value="{{file}}"{{{selected}}}>
+    <img src="/photo/{{thumb}}">
+</label>
+{{/unselected-photos}}
+</div>
+
+<p><button>Add Promotional Photo</button>
+</form>
+
+{{#hasPhotos}}<h4>Photo Order</h4>{{/hasPhotos}}
+<form method="POST" action="{{API_DIR}}/{{resourceName}}#photos" enctype="application/x-www-form-urlencoded">
+<input type="hidden" name="method" value="PATCH">
+<input type="hidden" name="array" value="promo">
+
+<div class="photos">
+{{#promo-photos}}
+<label>
+    <input type="radio" name="promo" value="{{file}}"{{{selected}}}>
+    <img src="/photo/{{thumb}}">
+</label>
+{{/promo-photos}}
+</div>
+
+{{#hasPhotos}}<p>
+    <input type="submit" name="move_right" value="Move Right">
+    <input type="submit" name="move_left" value="Move Left">
+    <input type="submit" name="remove" value="Remove">
+{{/hasPhotos}}
+</form>
+</section>
+
+<section id="press">
+<h2>Press Coverage</h2>
+<form method="POST" action="{{{API_DIR}}}/{{resourceName}}#press">
+    <p><label>Headline</label><br>
+        <input type="text" name="headline" value="">
+    <p><label>Link (URL)</label><br>
+        <input type="url" name="press-url" value="">
+    <p><button>Add Press Clipping</button>
+</form>
+
+<table id="pressList">
+{{#hasPress}}<caption>Press Clipping Order</caption>{{/hasPress}}
+{{#pressList}}
+<tr>
+    <td>
+    {{^index-top}}
+    <form method="POST" action="{{{API_DIR}}}/{{resourceName}}/#press">
+        <input type="hidden" name="method" value="PATCH">
+        <input type="hidden" name="press-index" value="{{press-index}}">
+        <input type="hidden" name="index" value="{{index-up}}">
+        <input type="hidden" name="array" value="press">
+        <button>↑</button>
+    </form>
+    {{/index-top}}
+    </td>
+    <td>
+    {{^index-bottom}}
+    <form method="POST" action="{{{API_DIR}}}/{{resourceName}}/#press">
+        <input type="hidden" name="method" value="PATCH">
+        <input type="hidden" name="press-index" value="{{press-index}}">
+        <input type="hidden" name="index" value="{{index-down}}">
+        <input type="hidden" name="array" value="press">
+        <button>↓</button>
+    </form>
+    {{/index-bottom}}
+    </td>
+    <th>
+        <p>{{press-headline}}</p>
+        <pre>{{press-url}}</pre>
+    </th>
+    <td>
+    <form method="POST" action="{{{API_DIR}}}/{{resourceName}}#press">
+        <input type="hidden" name="method" value="PATCH">
+        <input type="hidden" name="press-index" value="{{press-index}}">
+        <input type="hidden" name="index" value="-1">
+        <input type="hidden" name="array" value="press">
+        <button>×</button>
+    </form>
+    </td>
+</tr>
+{{/pressList}}
+</table>
+</section>
+
+</article>
